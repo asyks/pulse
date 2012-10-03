@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<h2>Team Pulse Survey:</h2>
+
+	<form method='post' id='pulse-form'>
+
+		<div class="label">Project:
+			<select name="project">
+				<option value="Chiquita">Chiquita</option>
+				<option value="Riunite">Riunite</option>
+				<option value="Lenox">Lenox</option>
+				<option value="nTelos">nTelos</option>
+				<option value="Duke Health">Duke Health</option>
+				<option value="Modea">Chiquita</option>
+			</select>
+		</div>
+
+		<table id="pulses">
+
+			<tr>
+				<td class="label">Pride:</td>
+ 				<td><input type='radio' name='pride' value='{{pride}}'>1</td>
+  			<td><input type='radio' name='pride' value='{{pride}}'>2</td>
+ 				<td><input type='radio' name='pride' value='{{pride}}'>3</td>
+				<td><input type='radio' name='pride' value='{{pride}}'>4</td>
+ 				<td><input type='radio' name='pride' value='{{pride}}'>5</td>
+  			<td><input type='radio' name='pride' value='{{pride}}'>6</td>
+				<td><input type='radio' name='pride' value='{{pride}}'>7</td>
+				<td><input type='radio' name='pride' value='{{pride}}'>8</td>
+ 				<td><input type='radio' name='pride' value='{{pride}}'>9</td>
+  			<td><input type='radio' name='pride' value='{{pride}}'>10</td>
+				<td class='error'>{{error_pride}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Communication:</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>1</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>2</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>3</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>4</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>5</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>6</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>7</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>8</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>9</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>10</td>
+				<td class='error'>{{error_communication}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Passion:</td>
+ 				<td><input type='radio' name='passion' value='{{passion}}'>1</td>
+  			<td><input type='radio' name='passion' value='{{passion}}'>2</td>
+ 				<td><input type='radio' name='passion' value='{{passion}}'>3</td>
+				<td><input type='radio' name='passion' value='{{passion}}'>4</td>
+ 				<td><input type='radio' name='passion' value='{{passion}}'>5</td>
+  			<td><input type='radio' name='passion' value='{{passion}}'>6</td>
+				<td><input type='radio' name='passion' value='{{passion}}'>7</td>
+				<td><input type='radio' name='passion' value='{{passion}}'>8</td>
+ 				<td><input type='radio' name='passion' value='{{passion}}'>9</td>
+  			<td><input type='radio' name='passion' value='{{passion}}'>10</td>
+				<td class='error'>{{error_passion}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Challenge:</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>1</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>2</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>3</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>4</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>5</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>6</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>7</td>
+				<td><input type='radio' name='communication' value='{{communication}}'>8</td>
+ 				<td><input type='radio' name='communication' value='{{communication}}'>9</td>
+  			<td><input type='radio' name='communication' value='{{communication}}'>10</td>
+				<td class='error'>{{error_challenge}}</td>
+			</tr>
+
+		</table>
+
+		<div class="label">Feedback:
+			<textarea name="feedback">{{feedback}}</textarea>
+		</div>
+
+		<input type="submit">
+
+	</form>
+
+{% endblock %}

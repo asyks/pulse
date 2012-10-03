@@ -1,0 +1,143 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+    color: #333;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: red;
+}
+
+label {
+  display: block;
+  font-size: 20px;
+}
+
+label + label {
+    margin-top: 20px;
+}
+
+input[type=text] {
+    width: 200px;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
+}
+
+textarea {
+  width: 800px;
+  height: 200px;
+  font-size: 17px;
+  font-family: monospace;
+}
+
+form[id=pulse-form] {
+	font-size: 20px;
+}
+
+select {
+	font-size: 20px;
+}
+
+input[type=submit] {
+  font-size: 24px;
+}
+
+table[id=pulses] {
+	margin: 20px;
+	width: 650px;
+}
+
+td.column-two {
+	width: 25%;
+}
+
+tr[class=history-row]:nth-child(odd) {
+	background-color: #E0FFFF;
+}
+
+.main-title {
+    display: block;
+    color: #222;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
+.post + .post {
+    margin-top: 15px;
+}
+
+.post-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.wiki-header {
+		color: #C0C0C0;
+		text-align: right; 
+    text-decoration: none;
+}
+
+.edit-and-history {
+		float: left;
+		margin-left: 550px;
+}
+
+.login-and-logout {
+		float: right;
+}
+
+.wiki-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.wiki-content {
+		font-size: 18px;
+}
+
+.wiki-footer {
+		color: #C0C0C0;
+		text-align: right;
+		font-size: 16px;
+}
+
+.post-date {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    color: #999;
+}
+
+.wiki-content {
+    margin-top: 5px;
+		white-space: normal;
+}
+
+#dimmy-error {
+	margin-top: 100px;
+}
+
+#error-text {
+	width: 65%;
+	float: right; 
+  margin-top: 165px;
+  font-size: 22px;
+}
+
+#auth {
+	width: 100%;
+	text-align: right;
+}
