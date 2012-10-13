@@ -4,6 +4,8 @@ import webapp2
 import jinja2
 import os 
 import logging
+import urllib2
+import json
 
 ## wiki - Mickipebia class/object imports
 from utility import *
@@ -50,9 +52,6 @@ class Handler(webapp2.RequestHandler):
     set_user_cache(user_id, user)
 
   def logout(self, user):
-#    if user:
-#      user_id = str(user.key().id())
-#      memcache.delete(user_id)
     self.response.delete_cookie('user_id')
     self.response.delete_cookie('dev_appserver_login')
 
@@ -81,14 +80,8 @@ class Handler(webapp2.RequestHandler):
     self.params['auth'] = user.username + '(<a href="/logout"> logout </a>)' 
     
   def initialize(self, *a, **kw):
+
     webapp2.RequestHandler.initialize(self, *a, **kw)
-#    user_id, self.user = self.read_user_cookie(), None 
-#    if user_id: ## user_id is the value of the user_id cookie
-#      user, last_login = get_user_cache(str(user_id))
-#      if user: ## if user is cached we don't need to query Users Object
-#        self.user = user 
-#      else: ## if user isn't cached we will need to query Users Object
-#        self.user = Users.by_id(int(user_id)) 
 
     self.user = users.get_current_user()
     if not self.user:
@@ -100,6 +93,14 @@ class Handler(webapp2.RequestHandler):
       self.format = 'html'
 
 
+## Handler for Home page requests
+
+class Home(Handler):
+
+  def get(self):
+    self.render('home.html')
+
+
 ## Handler for all VisPage requests
 
 class VisPage(Handler):
@@ -108,12 +109,67 @@ class VisPage(Handler):
     self.write("VisPage Handler is working <br>")
     self.write(self.user)
 
+
+## Handler for Survey page requests
+
 class Survey(Handler):
 
   def get(self):
-#    self.write("Survey Handler is working")
+
     self.params['user'] = self.user
     self.render('survey.html', **self.params)
+
+  def post(self):
+
+    un, pj, fb = str(self.user), self.request.get('project'), self.request.get('feedback') 
+
+    pr, cm = int(self.request.get('pride')), int(self.request.get('communication')) 
+    ex, ch = int(self.request.get('expectations')), int(self.request.get('challenge')) 
+
+    score = Scores.create_score(un, pj, pr, cm, ex, ch, fb)
+    Scores.put_score(score)
+
+    self.redirect('/survey')
+
+
+## Class that handles import page
+
+class Import(Handler):
+
+  def get(self):
+    
+    self.render('import.html')
+
+  def post(self):
+
+    feed = self.request.get('feed') or 'cells'
+    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdGl6UzZYdkY0U3p5b1hPb19Vd2JrNEE'
+    worksheet = self.request.get('worksheet') or 'od6'
+
+    base_url = 'https://spreadsheets.google.com/feeds/%s/%s/%s/public/basic?alt=json'
+    request_url = base_url % (feed, sskey, worksheet)
+
+    p = urllib2.urlopen(request_url)
+    c = p.read()
+    j = json.loads(c)
+    logging.warning(j['feed'].keys())
+
+    scores = []
+    entries = j['feed']['entry']
+    n = 0
+    while n < len(entries):
+      t = entries[n:n+7]
+      s = []
+      for item in t:
+        content_value = item['content']['$t'] 
+        logging.warning(content_value)
+        s.append(content_value) 
+      score = Scores.create_score(s[0],s[1],int(s[2]),int(s[3]),int(s[4]),int(s[5]),s[6]) 
+      scores.append(score)
+      n += 7 
+
+    self.redirect('/import')
+    Scores.put_scores(scores)
 
 
 ## Class that handles user login requests
@@ -129,15 +185,6 @@ class Login(Handler):
     username = self.request.get('username')
     password = self.request.get('password')
 
-#    user = Users.login(username, password)
-
-#    if user:
-#      self.login(user) ## sets user cookie 
-#      self.redirect(last_page)
-
-#    else:
-#      self.render('/login-form.html', error='invalid username or password')
-
 
 ## Class that handles user login requests
 
@@ -146,7 +193,6 @@ class Logout(Handler):
   def get(self):
 
     self.logout(self.user) ## removes user cookie  
-#    self.redirect(last_page)
 
 
 ## Handler for all signup requests
@@ -209,11 +255,13 @@ class Error(Handler):
 
 PAGE_RE = r'/(?:[a-zA-Z0-9_-]+/?)*' # regex for handling wiki page requests
 
-app = webapp2.WSGIApplication([(r'/login/?', Login),
+app = webapp2.WSGIApplication([(r'/?', Home),
+                               (r'/login/?', Login),
                                (r'/logout/?', Logout),
                                (r'/signup/?', Signup),
                                (r'/visual/?' + PAGE_RE, VisPage),
                                (r'/survey/?', Survey),
+                               (r'/import/?', Import),
                                (r'/.*', Error)
                                ],
                                 debug=True)

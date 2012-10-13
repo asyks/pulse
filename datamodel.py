@@ -11,11 +11,11 @@ class Scores(db.Model):
   communication = db.IntegerProperty(required=True)
   expectations = db.IntegerProperty(required=True) 
   challenge = db.IntegerProperty(required=True) 
-  feedback = db.TextProperty(required=True) 
+  feedback = db.TextProperty() 
   submitted = db.DateTimeProperty(auto_now_add=True) 
 
   @classmethod
-  def create_score(cls, un, pj, pr, cm, ex, ch, fb):
+  def create_score(cls, un, pj, pr, cm, ex, ch, fb=None):
     return cls(username = un,
                project = pj,
                pride = pr,
@@ -25,8 +25,12 @@ class Scores(db.Model):
                feedback = fb)
 
   @classmethod
-  def put_score(score):
+  def put_score(cls, score):
     score.put()
+
+  @classmethod
+  def put_scores(cls, scores=[]):
+    db.put(scores)
 
   @classmethod
   def get_by_project(cls, pj):

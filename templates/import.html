@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+		<div name='import-menu'>
+
+			<form method='post'>
+
+				<table name='import-table'>
+					<tr>
+						<td>
+							<input type='text' name='feed'></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type='text' name='sskey'></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type='text' name='worksheet'></input>
+						</td>
+					</tr>
+				</table>
+
+				<input type='submit' value='Import'></input>
+
+			</form>
+
+		</div>
+
+{% endblock %}
