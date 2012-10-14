@@ -10,6 +10,7 @@ import json
 ## wiki - Mickipebia class/object imports
 from utility import *
 from datamodel import *
+from datetime import datetime
 #from wikimemcache import *
 
 ## app engine library memcache import
@@ -143,7 +144,7 @@ class Import(Handler):
   def post(self):
 
     feed = self.request.get('feed') or 'cells'
-    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdGl6UzZYdkY0U3p5b1hPb19Vd2JrNEE'
+    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
     worksheet = self.request.get('worksheet') or 'od6'
 
     base_url = 'https://spreadsheets.google.com/feeds/%s/%s/%s/public/basic?alt=json'
@@ -158,15 +159,16 @@ class Import(Handler):
     entries = j['feed']['entry']
     n = 0
     while n < len(entries):
-      t = entries[n:n+7]
+      t = entries[n:n+8]
       s = []
       for item in t:
         content_value = item['content']['$t'] 
         logging.warning(content_value)
         s.append(content_value) 
-      score = Scores.create_score(s[0],s[1],int(s[2]),int(s[3]),int(s[4]),int(s[5]),s[6]) 
+      timestamp = datetime.strptime(s[0],'%m/%d/%Y %H:%M:%S')
+      score = Scores.create_score(s[1],s[2],int(s[3]),int(s[4]),int(s[5]),int(s[6]),s[7],timestamp) 
       scores.append(score)
-      n += 7 
+      n += 8 
 
     self.redirect('/import')
     Scores.put_scores(scores)

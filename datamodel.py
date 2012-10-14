@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from utility import *
 
 from google.appengine.ext import db
@@ -12,17 +13,19 @@ class Scores(db.Model):
   expectations = db.IntegerProperty(required=True) 
   challenge = db.IntegerProperty(required=True) 
   feedback = db.TextProperty() 
+  timestamp = db.DateTimeProperty()
   submitted = db.DateTimeProperty(auto_now_add=True) 
 
   @classmethod
-  def create_score(cls, un, pj, pr, cm, ex, ch, fb=None):
+  def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
     return cls(username = un,
                project = pj,
                pride = pr,
                communication = cm,
                expectations = ex,
                challenge = ch,
-               feedback = fb)
+               feedback = fb,
+               timestamp = ts)
 
   @classmethod
   def put_score(cls, score):
