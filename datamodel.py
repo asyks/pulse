@@ -46,3 +46,8 @@ class Scores(db.Model):
     score = cls.all()
     score = score.filter('username =', un).order('-submitted').get()
     return score
+
+  @classmethod
+  def drop_table(cls):
+    all_scores = cls.all()
+    db.delete(all_scores)

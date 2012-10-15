@@ -4,14 +4,12 @@ import webapp2
 import jinja2
 import os 
 import logging
-import urllib2
-import json
 
 ## wiki - Mickipebia class/object imports
 from utility import *
 from datamodel import *
+from importatom import *
 from datetime import datetime
-#from wikimemcache import *
 
 ## app engine library memcache import
 from google.appengine.api import memcache
@@ -147,32 +145,24 @@ class Import(Handler):
     sskey = self.request.get('sskey') or '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
     worksheet = self.request.get('worksheet') or 'od6'
 
-    base_url = 'https://spreadsheets.google.com/feeds/%s/%s/%s/public/basic?alt=json'
-    request_url = base_url % (feed, sskey, worksheet)
+    scores = atom_import(feed, sskey, worksheet) 
 
-    p = urllib2.urlopen(request_url)
-    c = p.read()
-    j = json.loads(c)
-    logging.warning(j['feed'].keys())
-
-    scores = []
-    entries = j['feed']['entry']
-    n = 0
-    while n < len(entries):
-      t = entries[n:n+8]
-      s = []
-      for item in t:
-        content_value = item['content']['$t'] 
-        logging.warning(content_value)
-        s.append(content_value) 
-      timestamp = datetime.strptime(s[0],'%m/%d/%Y %H:%M:%S')
-      score = Scores.create_score(s[1],s[2],int(s[3]),int(s[4]),int(s[5]),int(s[6]),s[7],timestamp) 
-      scores.append(score)
-      n += 8 
-
-    self.redirect('/import')
     Scores.put_scores(scores)
+    self.redirect('/import')
 
+
+## Class that handles requests for the drops tables admin page
+
+class AdminDrops(Handler):
+
+  def get(self):
+
+    self.render('drops.html')
+
+  def post(self):
+
+    Scores.drop_table()
+    self.redirect('/admin/drops') 
 
 ## Class that handles user login requests
 
@@ -264,6 +254,7 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/visual/?' + PAGE_RE, VisPage),
                                (r'/survey/?', Survey),
                                (r'/import/?', Import),
+                               (r'/admin/drops/?', AdminDrops),
                                (r'/.*', Error)
                                ],
                                 debug=True)
