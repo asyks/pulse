@@ -1,19 +1,19 @@
 
-## standard python library imports and app engine library imports
+## standard python library imports
 import webapp2
 import jinja2
 import os 
 import logging
+from datetime import datetime
 
-## wiki - Mickipebia class/object imports
+## app engine library imports
+from google.appengine.api import memcache
+from google.appengine.api import users
+
+## pulse class/object imports
 from utility import *
 from datamodel import *
 from importatom import *
-from datetime import datetime
-
-## app engine library memcache import
-from google.appengine.api import memcache
-from google.appengine.api import users
 
 path = os.path.dirname(__file__)
 templates = os.path.join(path, 'templates')
@@ -21,7 +21,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(templates), auto
 last_page = '/' ## initialize last_page to wiki front
 
 
-## Main RequestHandler class: parent of all other request handlers
+## Pulse RequestHandler class: parent of all other request handlers
 
 class Handler(webapp2.RequestHandler):
 
@@ -107,6 +107,10 @@ class VisPage(Handler):
   def get(self):
     self.write("VisPage Handler is working <br>")
     self.write(self.user)
+    
+# db.GqlQuery("SELECT * FROM Scores WHERE project == 'Chiquita' AND timestamp > date_var ORDER BY timestamp DESC")
+# Scores.all().filter('project = ', proj_var).filter('timestamp >', date_var).order('-timestamp').get()
+# get_by_project(proj_var)
 
 
 ## Handler for Survey page requests

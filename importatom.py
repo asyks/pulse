@@ -1,12 +1,14 @@
 
+## standard python library imports
 import urllib2
 import json
 import logging
+from datetime import datetime 
 
+## pulse class/object imports
 from utility import *
 from datamodel import *
-from datetime import datetime 
-   
+
 ## Imports a json object from a Google Spreadhsheet using Google Docs Atom feed service
 
 def atom_import(feed, sskey, worksheet):
@@ -20,31 +22,29 @@ def atom_import(feed, sskey, worksheet):
 
   scores = []
 
-  count = 0
+  contents = [ i['content']['$t'] for i in entries ]
+
+  scores_max = len(contents) + 1
+  nums = range(0, scores_max, 1)
   offset = 8
+  starts = range(0, scores_max, offset)
+  blocks = [ contents[i : i + offset] for i in starts ]
 
-  while count < len(entries):
+  for element in blocks:
 
-    entry_slice = entries[count:count + offset]
-    score_container = []
+    if element and len(element) == 8:
+      logging.warning(element)
+      timestamp = datetime.strptime(element[0],'%m/%d/%Y %H:%M:%S')
 
-    for item in entry_slice:
+      score = Scores.create_score(element[1],
+                                  element[2],
+                                  int(element[3]),
+                                  int(element[4]),
+                                  int(element[5]),
+                                  int(element[6]),
+                                  element[7],
+                                  timestamp)
 
-      content_value = item['content']['$t']
-      logging.warning(content_value)
-      score_container.append(content_value)
-
-    timestamp = datetime.strptime(score_container[0],'%m/%d/%Y %H:%M:%S')
-
-    score = Scores.create_score(score_container[1],
-                                score_container[2],
-                                int(score_container[3]),
-                                int(score_container[4]),
-                                int(score_container[5]),
-                                int(score_container[6]),
-                                score_container[7],timestamp)
-
-    count += 8
-    scores.append(score)
+      scores.append(score)
 
   return scores

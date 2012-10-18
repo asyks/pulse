@@ -38,13 +38,13 @@ class Scores(db.Model):
   @classmethod
   def get_by_project(cls, pj):
     score = cls.all()
-    score = score.filter('project =', pj).order('-submitted').get()
+    score = score.filter('project =', pj).order('-timestamp').get()
     return score
 
   @classmethod
   def get_by_username(un):
     score = cls.all()
-    score = score.filter('username =', un).order('-submitted').get()
+    score = score.filter('username =', un).order('-timestamp').get()
     return score
 
   @classmethod
