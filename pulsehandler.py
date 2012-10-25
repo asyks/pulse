@@ -83,7 +83,7 @@ class Handler(webapp2.RequestHandler):
     webapp2.RequestHandler.initialize(self, *a, **kw)
 
     self.user = users.get_current_user()
-    if not self.user:
+    if not self.user or self.user is None:
       self.redirect(users.create_login_url(self.request.uri))
 
     if self.request.url.endswith('.json'):
@@ -105,13 +105,15 @@ class Home(Handler):
 class VisPage(Handler):
 
   def get(self):
-    self.write("VisPage Handler is working <br>")
-    self.write(self.user)
-    
-# db.GqlQuery("SELECT * FROM Scores WHERE project == 'Chiquita' AND timestamp > date_var ORDER BY timestamp DESC")
-# Scores.all().filter('project = ', proj_var).filter('timestamp >', date_var).order('-timestamp').get()
-# get_by_project(proj_var)
 
+    self.params['user'] = self.user
+
+    project = 'Chiquita'
+    scores = Scores.get_by_project(project)
+    scores = list(scores)
+    self.params['scores'] = scores
+
+    self.render('visual.html', **self.params)
 
 ## Handler for Survey page requests
 
@@ -149,7 +151,7 @@ class Import(Handler):
     sskey = self.request.get('sskey') or '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
     worksheet = self.request.get('worksheet') or 'od6'
 
-    scores = atom_import(feed, sskey, worksheet) 
+    scores = get_scores_from_atom(feed, sskey, worksheet) 
 
     Scores.put_scores(scores)
     self.redirect('/import')

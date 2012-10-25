@@ -1,0 +1,24 @@
+{% extends "vis_base.html" %}
+
+{% block content %}
+
+<br>
+
+<table class="project-table">
+
+	<td>Timestamp</td><td>Username</td><td>Project</td><td>Pride</td>
+	<td>Comm</td><td>Expct</td><td>Chall</td><td>Feedback</td>
+
+	{% for s in scores %}
+
+	<tr>
+		<td>{{ s.timestamp }}</td><td>{{ s.username}}</td><td>{{ s.project }}</td><td>{{ s.pride }}</td>
+		<td>{{ s.communication }}</td><td>{{ s.expectations }}</td><td>{{ s.challenge }}</td><td>{{ s.feedback }}</td>
+  </tr>
+
+	{% endfor %}
+
+
+</table>
+
+{% endblock %}

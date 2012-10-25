@@ -37,9 +37,9 @@ class Scores(db.Model):
 
   @classmethod
   def get_by_project(cls, pj):
-    score = cls.all()
-    score = score.filter('project =', pj).order('-timestamp').get()
-    return score
+    scores = cls.all()
+    scores = scores.filter('project =', pj).order('-timestamp').fetch(10)
+    return scores
 
   @classmethod
   def get_by_username(un):

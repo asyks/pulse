@@ -26,11 +26,8 @@ label + label {
     margin-top: 20px;
 }
 
-input[type=text] {
-    width: 200px;
-    font-size: 20px;
-    padding: 2px;
-    font-family: monospace;
+select {
+	font-size: 20px;
 }
 
 textarea {
@@ -44,8 +41,11 @@ form[id=pulse-form] {
 	font-size: 20px;
 }
 
-select {
-	font-size: 20px;
+input[type=text] {
+    width: 200px;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
 }
 
 input[type=submit] {
@@ -55,6 +55,16 @@ input[type=submit] {
 table[id=pulses] {
 	margin: 20px;
 	width: 650px;
+}
+
+table[class=project-table] {
+	width: 800px;
+  border: 2px solid grey;
+}
+
+table[class=project-table] td{
+  border: 2px solid grey;
+	padding: 2px;
 }
 
 td.column-two {
@@ -141,3 +151,4 @@ tr[class=history-row]:nth-child(odd) {
 	width: 100%;
 	text-align: right;
 }
+
