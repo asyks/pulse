@@ -104,11 +104,11 @@ class Home(Handler):
 
 class VisPage(Handler):
 
-  def get(self):
+  def get(self, project):
 
     self.params['user'] = self.user
 
-    project = 'Chiquita'
+    project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
     scores = list(scores)
     self.params['scores'] = scores
@@ -251,13 +251,13 @@ class Error(Handler):
 
 ## Mickipebia Routing Table 
 
-PAGE_RE = r'/(?:[a-zA-Z0-9_-]+/?)*' # regex for handling wiki page requests
+PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' # regex for handling wiki page requests
 
 app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/login/?', Login),
                                (r'/logout/?', Logout),
                                (r'/signup/?', Signup),
-                               (r'/visual/?' + PAGE_RE, VisPage),
+                               (r'/visual/' + PROJECT_RE, VisPage),
                                (r'/survey/?', Survey),
                                (r'/import/?', Import),
                                (r'/admin/drops/?', AdminDrops),
