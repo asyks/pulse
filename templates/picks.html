@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<h2>Team Pulse Survey:</h2>
+
+	<form method='post' id='pick-form'>
+
+		<table>
+			<tr>
+				<td>
+					<input type="checkbox" name="Modea" id="box">Chiquita</br>
+				</td>
+				<td>
+					<input type="checkbox" name="HTC" id="box">HTC</br>
+				</td>
+				<td>
+					<input type="checkbox" name="LENOX" id="box" >LENOX</br>
+				</td>
+				<td>
+					<input type="checkbox" name="Modea" id="box">Modea</br>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="checkbox" name="HTC" id="box">nTelos</br>
+				</td>
+				<td>
+					<input type="checkbox" name="LENOX" id="box" >UVA Health System</br>
+				</td>
+				<td>
+					<input type="checkbox" name="LENOX" id="box" >5 Hour Energy</br>
+				</td>
+				<td>
+					<input type="checkbox" name="LENOX" id="box" >Duke Health</br>
+				</td>
+			</tr>
+		</table>
+
+		<br>
+		<input type="submit">
+
+	</form>
+
+{% endblock %}

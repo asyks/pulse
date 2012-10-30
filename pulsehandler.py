@@ -115,6 +115,21 @@ class VisPage(Handler):
 
     self.render('visual.html', **self.params)
 
+
+## Handler for all Picks requests
+
+class Picks(Handler):
+
+  def get(self):
+
+    self.params['user'] = self.user
+    self.render('picks.html', **self.params)
+
+  def post(self):
+
+    self.redirect('/survey')
+
+
 ## Handler for Survey page requests
 
 class Survey(Handler):
@@ -122,7 +137,8 @@ class Survey(Handler):
   def get(self):
 
     self.params['user'] = self.user
-    self.render('survey.html', **self.params)
+    self.params['surveys'] = [1,2,3]
+    self.render('surveys.html', **self.params)
 
   def post(self):
 
@@ -131,8 +147,8 @@ class Survey(Handler):
     pr, cm = int(self.request.get('pride')), int(self.request.get('communication')) 
     ex, ch = int(self.request.get('expectations')), int(self.request.get('challenge')) 
 
-    score = Scores.create_score(un, pj, pr, cm, ex, ch, fb)
-    Scores.put_score(score)
+#    score = Scores.create_score(un, pj, pr, cm, ex, ch, fb)
+#    Scores.put_score(score)
 
     self.redirect('/survey')
 
@@ -259,6 +275,7 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/signup/?', Signup),
                                (r'/visual/' + PROJECT_RE, VisPage),
                                (r'/survey/?', Survey),
+                               (r'/picks/?', Picks),
                                (r'/import/?', Import),
                                (r'/admin/drops/?', AdminDrops),
                                (r'/.*', Error)

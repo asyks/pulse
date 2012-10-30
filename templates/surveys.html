@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<h2>Team Pulse Survey:</h2>
+
+	<form method='post' id='pulse-form'>
+
+	{% for survey in surveys %}
+
+		<div class="label">Project:
+			<select name="project">
+				<option value="Chiquita">Chiquita</option>
+				<option value="Riunite">Riunite</option>
+				<option value="Lenox">Lenox</option>
+				<option value="nTelos">nTelos</option>
+				<option value="Duke Health">Duke Health</option>
+				<option value="Modea">Chiquita</option>
+			</select>
+		</div>
+
+		<table id="pulses">
+
+			<tr>
+				<td class="label">Pride:</td>
+ 				<td><input type='radio' name='pride' value=1>1</td>
+  			<td><input type='radio' name='pride' value=2>2</td>
+ 				<td><input type='radio' name='pride' value=3>3</td>
+				<td><input type='radio' name='pride' value=4>4</td>
+ 				<td><input type='radio' name='pride' value=5>5</td>
+  			<td><input type='radio' name='pride' value=6>6</td>
+				<td><input type='radio' name='pride' value=7>7</td>
+				<td><input type='radio' name='pride' value=8>8</td>
+ 				<td><input type='radio' name='pride' value=9>9</td>
+  			<td><input type='radio' name='pride' value=10>10</td>
+				<td class='error'>{{error_pride}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Communication:</td>
+ 				<td><input type='radio' name='communication' value=1>1</td>
+  			<td><input type='radio' name='communication' value=2>2</td>
+ 				<td><input type='radio' name='communication' value=3>3</td>
+				<td><input type='radio' name='communication' value=4>4</td>
+ 				<td><input type='radio' name='communication' value=5>5</td>
+  			<td><input type='radio' name='communication' value=6>6</td>
+				<td><input type='radio' name='communication' value=7>7</td>
+				<td><input type='radio' name='communication' value=8>8</td>
+ 				<td><input type='radio' name='communication' value=9>9</td>
+  			<td><input type='radio' name='communication' value=10>10</td>
+				<td class='error'>{{error_communication}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Expectations:</td>
+ 				<td><input type='radio' name='expectations' value=1>1</td>
+  			<td><input type='radio' name='expectations' value=2>2</td>
+ 				<td><input type='radio' name='expectations' value=3>3</td>
+				<td><input type='radio' name='expectations' value=4>4</td>
+ 				<td><input type='radio' name='expectations' value=5>5</td>
+  			<td><input type='radio' name='expectations' value=6>6</td>
+				<td><input type='radio' name='expectations' value=7>7</td>
+				<td><input type='radio' name='expectations' value=8>8</td>
+ 				<td><input type='radio' name='expectations' value=9>9</td>
+  			<td><input type='radio' name='expectations' value=10>10</td>
+				<td class='error'>{{error_passion}}</td>
+			</tr>
+
+			<tr>
+				<td class="label">Challenge:</td>
+ 				<td><input type='radio' name='challenge' value=1>1</td>
+  			<td><input type='radio' name='challenge' value=2>2</td>
+ 				<td><input type='radio' name='challenge' value=3>3</td>
+				<td><input type='radio' name='challenge' value=4>4</td>
+ 				<td><input type='radio' name='challenge' value=5>5</td>
+  			<td><input type='radio' name='challenge' value=6>6</td>
+				<td><input type='radio' name='challenge' value=7>7</td>
+				<td><input type='radio' name='challenge' value=8>8</td>
+ 				<td><input type='radio' name='challenge' value=9>9</td>
+  			<td><input type='radio' name='challenge' value=10>10</td>
+				<td class='error'>{{error_challenge}}</td>
+			</tr>
+
+		</table>
+
+		<div class="label">Feedback:
+			<textarea name="feedback">{{feedback}}</textarea>
+		</div>
+
+		{% endfor %}
+
+		<input type="submit">
+
+	</form>
+
+{% endblock %}
