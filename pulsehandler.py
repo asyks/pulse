@@ -127,7 +127,12 @@ class Picks(Handler):
 
   def post(self):
 
-    self.redirect('/survey')
+    projects = self.request.POST.getall('projects')
+    projects_url = '/survey?'
+    for project in projects:
+      projects_url += 'project=%s&' % project
+    logging.warning(projects_url)
+    self.redirect(projects_url)
 
 
 ## Handler for Survey page requests
@@ -137,18 +142,20 @@ class Survey(Handler):
   def get(self):
 
     self.params['user'] = self.user
-    self.params['surveys'] = [1,2,3]
+    projects = self.request.GET.getall('project')
+    logging.warning(projects)
+    self.params['surveys'] = projects 
     self.render('surveys.html', **self.params)
 
   def post(self):
 
-    un, pj, fb = str(self.user), self.request.get('project'), self.request.get('feedback') 
+    un, pj, fb = str(self.user), self.request.POST.getall('project'), self.request.POST.getall('feedback') 
 
-    pr, cm = int(self.request.get('pride')), int(self.request.get('communication')) 
-    ex, ch = int(self.request.get('expectations')), int(self.request.get('challenge')) 
+    pr, cm = self.request.POST.getall('pride'), self.request.POST.getall('communication') 
+    ex, ch = self.request.POST.getall('expectations'), self.request.POST.getall('challenge') 
 
-#    score = Scores.create_score(un, pj, pr, cm, ex, ch, fb)
-#    Scores.put_score(score)
+    scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
+    Scores.put_scores(scores)
 
     self.redirect('/survey')
 
