@@ -83,8 +83,10 @@ class Handler(webapp2.RequestHandler):
     webapp2.RequestHandler.initialize(self, *a, **kw)
 
     self.user = users.get_current_user()
-    if not self.user or self.user is None:
-      self.redirect(users.create_login_url(self.request.uri))
+    if not self.user: # or self.user is None:
+      request_uri = self.request.uri 
+      login_url = users.create_login_url()
+      self.redirect(login_url)
 
     if self.request.url.endswith('.json'):
       self.format = 'json'
