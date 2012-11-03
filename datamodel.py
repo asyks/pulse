@@ -4,6 +4,8 @@ from utility import *
 
 from google.appengine.ext import db
 
+import logging
+
 class Scores(db.Model):
 
   username = db.StringProperty(required=True)

@@ -43,6 +43,12 @@ input[type=text] {
     font-family: monospace;
 }
 
+input[type=number] {
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
+}
+
 input[type=submit] {
   font-size: 24px;
 }

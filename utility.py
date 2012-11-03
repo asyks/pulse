@@ -3,6 +3,7 @@ import hmac
 import string
 import random
 import re
+import logging
 
 from datetime import datetime
 
@@ -15,6 +16,29 @@ def format_datetime(date_time):
 def make_last_edit_str(time):
   return 'This page was last edited on: %s' % time
  
+# pulse form validation stuff
+
+PROJECT_RE = re.compile(r'([0-9a-zA-Z_-]+)/?')
+
+def validate_all_projects(projects):
+  logging.warning('validate_all_projects')
+  for project in projects:
+    return project_validate(str(project))
+
+def project_validate(project):
+  if not PROJECT_RE.match(project):
+    return False
+
+def validate_all_scores(pr, cm, ex, ch):
+  logging.warning('validate_all_scores')
+  return score_validate(pr) and score_validate(cm) and score_validate(ex) and score_validate(ch) 
+
+def score_validate(scores): 
+  for score in scores:
+    if score not in range(1,11):
+      return False
+  return True 
+
 # sign-up form validation stuff
 
 USER_RE = re.compile("^[a-zA-Z0-9_-]{3,20}$")

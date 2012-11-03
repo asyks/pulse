@@ -128,10 +128,11 @@ class Picks(Handler):
   def post(self):
 
     projects = self.request.POST.getall('projects')
-    projects_url = '/survey?'
-    for project in projects:
-      projects_url += 'project=%s&' % project
-    logging.warning(projects_url)
+
+    join_char = '&project='
+    projects_url = '/survey?project='
+    projects_url += join_char.join(projects)
+
     self.redirect(projects_url)
 
 
@@ -143,21 +144,45 @@ class Survey(Handler):
 
     self.params['user'] = self.user
     projects = self.request.GET.getall('project')
-    logging.warning(projects)
-    self.params['surveys'] = projects 
+    self.params['projects'] = projects 
+    self.params['have_error'] = False 
+
     self.render('surveys.html', **self.params)
 
   def post(self):
 
     un, pj, fb = str(self.user), self.request.POST.getall('project'), self.request.POST.getall('feedback') 
 
+    self.params['fbs'] = fb
+
     pr, cm = self.request.POST.getall('pride'), self.request.POST.getall('communication') 
     ex, ch = self.request.POST.getall('expectations'), self.request.POST.getall('challenge') 
 
-    scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
-    Scores.put_scores(scores)
+    self.params['prs'], self.params['cms'], self.params['exs'], self.params['chs'] = pr, cm, ex, ch
 
-    self.redirect('/survey')
+    have_error = False 
+    self.params['pulse_error'] = [] 
+
+    if validate_all_projects(pj):
+      have_error = True
+      self.params['pulse_error'].append('One of the projects you selected is invalid') 
+
+    if not validate_all_scores(pr, cm, ex, ch):
+      have_error=True
+      self.params['pulse_error'].append('One of the scores you selected is invalid')
+
+    self.params['have_error'] = have_error
+    logging.warning(have_error)
+
+    if have_error is True:
+      self.render("surveys.html", **self.params)
+
+    else: ## this is what should happen if all the form inputs are valid
+      scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
+      Scores.put_scores(scores)
+
+      self.redirect('/survey')
+
 
 
 ## Class that handles import page
