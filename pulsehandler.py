@@ -1,9 +1,6 @@
-
+import json
 ## standard python library imports
-import webapp2
-import jinja2
-import os 
-import logging
+import webapp2, jinja2, os, logging
 from datetime import datetime
 
 ## app engine library imports
@@ -21,9 +18,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(templates), auto
 last_page = '/' ## initialize last_page to wiki front
 
 
-## Pulse RequestHandler class: parent of all other request handlers
-
-class Handler(webapp2.RequestHandler):
+class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of all other request handlers
 
   def write(self, *a, **kw):
     self.response.out.write(*a, **kw)
@@ -43,7 +38,7 @@ class Handler(webapp2.RequestHandler):
   def read_user_cookie(self):
     name = 'user_id'
     cookie_val = self.request.cookies.get(name)
-    return cookie_val and check_secure_val(cookie_val) ## return a and b: if a then return b 
+    return cookie_val and check_secure_val(cookie_val) 
 
   def login(self, user): ## sets the user_id cookie by calling set_user_cookie()
     user_id = str(user.key().id()) 
@@ -54,29 +49,7 @@ class Handler(webapp2.RequestHandler):
     self.response.delete_cookie('user_id')
     self.response.delete_cookie('dev_appserver_login')
 
-  def get_wiki_page(self, title, version=None):
-    if not version:
-      wiki = Wiki.by_title(title)
-    elif version:
-      wiki = Wiki.by_title_and_version(title, int(version)) 
-    logging.error('self.get_wiki_page - wiki: %s' % wiki)
-    return wiki
- 
-  params = {} ## params contains key value pairs used by jinja2 templates to render all html
-
-  def make_logged_out_header(self, page):
-    history_link = '/_history' + page 
-    self.params['history'] = '<a href ="%s">history</a>' % history_link
-    self.params['auth'] = '<a href="/login"> login </a>|<a href="/signup"> signup </a>'
-
-  def make_logged_in_header(self, page, user, version=None):
-    history_link = '/_history' + page 
-    if version:
-      self.params['edit'] = '<a href="/_edit%s?v=%s">edit</a>' % (page, version)
-    else:
-      self.params['edit'] = '<a href="/_edit%s">edit</a>' % page
-    self.params['history'] = '<a href ="%s">history</a>' % history_link
-    self.params['auth'] = user.username + '(<a href="/logout"> logout </a>)' 
+  params = {} ## params contains key value pairs used by jinja2 templates
     
   def initialize(self, *a, **kw):
 
@@ -94,17 +67,15 @@ class Handler(webapp2.RequestHandler):
       self.format = 'html'
 
 
-## Handler for Home page requests
-
-class Home(Handler):
+class Home(Handler): ## Handler for Home page requests
 
   def get(self):
-    self.render('home.html')
+
+    self.params['user'] = self.user
+    self.render('home.html', **self.params)
 
 
-## Handler for all VisPage requests
-
-class VisPage(Handler):
+class Tables(Handler): ## Handler for all Tables requests
 
   def get(self, project):
 
@@ -115,19 +86,41 @@ class VisPage(Handler):
     scores = list(scores)
     self.params['scores'] = scores
 
-    self.render('visual.html', **self.params)
+    self.render('tables.html', **self.params)
 
 
-## Handler for all Picks requests
+class Visuals(Handler): ## Handler for all Visuals requests
 
-class Picks(Handler):
+  def get(self, project):
+
+    self.params['user'] = self.user
+
+    project = project.replace('-',' ')
+    scores = Scores.get_by_project(project)
+
+    json_object, columns = list(), [{"id": "date", "label": "Date", "type": "date"}, {"id": "pulse", "label": "Pulse", "type": "number"}] 
+    json_object.extend(columns)
+    for score in scores:
+      time_stamp = format_datetime(score.timestamp)
+      row = {"c":[{"v": time_stamp}, {"v": score.pulse}]}
+      json_object.append(row) # I should try creating seperate objects for col and row
+
+    json_object = json.dumps(json_object)
+    logging.warning(json_object)
+    self.params['json'] = json_object
+    self.params['scores'] = scores
+
+    self.render('chart_test.html', **self.params)
+
+
+class Picks(Handler): ## Handler for all Picks requests
 
   def get(self):
 
     self.params['user'] = self.user
     self.render('picks.html', **self.params)
 
-  def post(self):
+  def post(self): ## posting to Picks redirects the user to surveys
 
     projects = self.request.POST.getall('projects')
 
@@ -138,9 +131,7 @@ class Picks(Handler):
     self.redirect(projects_url)
 
 
-## Handler for Survey page requests
-
-class Survey(Handler):
+class Survey(Handler): ## Handler for Survey page requests
 
   def get(self):
 
@@ -179,17 +170,15 @@ class Survey(Handler):
     if have_error is True:
       self.render("surveys.html", **self.params)
 
-    else: ## this is what should happen if all the form inputs are valid
+    else: ## if all form inputs are valid then put the scores into Google DataStore
+
       scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
       Scores.put_scores(scores)
 
       self.redirect('/survey')
 
 
-
-## Class that handles import page
-
-class Import(Handler):
+class Import(Handler): ## Class that handles import page
 
   def get(self):
     
@@ -207,9 +196,14 @@ class Import(Handler):
     self.redirect('/import')
 
 
-## Class that handles requests for the drops tables admin page
+class Chart(Handler):
 
-class AdminDrops(Handler):
+  def get(self):
+
+    self.render('chart.html')
+
+
+class AdminDrops(Handler): ## Class that handles requests for the drops tables admin page
 
   def get(self):
 
@@ -220,9 +214,7 @@ class AdminDrops(Handler):
     Scores.drop_table()
     self.redirect('/admin/drops') 
 
-## Class that handles user login requests
-
-class Login(Handler):
+class Login(Handler): ## Class that handles user login requests
   
   def get(self):
 
@@ -234,18 +226,14 @@ class Login(Handler):
     password = self.request.get('password')
 
 
-## Class that handles user login requests
-
-class Logout(Handler):
+class Logout(Handler): ## Class that handles user login requests
 
   def get(self):
 
     self.logout(self.user) ## removes user cookie  
 
 
-## Handler for all signup requests
-
-class Signup(Handler):
+class Signup(Handler): ## Handler for all signup requests
 
   def get(self):
 
@@ -289,9 +277,7 @@ class Signup(Handler):
       self.redirect(last_page)
 
 
-## Default handler for 404 errors
-
-class Error(Handler):
+class Error(Handler): ## Default handler for 404 errors
 
   def get(self):
 
@@ -307,10 +293,12 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/login/?', Login),
                                (r'/logout/?', Logout),
                                (r'/signup/?', Signup),
-                               (r'/visual/' + PROJECT_RE, VisPage),
+                               (r'/table/' + PROJECT_RE, Tables),
+                               (r'/visual/' + PROJECT_RE, Visuals),
                                (r'/survey/?', Survey),
                                (r'/picks/?', Picks),
                                (r'/import/?', Import),
+                               (r'/chart/?', Chart),
                                (r'/admin/drops/?', AdminDrops),
                                (r'/.*', Error)
                                ],

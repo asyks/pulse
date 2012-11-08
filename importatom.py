@@ -1,7 +1,4 @@
 
-## Procedures for importing a json object from a Google Spreadhsheet using Google Docs Atom feed service
-## And creating Google DataStore models from the json object
-
 ## standard python library imports
 import urllib2
 import json
@@ -12,10 +9,10 @@ from datetime import datetime
 from utility import *
 from datamodel import *
 
+## Procedures for importing a json object from a Google Spreadhsheet using Google Docs Atom feed service
+## And creating Google DataStore models from the json object
 
-## Grabs the json object through the Atom feed service - returns the json object
-
-def import_json_object(feed, sskey, worksheet):
+def import_json_object(feed, sskey, worksheet): ## Grabs the json object through the Atom feed service - returns the json object 
 
   base_url = 'https://spreadsheets.google.com/feeds/%s/%s/%s/public/basic?alt=json'
   request_url = base_url % (feed, sskey, worksheet)
@@ -27,18 +24,14 @@ def import_json_object(feed, sskey, worksheet):
   return json_object
 
 
-## Converts a string formatted as a Google Spreadsheet date into a Python datetime object - returns a datetime object
-
-def cnv_json_to_dt(time_string):
+def cnv_json_to_dt(time_string): ## Converts a string with date format into a Python datetime object - returns a datetime object
 
   time_stamp = datetime.strptime(time_string,'%m/%d/%Y %H:%M:%S')
 
   return time_stamp
 
 
-## Gets the values of each cell from the json object and stores them in a list - returns the list of values
-
-def get_vals_from_json(feed, sskey, worksheet):
+def get_vals_from_json(feed, sskey, worksheet): ## Gets field values from the json object - returns a list of atom field values
 
   json_object = import_json_object(feed, sskey, worksheet)
   entries = json_object['feed']['entry']
@@ -49,9 +42,7 @@ def get_vals_from_json(feed, sskey, worksheet):
   return contents
  
 
-## Creates a list of scores by slicing a list of values into even 8 length segments - returns the list of scores
-
-def get_scores_from_atom(feed, sskey, worksheet):
+def get_scores_from_atom(feed, sskey, worksheet): ## Slices a list into segments of length 8 - returns a list of scores
 
   contents = get_vals_from_json(feed, sskey, worksheet)
   offset, scores_max = 8, len(contents) + 1

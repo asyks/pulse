@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+	{% block content %}
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      google.load('visualization', '1.0', {'packages':['corechart']});
+
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+				var JSONObject = {{ json }} 
+
+        var options = {
+          width: 900, height: 450,  
+					curveType: "function",
+					vAxis: {viewWindowMode: "pretty"},
+					hAxis: {viewWindowMode: "pretty"},  
+          legend: {position: 'none'},
+					chartArea:{width: '90%', height: '90%'}
+			  };
+
+				var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data_table, options); //, options);
+      }
+
+	{% endblock %}
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <div id="chart_div"></div>
+
+  </body>
+
+</html>
