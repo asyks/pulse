@@ -98,17 +98,17 @@ class Visuals(Handler): ## Handler for all Visuals requests
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
 
-    json_object, columns = list(), [{"id": "date", "label": "Date", "type": "date"}, {"id": "pulse", "label": "Pulse", "type": "number"}] 
-    json_object.extend(columns)
-    for score in scores:
-      time_stamp = format_datetime(score.timestamp)
-      row = {"c":[{"v": time_stamp}, {"v": score.pulse}]}
-      json_object.append(row) # I should try creating seperate objects for col and row
+    json_object, columns, cols_one, cols_two = dict(), list(), dict(), dict()
+    cols_one['id'], cols_one['label'], cols_one['type'] = 'date', 'Date', 'string'
+    cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
+    columns.append(cols_one); columns.append(cols_two)
+    json_object['cols'] = columns
 
+    json_object['rows'] = [ {"c":[{"v": format_datetime(score.timestamp)}, {"v": score.pulse}]} for score in scores ]
+
+    logging.warning(json_object.keys())
     json_object = json.dumps(json_object)
-    logging.warning(json_object)
-    self.params['json'] = json_object
-    self.params['scores'] = scores
+    self.params['json_object'] = json_object
 
     self.render('chart_test.html', **self.params)
 
