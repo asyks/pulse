@@ -19,10 +19,19 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   feedback = db.TextProperty() 
   timestamp = db.DateTimeProperty()
   submitted = db.DateTimeProperty(auto_now_add=True) 
+  week_date = db.DateProperty()
+  week_num = db.IntegerProperty()
 
   @classmethod
   def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
+
     pl = (pr + cm + ex + ch) / 4.0
+
+    ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
+    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
+    if ts_weekday in (4,5,6):
+      ts_week_num +=  1
+
     return cls(username = un,
                project = pj,
                pride = pr,
@@ -31,7 +40,9 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
                challenge = ch,
                pulse = pl,
                feedback = fb,
-               timestamp = ts)
+               timestamp = ts,
+               week_date = ts_week_date,
+               week_num = ts_week_num)
 
   @classmethod
   def put_score(cls, score): ## takes one score model instance and puts them in the datastore
