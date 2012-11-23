@@ -11,6 +11,7 @@ from google.appengine.api import users
 from utility import *
 from datamodel import *
 from importatom import *
+from visualize import *
 
 path = os.path.dirname(__file__)
 templates = os.path.join(path, 'templates')
@@ -97,22 +98,7 @@ class Visuals(Handler): ## Handler for all Visuals requests
 
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
-
-    logging.warning(scores[0].timestamp.weekday())
-    logging.warning(scores[0].timestamp.year)
-    logging.warning(int(scores[0].timestamp.strftime('%W')))
-    logging.warning(scores[0].timestamp.isocalendar())
-
-    json_object, columns, cols_one, cols_two = dict(), list(), dict(), dict()
-    cols_one['id'], cols_one['label'], cols_one['type'] = 'date', 'Date', 'string'
-    cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
-    columns.append(cols_one); columns.append(cols_two)
-    json_object['cols'] = columns
-
-    json_object['rows'] = [ {"c":[{"v": format_datetime(score.timestamp)}, {"v": score.pulse}]} for score in scores ]
-
-    json_object = json.dumps(json_object)
-    self.params['json_object'] = json_object
+    self.params['json_object'] = createGuageObject(scores) 
 
     self.render('chart_test.html', **self.params)
 

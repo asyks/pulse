@@ -18,9 +18,9 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   pulse = db.FloatProperty(required=True)
   feedback = db.TextProperty() 
   timestamp = db.DateTimeProperty()
-  submitted = db.DateTimeProperty(auto_now_add=True) 
   week_date = db.DateProperty()
   week_num = db.IntegerProperty()
+  submitted = db.DateTimeProperty(auto_now_add=True) 
 
   @classmethod
   def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
@@ -28,9 +28,10 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     pl = (pr + cm + ex + ch) / 4.0
 
     ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
-    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
     if ts_weekday in (4,5,6):
       ts_week_num +=  1
+    ts_day -= ts_weekday
+    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
 
     return cls(username = un,
                project = pj,
@@ -54,9 +55,9 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
   @classmethod
   def get_by_project(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
-    n = 10
+    # n = 10
     scores = cls.all()
-    scores = scores.filter('project =', pj).order('-timestamp').fetch(n)
+    scores = scores.filter('project =', pj).order('-timestamp').run()
     return scores
 
   @classmethod
@@ -69,3 +70,38 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   def drop_table(cls): ## drops the scores table
     all_scores = cls.all()
     db.delete(all_scores)
+
+class Weeks(db.Model): ## datamodels for Team Pulse - Currently only Scores model
+
+  project = db.StringProperty(required=True)
+  pride = db.IntegerProperty(required=True)
+  communication = db.IntegerProperty(required=True)
+  expectations = db.IntegerProperty(required=True) 
+  challenge = db.IntegerProperty(required=True) 
+  pulse = db.FloatProperty(required=True)
+  timestamp = db.DateTimeProperty()
+  week_date = db.DateProperty()
+  week_num = db.IntegerProperty()
+  submitted = db.DateTimeProperty(auto_now_add=True) 
+
+  @classmethod
+  def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
+
+    pl = (pr + cm + ex + ch) / 4.0
+
+    ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
+    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
+    if ts_weekday in (4,5,6):
+      ts_week_num +=  1
+
+    return cls(username = un,
+               project = pj,
+               pride = pr,
+               communication = cm,
+               expectations = ex,
+               challenge = ch,
+               pulse = pl,
+               feedback = fb,
+               timestamp = ts,
+               week_date = ts_week_date)
+
