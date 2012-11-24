@@ -57,7 +57,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   def get_by_project(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
     # n = 10
     scores = cls.all()
-    scores = scores.filter('project =', pj).order('-timestamp').run()
+    scores = scores.filter('project =', pj).order('timestamp').run()
     return scores
 
   @classmethod

@@ -1,4 +1,4 @@
-import json
+
 ## standard python library imports
 import webapp2, jinja2, os, logging
 from datetime import datetime
@@ -98,7 +98,8 @@ class Visuals(Handler): ## Handler for all Visuals requests
 
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
-    self.params['json_object'] = createGuageObject(scores) 
+    scores = list(scores)
+    self.params['json_object'] = createLineChartObject(scores) 
 
     self.render('chart_test.html', **self.params)
 

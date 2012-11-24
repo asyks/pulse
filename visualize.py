@@ -1,21 +1,19 @@
 
-import logging
 ## standard python library imports
 import json
+import logging
 
 ## pulse class/object imports
 from datamodel import *
 from utility import *
 
 
-def createGuageObject(scores):
-
-  scores = list(scores)
+def createWeeksObject(scores):
 
   current_week = scores[0].week_date
-  weeks = dict()
-  entries_per_week, sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = 0,0,0,0,0,0
-  store_op, reset_op, iterate_op = False, False, True 
+  weeks = list()
+  wk_en, sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = 0,0,0,0,0,0
+  store_op, reset_op, iterate_op = False, False, True ## set initial state: iterate but don't store or reset
 
   for score in scores:
 
@@ -28,7 +26,7 @@ def createGuageObject(scores):
       interate_op, store_op, reset_op = True, True, False
 
     if iterate_op: ## iterate operation
-      entries_per_week += 1  
+      wk_en += 1  
       sum_of_pr += pr
       sum_of_cm += cm
       sum_of_ex += ex
@@ -36,21 +34,28 @@ def createGuageObject(scores):
       sum_of_pl += pl
 
     if store_op: ## store operation
-      weeks[current_week] = dict()
-      weeks[current_week]['entries_per_week'] = entries_per_week
-      weeks[current_week]['pr'] = sum_of_pr
-      weeks[current_week]['cm'] = sum_of_ex
-      weeks[current_week]['ex'] = sum_of_cm
-      weeks[current_week]['ch'] = sum_of_ch
-      weeks[current_week]['pl'] = sum_of_pl
+      week = dict()
+      # week.__setitem__(current_week, dict())
+      week['wk'] = current_week
+      week['wk_en'] = wk_en
+      week['pr'] = sum_of_pr
+      week['cm'] = sum_of_ex
+      week['ex'] = sum_of_cm
+      week['ch'] = sum_of_ch
+      week['pl'] = sum_of_pl
+      weeks.append(week)
 
     if reset_op: ## reset operation
       iterate_op, store_op, reset_op = True, False, False ## just iterate the next iterable
       current_week = score.week_date ## reset current_week
-      entries_per_week = 1 ## reset entries_per_week
+      wk_en = 1 ## reset entries_per_week
       sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = pr, cm, ex, ch, pl
 
   logging.warning(weeks)
+  return weeks
+
+
+def jsonifyWeeksObject(weeks):
 
   json_object, cols_one, cols_two = dict(), dict(), dict() 
   columns  = list()
@@ -61,8 +66,16 @@ def createGuageObject(scores):
   columns.append(cols_one); columns.append(cols_two)
 
   json_object['cols'] = columns
-  json_object['rows'] = [ {"c":[{"v": format_datetime(score.timestamp)}, {"v": score.pulse}]} for score in scores ]
+  json_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': week['pl']}]} for week in weeks ]
 
   json_object = json.dumps(json_object)
+
+  return json_object
+ 
+
+def createLineChartObject(scores):
+
+  weeks = createWeeksObject(scores)
+  json_object = jsonifyWeeksObject(weeks)
 
   return json_object

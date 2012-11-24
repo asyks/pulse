@@ -14,4 +14,9 @@ indexes:
   properties:
   - name: project
   - name: timestamp
+
+- kind: Scores
+  properties:
+  - name: project
+  - name: timestamp
     direction: desc
