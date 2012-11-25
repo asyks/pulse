@@ -99,7 +99,7 @@ class Visuals(Handler): ## Handler for all Visuals requests
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
     scores = list(scores)
-    self.params['json_object'] = createLineChartObject(scores) 
+    self.params['json_object'], self.params['guage_object'] = createChartObjects(scores) 
 
     self.render('chart_test.html', **self.params)
 

@@ -11,11 +11,15 @@
 
       google.load('visualization', '1.0', {'packages':['corechart']});
 
-      google.setOnLoadCallback(drawChart);
+      google.setOnLoadCallback(drawCharts);
 
-      function drawChart() {
+      function drawCharts() {
+				drawLineChart();
+			}
 
-				var JSONObject = {{ json_object|safe }} 
+      function drawLineChart() { // Google vis api function which draws the line chart
+
+				var JSONObject = {{ json_object|safe }}; 
 
         var options = {
           width: 900, height: 450,  
@@ -28,7 +32,25 @@
 
 				var data_table = new google.visualization.DataTable(JSONObject, 0.5);
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data_table, options); //, options);
+        chart.draw(data_table, options);
+      }
+
+      function drawPrideGuage() { // Google vis api function which draws the pride guage
+
+        var JSONObject = {{ guage_object|safe}}; 
+
+        var options = {
+    			width: 300, height: 300,
+          min: 0, max: 10,
+    			greenFrom:7, greenTo:10,
+    			yellowFrom:4, yellowTo: 7,
+    			redFrom: 0, redTo: 4,
+    			minorTicks: 5
+      	};
+
+				var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+        var chart = new google.visualization.Guage(document.getElementById('chart_div'));
+        chart.draw(data_table, options);
       }
 
 	{% endblock %}
@@ -40,6 +62,7 @@
   <body>
 
     <div id="chart_div"></div>
+    <div id="pride_guage_div"></div>
 
   </body>
 

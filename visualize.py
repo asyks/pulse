@@ -55,7 +55,7 @@ def createWeeksObject(scores):
   return weeks
 
 
-def jsonifyWeeksObject(weeks):
+def createLineChartObject(weeks):
 
   json_object, cols_one, cols_two = dict(), dict(), dict() 
   columns  = list()
@@ -66,16 +66,39 @@ def jsonifyWeeksObject(weeks):
   columns.append(cols_one); columns.append(cols_two)
 
   json_object['cols'] = columns
-  json_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': week['pl']}]} for week in weeks ]
+  json_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': week['pl'] / week['wk_en']}]} for week in weeks ]
 
   json_object = json.dumps(json_object)
 
   return json_object
  
 
-def createLineChartObject(scores):
+def createGuageObject(weeks):
+
+  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  columns, rows = list(), list()
+
+  cols_one['id'], cols_one['label'], cols_one['type'] = 'week', 'Week', 'string'
+  cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
+  columns.append(cols_one)
+  columns.append(cols_two)
+  guage_object['cols'] = columns
+
+  current_week, sum_of_pulses, num_of_entries = format_datetime(weeks[0]['wk']), weeks[0]['pl'], weeks[0]['wk_en']
+  pulse_of_week = sum_of_pulses / num_of_entries
+  rows.append(current_week)
+  rows.append(pulse_of_week)
+  guage_object['rows'] = rows
+
+  guage_object = json.dumps(guage_object)
+
+  return guage_object
+
+
+def createChartObjects(scores):
 
   weeks = createWeeksObject(scores)
-  json_object = jsonifyWeeksObject(weeks)
+  json_object = createLineChartObject(weeks)
+  guage_object = createGuageObject(weeks) # guage object isn't working
 
-  return json_object
+  return json_object, guage_object

@@ -61,6 +61,13 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     return scores
 
   @classmethod
+  def get_by_project_and_week(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
+    # n = 10
+    scores = cls.all()
+    scores = scores.filter('project =', pj).order('timestamp').run()
+    return scores
+
+  @classmethod
   def get_by_username(un): ## gets a list of score instances by username and timestamp and returns them
     score = cls.all()
     score = score.filter('username =', un).order('-timestamp').get()
