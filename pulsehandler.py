@@ -76,32 +76,55 @@ class Home(Handler): ## Handler for Home page requests
     self.render('home.html', **self.params)
 
 
-class Tables(Handler): ## Handler for all Tables requests
+class Table(Handler): ## Handler for all Tables requests
 
   def get(self, project):
 
     self.params['user'] = self.user
+    self.params['project'] = str(project)
 
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
     scores = list(scores)
+
+    if not scores:
+      self.redirect('/')
+      return
+
     self.params['scores'] = scores
 
-    self.render('tables.html', **self.params)
+    self.render('table.html', **self.params)
 
 
-class Visuals(Handler): ## Handler for all Visuals requests
+class Charts(Handler): ## Handler for all Visuals requests
 
   def get(self, project):
 
     self.params['user'] = self.user
+    self.params['project'] = str(project)
 
     project = project.replace('-',' ')
     scores = Scores.get_by_project(project)
-    scores = list(scores)
-    self.params['json_object'], self.params['guage_object'] = createChartObjects(scores) 
+    scores = list(scores) or None
 
-    self.render('chart_test.html', **self.params)
+    if scores == None:
+      self.redirect('/')
+      return
+
+    enough_entries, visual_objects = createChartObjects(scores) 
+
+    if not enough_entries:
+      self.redirect('/')
+      return
+
+    else:
+      self.params['line_chart_object'] = visual_objects[0]
+      self.params['this_week_pulse_gauge_object'] = visual_objects[1]
+      self.params['last_week_pulse_gauge_object'] =  visual_objects[2]
+      self.params['this_week_breakout_gauge_object'] = visual_objects[3]
+      self.params['last_week_breakout_gauge_object'] = visual_objects[4]
+
+    self.render('charts.html', **self.params)
 
 
 class Picks(Handler): ## Handler for all Picks requests
@@ -116,7 +139,7 @@ class Picks(Handler): ## Handler for all Picks requests
     projects = self.request.POST.getall('projects')
 
     join_char = '&project='
-    projects_url = '/survey?project='
+    projects_url = '/survey/entry-form/?project='
     projects_url += join_char.join(projects)
 
     self.redirect(projects_url)
@@ -166,10 +189,10 @@ class Survey(Handler): ## Handler for Survey page requests
       scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
       Scores.put_scores(scores)
 
-      self.redirect('/survey')
+      self.redirect('/survey/forms')
 
 
-class Import(Handler): ## Class that handles import page
+class AdminImport(Handler): ## Class that handles requests of the import import admin page
 
   def get(self):
     
@@ -184,14 +207,7 @@ class Import(Handler): ## Class that handles import page
     scores = get_scores_from_atom(feed, sskey, worksheet) 
 
     Scores.put_scores(scores)
-    self.redirect('/import')
-
-
-class Chart(Handler):
-
-  def get(self):
-
-    self.render('chart.html')
+    self.redirect('/admin/import')
 
 
 class AdminDrops(Handler): ## Class that handles requests for the drops tables admin page
@@ -281,15 +297,14 @@ class Error(Handler): ## Default handler for 404 errors
 PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' # regex for handling wiki page requests
 
 app = webapp2.WSGIApplication([(r'/?', Home),
+                               (r'/signup/?', Signup),
                                (r'/login/?', Login),
                                (r'/logout/?', Logout),
-                               (r'/signup/?', Signup),
-                               (r'/table/' + PROJECT_RE, Tables),
-                               (r'/visual/' + PROJECT_RE, Visuals),
-                               (r'/survey/?', Survey),
-                               (r'/picks/?', Picks),
-                               (r'/import/?', Import),
-                               (r'/chart/?', Chart),
+                               (r'/visuals/table/' + PROJECT_RE, Table),
+                               (r'/visuals/charts/' + PROJECT_RE, Charts),
+                               (r'/survey/entry-form/?', Survey),
+                               (r'/survey/project-select/?', Picks),
+                               (r'/admin/import/?', AdminImport),
                                (r'/admin/drops/?', AdminDrops),
                                (r'/.*', Error)
                                ],

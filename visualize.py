@@ -35,7 +35,6 @@ def createWeeksObject(scores):
 
     if store_op: ## store operation
       week = dict()
-      # week.__setitem__(current_week, dict())
       week['wk'] = current_week
       week['wk_en'] = wk_en
       week['pr'] = sum_of_pr
@@ -51,30 +50,32 @@ def createWeeksObject(scores):
       wk_en = 1 ## reset entries_per_week
       sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = pr, cm, ex, ch, pl
 
-  logging.warning(weeks)
   return weeks
 
+def weekAverage(total, entries):
+  return round(total/entries, 2)
 
 def createLineChartObject(weeks):
 
-  json_object, cols_one, cols_two = dict(), dict(), dict() 
-  columns  = list()
+  line_chart_object, cols_one, cols_two = dict(), dict(), dict() 
+  columns = list()
 
   cols_one['id'], cols_one['label'], cols_one['type'] = 'date', 'Date', 'string'
   cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
 
   columns.append(cols_one); columns.append(cols_two)
 
-  json_object['cols'] = columns
-  json_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': week['pl'] / week['wk_en']}]} for week in weeks ]
+  line_chart_object['cols'] = columns
+  line_chart_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': weekAverage(week['pl'], week['wk_en'])}]} for week in weeks ]
 
-  json_object = json.dumps(json_object)
+  line_chart_object = json.dumps(line_chart_object)
 
-  return json_object
+  return line_chart_object
  
 
-def createGuageObject(weeks):
+def createPulseGaugeObject(weeks, n):
 
+  logging.warning(weeks)
   guage_object, cols_one, cols_two = dict(), dict(), dict() 
   columns, rows = list(), list()
 
@@ -84,10 +85,29 @@ def createGuageObject(weeks):
   columns.append(cols_two)
   guage_object['cols'] = columns
 
-  current_week, sum_of_pulses, num_of_entries = format_datetime(weeks[0]['wk']), weeks[0]['pl'], weeks[0]['wk_en']
-  pulse_of_week = sum_of_pulses / num_of_entries
-  rows.append(current_week)
-  rows.append(pulse_of_week)
+  rows.append( {'c':[{'v': format_datetime(weeks[n]['wk'])}, {'v': weekAverage(weeks[n]['pl'], weeks[n]['wk_en'])}]} )
+  guage_object['rows'] = rows
+
+  guage_object = json.dumps(guage_object)
+
+  return guage_object
+
+
+def createBreakoutGaugeObject(weeks, n):
+
+  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  columns, rows = list(), list()
+
+  cols_one['id'], cols_one['label'], cols_one['type'] = 'score', 'Score', 'string'
+  cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
+  columns.append(cols_one)
+  columns.append(cols_two)
+  guage_object['cols'] = columns
+
+  rows.append( {'c':[{'v': 'Pride'}, {'v': weekAverage(weeks[n]['pr'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Communication'}, {'v': weekAverage(weeks[n]['cm'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Expectations'}, {'v': weekAverage(weeks[n]['ex'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Challenge'}, {'v': weekAverage(weeks[n]['ch'], weeks[n]['wk_en'])}]} )
   guage_object['rows'] = rows
 
   guage_object = json.dumps(guage_object)
@@ -98,7 +118,22 @@ def createGuageObject(weeks):
 def createChartObjects(scores):
 
   weeks = createWeeksObject(scores)
-  json_object = createLineChartObject(weeks)
-  guage_object = createGuageObject(weeks) # guage object isn't working
 
-  return json_object, guage_object
+  if len(weeks) >= 2:
+    enough_entries = True     
+    line_chart_object = createLineChartObject(weeks)
+    this_week_pulse_gauge_object = createPulseGaugeObject(weeks, -1)
+    last_week_pulse_gauge_object = createPulseGaugeObject(weeks, -2)
+    this_week_breakout_gauge_object = createBreakoutGaugeObject(weeks, -1)
+    last_week_breakout_guage_object = createBreakoutGaugeObject(weeks, -2)
+
+    visual_objects = ( line_chart_object,
+											 this_week_pulse_gauge_object,
+											 last_week_pulse_gauge_object,
+											 this_week_breakout_gauge_object,
+											 last_week_breakout_guage_object)
+  else:
+    enough_entries = False
+    visual_objects = (None, None, None, None, None)
+
+  return enough_entries, visual_objects 

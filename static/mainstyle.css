@@ -1,4 +1,5 @@
-body {
+
+body[id=slim] {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 18px;
     width: 800px;
@@ -20,6 +21,11 @@ h2 {
 label + label {
     margin-top: 20px;
 }
+
+a {
+  text-decoration: none;
+}
+
 
 select {
 	font-size: 20px;
@@ -159,3 +165,52 @@ tr[class=history-row]:nth-child(odd) {
 	text-align: right;
 }
 
+.vis-title {
+	font-size: 42px;
+	border-bottom: 3px solid #666;
+}
+
+.vis-block {
+  width: 1500px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.line-chart {
+	width:900px; 
+	height:450px;
+}
+
+.pulse-gauge {
+	width:300px;
+	height:300px;
+}
+
+.breakout-guage {
+  width:300px;
+	height:600px;
+}
+
+#line_chart_div {
+	left: 300px;	
+}
+
+#last_week_pulse_gauge_div {
+	bottom: 450px;
+}
+
+#this_week_pulse_gauge_div {
+	left:1200px;
+	bottom: 750px;
+}
+
+#last_week_breakout_gauge_div {
+	bottom: 750px;
+}
+
+#this_week_breakout_gauge_div {
+	left: 1200px;
+	bottom: 1350px;
+}

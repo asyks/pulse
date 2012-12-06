@@ -1,67 +1,77 @@
 {% extends "base.html" %}
 
-{% block content %}
+	{% block content %}
 
-	<h2>Team Pulse Survey:</h2>
+		<h2>Team Pulse Survey:</h2>
 
-	<form method='post' id='pulse-form'>
+		<form method='post' id='pulse-form'>
 
-	<div class="error">
-  {% if have_error %}
-  {% for error in  pulse_error %} 
-  {{ error }} 
-  {% endfor %}
-  {% endif %}
-  </div>
-
-  <br>
-
-	{% for project in projects %}
-
-		<div class="label">Projects:
-			<select name="project">
-				<option value=""></option>
-				<option value="Chiquita" {% if project == 'Chiquita' %} selected {% endif %}>Chiquita</option>
-				<option value="HTC" {% if project == 'HTC' %} selected {% endif %}>HTC</option>
-				<option value="Lenox" {% if project == 'LENOX' %} selected {% endif %}>Lenox</option>
-				<option value="Modea" {% if project == 'Modea' %} selected {%else%} {% endif %}>Modea</option>
-				<option value="Riunite" {% if project == 'Riunite' %} selected {% endif %}>Riunite</option>
-				<option value="nTelos" {% if project == 'nTelos' %} selected {% endif %}>nTelos</option>
-				<option value="UVA Health System" {% if project == 'UVA Health System' %} selected {% endif %}>UVA Health System</option>
-				<option value="5 Hour Energy" {% if project == '5 Hour Energy' %} selected {% endif %}>5 Hour Energy</option>
-				<option value="Duke Health" {% if project == 'Duke Health' %} selected {% endif %}>Duke Health</option>
-				<option value="Disney" {% if project == 'Disney' %} selected {% endif %}>Disney</option>
-			</select>
-		</div>
-
-		<table id="pulses">
-
-			<tr>
-				<td class="label">Pride:</td>
-  			<td><input type='number' name='pride' min='1' max='10' value="{% if have_error %}{{ prs[projects.index(project)] }}{% endif %}"></td>
-
-				<td class="label">Communication:</td>
-  			<td><input type='number' name='communication' min='1' max='10' value="{% if have_error %}{{ cms[projects.index(project)] }}{% endif %}"></td>
-
-				<td class="label">Expectations:</td>
-  			<td><input type='number' name='expectations' min='1' max='10' value="{% if have_error %}{{ exs[projects.index(project)] }}{% endif %}"></td>
-
-				<td class="label">Challenge:</td>
-  			<td><input type='number' name='challenge' min='1' max='10' value="{% if have_error %}{{ chs[projects.index(project)] }}{% endif %}"></td>
-			</tr>
-
-		</table>
-
-		<div class="label">Feedback:
-			<textarea name="feedback">{% if have_error %}{{ fbs[projects.index(project)] }}{% endif %}</textarea>
+		<div class="error">
+			{% if have_error %}
+			{% for error in  pulse_error %} 
+			{{ error }} 
+			{% endfor %}
+			{% endif %}
 		</div>
 
 		<br>
 
-		{% endfor %}
+		{% for project in projects %}
 
-		<input type="submit">
+			<div class="label">Projects:
+				<select name="project">
+					<option value=""></option>
+					<option value="Chiquita" {% if project == 'Chiquita' %} selected {% endif %}>Chiquita</option>
+					<option value="HTC" {% if project == 'HTC' %} selected {% endif %}>HTC</option>
+					<option value="Lenox" {% if project == 'LENOX' %} selected {% endif %}>Lenox</option>
+					<option value="Modea" {% if project == 'Modea' %} selected {%else%} {% endif %}>Modea</option>
+					<option value="Riunite" {% if project == 'Riunite' %} selected {% endif %}>Riunite</option>
+					<option value="nTelos" {% if project == 'nTelos' %} selected {% endif %}>nTelos</option>
+					<option value="UVA Health System" {% if project == 'UVA Health System' %} selected {% endif %}>UVA Health System</option>
+					<option value="5 Hour Energy" {% if project == '5 Hour Energy' %} selected {% endif %}>5 Hour Energy</option>
+					<option value="Duke Health" {% if project == 'Duke Health' %} selected {% endif %}>Duke Health</option>
+					<option value="Disney" {% if project == 'Disney' %} selected {% endif %}>Disney</option>
+				</select>
+			</div>
 
-	</form>
+			<table id="pulses">
 
-{% endblock %}
+				<tr>
+
+					<td class="label">Pride:</td>
+					<td>
+						<input type='number' name='pride' min='1' max='10' value="{% if have_error %}{{ prs[projects.index(project)] }}{% endif %}">
+					</td>
+
+					<td class="label">Communication:</td>
+					<td>
+						<input type='number' name='communication' min='1' max='10' value="{% if have_error %}{{ cms[projects.index(project)] }}{% endif %}">
+					</td>
+
+					<td class="label">Expectations:</td>
+					<td>
+						<input type='number' name='expectations' min='1' max='10' value="{% if have_error %}{{ exs[projects.index(project)] }}{% endif %}">
+					</td>
+
+					<td class="label">Challenge:</td>
+					<td>
+						<input type='number' name='challenge' min='1' max='10' value="{% if have_error %}{{ chs[projects.index(project)] }}{% endif %}">
+					</td>
+
+				</tr>
+
+			</table>
+
+			<div class="label">Feedback:
+				<textarea name="feedback">{% if have_error %}{{ fbs[projects.index(project)] }}{% endif %}</textarea>
+			</div>
+
+			<br>
+
+			{% endfor %}
+
+			<input type="submit">
+
+		</form>
+
+	{% endblock %}

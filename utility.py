@@ -8,7 +8,7 @@ from datetime import datetime
 ## date format and string substitution procedures for wiki pages last edited footer
 
 def format_datetime(date_time):
-  time_format = '%c' 
+  time_format = '%x' 
   return date_time.strftime(time_format)
 
 def make_last_edit_str(time):
