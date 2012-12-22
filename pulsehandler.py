@@ -126,6 +126,15 @@ class Charts(Handler): ## Handler for all Visuals requests
 
     self.render('charts.html', **self.params)
 
+class Summary(Handler):
+
+  def get(self):
+
+    ## get current week and then query scores by that week or the most recent week
+    current_week = Scores.get_max_week().week_num
+    scores = Scores.get_by_week_num(current_week)
+    logging.warning(scores)
+    self.write('the summary vis page')
 
 class Picks(Handler): ## Handler for all Picks requests
 
@@ -302,6 +311,7 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/logout/?', Logout),
                                (r'/visuals/table/' + PROJECT_RE, Table),
                                (r'/visuals/charts/' + PROJECT_RE, Charts),
+                               (r'/visuals/summary/?', Summary ),
                                (r'/survey/entry-form/?', Survey),
                                (r'/survey/project-select/?', Picks),
                                (r'/admin/import/?', AdminImport),

@@ -19,19 +19,23 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   feedback = db.TextProperty() 
   timestamp = db.DateTimeProperty()
   week_date = db.DateProperty()
-  week_num = db.IntegerProperty()
+  week_num = db.FloatProperty()
   submitted = db.DateTimeProperty(auto_now_add=True) 
 
   @classmethod
   def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
 
-    pl = (pr + cm + ex + ch) / 4.0
-
     ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
-    if ts_weekday in (4,5,6):
-      ts_week_num +=  1
+
     ts_day -= ts_weekday
     ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
+
+    if ts_weekday in (4,5,6):
+      ts_week_num +=  1
+
+    pl = (pr + cm + ex + ch) / 4.0
+
+    week_id = ts_year + ts_week_num / 100.0
 
     return cls(username = un,
                project = pj,
@@ -43,7 +47,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
                feedback = fb,
                timestamp = ts,
                week_date = ts_week_date,
-               week_num = ts_week_num)
+               week_num = week_id)
 
   @classmethod
   def put_score(cls, score): ## takes one score model instance and puts them in the datastore
@@ -55,14 +59,24 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
   @classmethod
   def get_by_project(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
-    # n = 10
     scores = cls.all()
     scores = scores.filter('project =', pj).order('timestamp').run()
     return scores
 
   @classmethod
+  def get_by_week(cls, wk): ## gets a list of n score instances by project and timestamp and returns them
+    scores = cls.all()
+    scores = scores.filter('week =', wk).order('timestamp').run()
+    return scores
+
+  @classmethod
+  def get_by_week_num(cls, week_num): ## gets a list of n score instances by project and timestamp and returns them
+    scores = cls.all()
+    scores = scores.filter('week_num =', week_num).run()
+    return scores
+
+  @classmethod
   def get_by_project_and_week(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
-    # n = 10
     scores = cls.all()
     scores = scores.filter('project =', pj).order('timestamp').run()
     return scores
@@ -72,6 +86,15 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     score = cls.all()
     score = score.filter('username =', un).order('-timestamp').get()
     return score
+
+  @classmethod
+  def get_max_week(cls, pj=None): ## gets a list of n score instances by project and timestamp and returns them
+    scores = cls.all()
+    if pj is None:
+      scores = scores.order('-timestamp').get()
+    else:
+      scores = scores.filter('project =', pj).order('timestamp').get()
+    return scores
 
   @classmethod
   def drop_table(cls): ## drops the scores table
