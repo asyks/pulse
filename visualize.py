@@ -142,4 +142,5 @@ def createSummaryObject(scores):
 
   pl_sum, pl_count = 0, 0
   for score in scores:
-    pl_sum, pl_count += score.pl_sum, score.pl_count
+    pl_sum += score.pl_sum
+    pl_count += score.pl_count
