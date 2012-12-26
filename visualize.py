@@ -52,7 +52,7 @@ def createWeeksObject(scores):
 
   return weeks
 
-def weekAverage(total, entries):
+def findAverage(total, entries):
   return round(total/entries, 2)
 
 def createLineChartObject(weeks):
@@ -66,7 +66,7 @@ def createLineChartObject(weeks):
   columns.append(cols_one); columns.append(cols_two)
 
   line_chart_object['cols'] = columns
-  line_chart_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': weekAverage(week['pl'], week['wk_en'])}]} for week in weeks ]
+  line_chart_object['rows'] = [ {'c':[{'v': format_datetime(week['wk'])}, {'v': findAverage(week['pl'], week['wk_en'])}]} for week in weeks ]
 
   line_chart_object = json.dumps(line_chart_object)
 
@@ -75,7 +75,6 @@ def createLineChartObject(weeks):
 
 def createPulseGaugeObject(weeks, n):
 
-  logging.warning(weeks)
   guage_object, cols_one, cols_two = dict(), dict(), dict() 
   columns, rows = list(), list()
 
@@ -85,7 +84,7 @@ def createPulseGaugeObject(weeks, n):
   columns.append(cols_two)
   guage_object['cols'] = columns
 
-  rows.append( {'c':[{'v': format_datetime(weeks[n]['wk'])}, {'v': weekAverage(weeks[n]['pl'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': format_datetime(weeks[n]['wk'])}, {'v': findAverage(weeks[n]['pl'], weeks[n]['wk_en'])}]} )
   guage_object['rows'] = rows
 
   guage_object = json.dumps(guage_object)
@@ -104,10 +103,10 @@ def createBreakoutGaugeObject(weeks, n):
   columns.append(cols_two)
   guage_object['cols'] = columns
 
-  rows.append( {'c':[{'v': 'Pride'}, {'v': weekAverage(weeks[n]['pr'], weeks[n]['wk_en'])}]} )
-  rows.append( {'c':[{'v': 'Communication'}, {'v': weekAverage(weeks[n]['cm'], weeks[n]['wk_en'])}]} )
-  rows.append( {'c':[{'v': 'Expectations'}, {'v': weekAverage(weeks[n]['ex'], weeks[n]['wk_en'])}]} )
-  rows.append( {'c':[{'v': 'Challenge'}, {'v': weekAverage(weeks[n]['ch'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Pride'}, {'v': findAverage(weeks[n]['pr'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Communication'}, {'v': findAverage(weeks[n]['cm'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Expectations'}, {'v': findAverage(weeks[n]['ex'], weeks[n]['wk_en'])}]} )
+  rows.append( {'c':[{'v': 'Challenge'}, {'v': findAverage(weeks[n]['ch'], weeks[n]['wk_en'])}]} )
   guage_object['rows'] = rows
 
   guage_object = json.dumps(guage_object)
@@ -137,6 +136,42 @@ def createChartObjects(scores):
     visual_objects = (None, None, None, None, None)
 
   return enough_entries, visual_objects 
+
+def createPulseifiedObject(scores):
+
+  pulseified_object = dict()
+
+  for score in scores:  
+    logging.warning(score.project)
+    logging.warning(score.pulse)
+    if score.project in pulseified_object:
+      pulse_list = pulseified_object[score.project]
+      pulse_list[0] += score.pulse
+      pulse_list[1] += 1
+    else:
+      pulse_list = pulseified_object[score.project] = list()
+      pulse_list.append(score.pulse); pulse_list.append(1)
+
+  return pulseified_object
+      
+def createChartifiedObject(obj):
+
+  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  columns, rows = list(), list()
+
+  cols_one['id'], cols_one['label'], cols_one['type'] = 'project', 'Project', 'string'
+  cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
+  columns.append(cols_one)
+  columns.append(cols_two)
+  guage_object['cols'] = columns
+
+  for key in obj:
+    rows.append( {'c':[{'v': key}, {'v': findAverage(obj[key][0], obj[key][1])}]} )
+  guage_object['rows'] = rows
+
+  guage_object = json.dumps(guage_object)
+
+  return guage_object
 
 def createSummaryObject(scores):
 

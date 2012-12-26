@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title>Team Pulse</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+		{% block javascript %}
+
+		<script type="text/javascript">
+
+		google.load('visualization', '1.0', {'packages':['corechart','gauge']});
+
+		google.setOnLoadCallback(drawChart);
+
+		function drawChart() {
+			drawSummaryGauge();
+		}
+
+		function drawSummaryGauge() { // Google vis api function for the previous week's pluse guage
+
+			var JSONObject = {{ summary_gauge_object|safe }}; 
+
+			var options = {
+				width: 1500, height: 600,
+				min: 0, max: 10,
+				greenFrom:7, greenTo:10,
+				yellowFrom:4, yellowTo: 7,
+				redFrom: 0, redTo: 4,
+				minorTicks: 5
+			};
+
+			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+			var chart = new google.visualization.Gauge(document.getElementById('summary_gauge_div'));
+			chart.draw(data_table, options);
+		}
+
+    </script>
+
+		{% endblock %}
+
+  </head>
+
+  <body class="vis-block">
+
+    <a href="/" class="main-title">Team Pulse</a>
+
+    <div id="auth" class="auth">you're logged in as: {{ user | safe }} ,
+      wrong user? <a href="/logout">click here</a>
+    </div>
+
+		{% block content %}
+
+		<div class="vis-title">
+			<a href="/visuals/summary">This Week's Projects</a>
+		</div>
+
+		<div class="summary-guauge" id="summary_gauge_div"></div>
+
+		{% endblock %}
+
+	</body>
+
+</html>

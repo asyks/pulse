@@ -2,6 +2,7 @@
 ## standard python library imports
 import webapp2, jinja2, os, logging
 from datetime import datetime
+import httplib2
 
 ## app engine library imports
 from google.appengine.api import memcache
@@ -17,7 +18,6 @@ path = os.path.dirname(__file__)
 templates = os.path.join(path, 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(templates), autoescape=True) 
 last_page = '/' ## initialize last_page to wiki front
-
 
 class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of all other request handlers
 
@@ -87,10 +87,6 @@ class Table(Handler): ## Handler for all Tables requests
     scores = Scores.get_by_project(project)
     scores = list(scores)
 
-    if not scores:
-      self.redirect('/')
-      return
-
     self.params['scores'] = scores
 
     self.render('table.html', **self.params)
@@ -131,10 +127,13 @@ class Summary(Handler):
   def get(self):
 
     ## get current week and then query scores by that week or the most recent week
-    current_week = Scores.get_max_week().week_num
+    current_week = Scores.get_max_week()
+    logging.warning(current_week)
     scores = Scores.get_by_week_num(current_week)
-    logging.warning(scores)
-    self.write('the summary vis page')
+    pulseified_object = createPulseifiedObject(scores)
+    chartified_object = createChartifiedObject(pulseified_object)
+    self.params['summary_gauge_object'] = chartified_object 
+    self.render('summary.html', **self.params)
 
 class Picks(Handler): ## Handler for all Picks requests
 

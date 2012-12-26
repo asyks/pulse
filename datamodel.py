@@ -5,6 +5,7 @@ from utility import *
 from google.appengine.ext import db
 
 import logging
+import calendar
 
 
 class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores model
@@ -27,12 +28,22 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
     ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
 
-    ts_day -= ts_weekday
-    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
-
-    if ts_weekday in (4,5,6):
+    if ts_weekday in (3,4,5,6):
       ts_week_num +=  1
+      day_of_month = ts_day - ts_weekday
 
+      if day_of_month <= 0:
+        if ts_month = 1:
+          ts_month = 12
+          ts_year -= 1
+        else:
+          ts_month -= 1
+
+        calendar.monthrange(ts_year, ts_month - 1)
+    else:
+      ts_
+
+    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
     pl = (pr + cm + ex + ch) / 4.0
 
     week_id = ts_year + ts_week_num / 100.0
@@ -60,7 +71,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   @classmethod
   def get_by_project(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
     scores = cls.all()
-    scores = scores.filter('project =', pj).order('timestamp').run()
+    scores = scores.filter('project =', pj).order('-timestamp').run()
     return scores
 
   @classmethod
@@ -94,7 +105,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
       scores = scores.order('-timestamp').get()
     else:
       scores = scores.filter('project =', pj).order('timestamp').get()
-    return scores
+    return scores.week_num
 
   @classmethod
   def drop_table(cls): ## drops the scores table
