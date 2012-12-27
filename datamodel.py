@@ -26,27 +26,30 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   @classmethod
   def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
 
-    ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
+    ts_year, ts_month, ts_weekday, ts_day = ts.year, ts.month, ts.weekday(), ts.day
+    adjust_month_or_year = False
 
     if ts_weekday in (3,4,5,6):
-      ts_week_num +=  1
-      day_of_month = ts_day - ts_weekday
+      ts_day = ts_day - ts_weekday
+    elif ts_weekday in (0,1,2):
+      ts_day = ts_day - ts_weekday - 7
 
-      if day_of_month <= 0:
-        if ts_month = 1:
-          ts_month = 12
-          ts_year -= 1
-        else:
-          ts_month -= 1
+    if ts_day <= 0:
+      adjust_month_or_year = True
 
-        calendar.monthrange(ts_year, ts_month - 1)
-    else:
-      ts_
+    if adjust_month_or_year == True:
+      if ts_month == 1:
+        ts_month = 12
+        ts_year -= 1
+      else:
+        ts_month -= 1
+      ts_day = calendar.monthrange(ts_year, ts_month)[1] - ts_day
 
     ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
-    pl = (pr + cm + ex + ch) / 4.0
+    week_num = int(ts_week_date.strftime('%W'))
+    week_id = ts_year + week_num / 100.0
 
-    week_id = ts_year + ts_week_num / 100.0
+    pl = (pr + cm + ex + ch) / 4.0
 
     return cls(username = un,
                project = pj,
