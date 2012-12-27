@@ -84,7 +84,7 @@ class Table(Handler): ## Handler for all Tables requests
     self.params['project'] = str(project)
 
     project = project.replace('-',' ')
-    scores = Scores.get_by_project(project)
+    scores = Scores.get_by_project(project, reverse_sort=True)
     scores = list(scores)
 
     self.params['scores'] = scores
@@ -103,13 +103,14 @@ class Charts(Handler): ## Handler for all Visuals requests
     scores = Scores.get_by_project(project)
     scores = list(scores) or None
 
-    if scores == None:
+    if scores is None: ## this conditional redirect will need to be replaced before going into production
       self.redirect('/')
       return
 
     enough_entries, visual_objects = createChartObjects(scores) 
+    logging.warning(enough_entries)
 
-    if not enough_entries:
+    if not enough_entries: ## this conditional redirect will need to be replaced before going into production
       self.redirect('/')
       return
 

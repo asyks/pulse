@@ -16,39 +16,48 @@ def createWeeksObject(scores):
   store_op, reset_op, iterate_op = False, False, True ## set initial state: iterate but don't store or reset
 
   for score in scores:
+#    logging.warning('week_date is %s' % score.week_date)
+#    logging.warning('current week is %s' % current_week)
 
     pr, cm, ex, ch, pl = score.pride, score.communication, score.expectations, score.challenge, score.pulse
     
-    if score.week_date != current_week: ## if state is start of new week then don't iterate, store and reset
-      iterate_op, store_op, reset_op = False, True, True
-
-    if scores.index(score) == len(scores) - 1: ## if state is last object then interate and store, but don't reset
-      interate_op, store_op, reset_op = True, True, False
-
-    if iterate_op: ## iterate operation
-      wk_en += 1  
-      sum_of_pr += pr
-      sum_of_cm += cm
-      sum_of_ex += ex
-      sum_of_ch += ch
-      sum_of_pl += pl
+    if score.week_date != current_week: ## if state is start of new week then store and reset
+      store_op, reset_op = True, True
 
     if store_op: ## store operation
       week = dict()
       week['wk'] = current_week
       week['wk_en'] = wk_en
       week['pr'] = sum_of_pr
-      week['cm'] = sum_of_ex
-      week['ex'] = sum_of_cm
+      week['cm'] = sum_of_cm
+      week['ex'] = sum_of_ex
       week['ch'] = sum_of_ch
       week['pl'] = sum_of_pl
       weeks.append(week)
 
     if reset_op: ## reset operation
-      iterate_op, store_op, reset_op = True, False, False ## just iterate the next iterable
       current_week = score.week_date ## reset current_week
-      wk_en = 1 ## reset entries_per_week
-      sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = pr, cm, ex, ch, pl
+      wk_en, sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = 0,0,0,0,0,0
+      store_op, reset_op = False, False
+
+    ## iterate operation
+    wk_en += 1  
+    sum_of_pr += pr
+    sum_of_cm += cm
+    sum_of_ex += ex
+    sum_of_ch += ch
+    sum_of_pl += pl
+
+    if scores.index(score) == len(scores) - 1: ## if state is end of iterator then store
+      week = dict()
+      week['wk'] = current_week
+      week['wk_en'] = wk_en
+      week['pr'] = sum_of_pr
+      week['cm'] = sum_of_cm
+      week['ex'] = sum_of_ex
+      week['ch'] = sum_of_ch
+      week['pl'] = sum_of_pl
+      weeks.append(week)
 
   return weeks
 

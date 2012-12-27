@@ -72,15 +72,21 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     db.put(scores)
 
   @classmethod
-  def get_by_project(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
+  def get_by_project(cls, pj, reverse_sort=False): ## gets a list of n score instances by project and timestamp and returns them
+    sort = 'timestamp'
+    if reverse_sort:
+      sort = '-timestamp'
     scores = cls.all()
-    scores = scores.filter('project =', pj).order('-timestamp').run()
+    scores = scores.filter('project =', pj).order(sort).run()
     return scores
 
   @classmethod
-  def get_by_week(cls, wk): ## gets a list of n score instances by project and timestamp and returns them
+  def get_by_week(cls, wk, reverse_sort=False): ## gets a list of n score instances by project and timestamp and returns them
+    sort = 'timestamp'
+    if reverse_sort:
+      sort = '-timestamp'
     scores = cls.all()
-    scores = scores.filter('week =', wk).order('timestamp').run()
+    scores = scores.filter('week =', wk).order(sort).run()
     return scores
 
   @classmethod
@@ -90,9 +96,12 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     return scores
 
   @classmethod
-  def get_by_project_and_week(cls, pj): ## gets a list of n score instances by project and timestamp and returns them
+  def get_by_project_and_week(cls, pj, reverse_sort=False): ## gets a list of n score instances by project and timestamp and returns them
+    sort = 'timestamp'
+    if reverse_sort:
+      sort = '-timestamp'
     scores = cls.all()
-    scores = scores.filter('project =', pj).order('timestamp').run()
+    scores = scores.filter('project =', pj).order(sort).run()
     return scores
 
   @classmethod
