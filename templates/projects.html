@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<br>
+
+	<table class="project-table">
+
+		<td>Project</td><td>Date Added</td>
+
+		{% for p in projects %}
+
+		<tr>
+			<td>{{ p.project }}</td><td>{{ p.date_added }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</table>
+
+	<br>
+
+		<div name='projects-menu'>
+
+			<form method='post'>
+
+				<table name='projects-admin-table'>
+					<tr>
+						<td>
+              <input type='text' name='project'></input>
+						</td>
+					</tr>
+				</table>
+
+				<input type='submit' value='Add Projects'></input>
+
+			</form>
+
+		</div>
+
+{% endblock %}

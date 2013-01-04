@@ -2,7 +2,6 @@
 ## standard python library imports
 import webapp2, jinja2, os, logging
 from datetime import datetime
-import httplib2
 
 ## app engine library imports
 from google.appengine.api import memcache
@@ -131,9 +130,8 @@ class Summary(Handler):
     current_week = Scores.get_max_week()
     logging.warning(current_week)
     scores = Scores.get_by_week_num(current_week)
-    pulseified_object = createPulseifiedObject(scores)
-    chartified_object = createChartifiedObject(pulseified_object)
-    self.params['summary_gauge_object'] = chartified_object 
+    summary_gauge_object = createSummaryObject(scores)
+    self.params['summary_gauge_object'] = summary_gauge_object 
     self.render('summary.html', **self.params)
 
 class Picks(Handler): ## Handler for all Picks requests
@@ -210,7 +208,9 @@ class AdminImport(Handler): ## Class that handles requests of the import import 
   def post(self):
 
     feed = self.request.get('feed') or 'cells'
-    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
+    ## '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
+    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdEV4WmdaQW9yTnM4d05wQlpGRzlJS0E'
+    ## '0AocOg3jXOHrbdEV4WmdaQW9yTnM4d05wQlpGRzlJS0E'
     worksheet = self.request.get('worksheet') or 'od6'
 
     scores = get_scores_from_atom(feed, sskey, worksheet) 
@@ -229,6 +229,24 @@ class AdminDrops(Handler): ## Class that handles requests for the drops tables a
 
     Scores.drop_table()
     self.redirect('/admin/drops') 
+
+
+class AdminProjects(Handler): ## Class that handles requests for the project admin page
+
+  def get(self):
+  
+    self.params['user'] = self.user
+    projects = Projects.get_projects()
+    self.params['projects'] = projects
+    self.render('projects.html', **self.params)
+
+  def post(self):
+
+    project = self.request.get('project')
+    project = Projects.create_project(project)
+    Projects.put_project(project)
+    self.redirect('/admin/projects')
+
 
 class Login(Handler): ## Class that handles user login requests
   
@@ -316,6 +334,7 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/survey/project-select/?', Picks),
                                (r'/admin/import/?', AdminImport),
                                (r'/admin/drops/?', AdminDrops),
+                               (r'/admin/projects/?', AdminProjects),
                                (r'/.*', Error)
                                ],
                                 debug=True)

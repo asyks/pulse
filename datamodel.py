@@ -28,6 +28,8 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
     ts_year, ts_month, ts_weekday, ts_day = ts.year, ts.month, ts.weekday(), ts.day
     adjust_month_or_year = False
+    logging.warning(ts_weekday)
+    logging.warning('%s, %s, %s' % (ts_year, ts_month, ts_day))
 
     if ts_weekday in (3,4,5,6):
       ts_day = ts_day - ts_weekday
@@ -43,7 +45,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
         ts_year -= 1
       else:
         ts_month -= 1
-      ts_day = calendar.monthrange(ts_year, ts_month)[1] - ts_day
+      ts_day = calendar.monthrange(ts_year, ts_month)[1] - abs(ts_day)
 
     ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
     week_num = int(ts_week_date.strftime('%W'))
@@ -124,37 +126,28 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     all_scores = cls.all()
     db.delete(all_scores)
 
-class Weeks(db.Model): ## datamodels for Team Pulse - Currently only Scores model
+class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   project = db.StringProperty(required=True)
-  pride = db.IntegerProperty(required=True)
-  communication = db.IntegerProperty(required=True)
-  expectations = db.IntegerProperty(required=True) 
-  challenge = db.IntegerProperty(required=True) 
-  pulse = db.FloatProperty(required=True)
-  timestamp = db.DateTimeProperty()
-  week_date = db.DateProperty()
-  week_num = db.IntegerProperty()
-  submitted = db.DateTimeProperty(auto_now_add=True) 
+  date_added = db.DateTimeProperty(auto_now_add=True) 
 
   @classmethod
-  def create_score(cls, un, pj, pr, cm, ex, ch, fb=None, ts=datetime.utcnow()):
+  def create_project(cls, pj):
+    return cls(project = pj)
 
-    pl = (pr + cm + ex + ch) / 4.0
+  @classmethod
+  def remove_project(cls, pj, ac=False, dct=datetime.utcnow()):
+    project = cls.all()
+    project = project.filter('project =', pj).get()
+    db.delete(project)
 
-    ts_year, ts_month, ts_weekday, ts_week_num, ts_day = ts.year, ts.month, ts.weekday(), int(ts.strftime('%W')), ts.day
-    ts_week_date = datetime.date(datetime(ts_year, ts_month, ts_day))
-    if ts_weekday in (4,5,6):
-      ts_week_num +=  1
+  @classmethod
+  def put_project(cls, project): ## takes one project model instance and puts it into the datastore
+    logging.warning(project)
+    project.put()
 
-    return cls(username = un,
-               project = pj,
-               pride = pr,
-               communication = cm,
-               expectations = ex,
-               challenge = ch,
-               pulse = pl,
-               feedback = fb,
-               timestamp = ts,
-               week_date = ts_week_date)
-
+  @classmethod
+  def get_projects(cls): ## gets a list of n score instances by project and timestamp and returns them
+    projects = cls.all()
+    projects = projects.order('date_added').run()
+    return projects
