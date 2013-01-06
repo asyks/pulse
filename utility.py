@@ -19,7 +19,6 @@ def make_last_edit_str(time):
 PROJECT_RE = re.compile(r'([0-9a-zA-Z_-]+)/?')
 
 def validate_all_projects(projects):
-  logging.warning('validate_all_projects')
   for project in projects:
     return project_validate(str(project))
 
@@ -28,12 +27,12 @@ def project_validate(project):
     return False
 
 def validate_all_scores(pr, cm, ex, ch):
-  logging.warning('validate_all_scores')
   return score_validate(pr) and score_validate(cm) and score_validate(ex) and score_validate(ch) 
 
 def score_validate(scores): 
   for score in scores:
-    if score not in range(1,11):
+    if not score or score not in range(1,11):
+      logging.warning(score)
       return False
   return True 
 

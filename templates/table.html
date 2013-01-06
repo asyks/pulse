@@ -4,14 +4,16 @@
 
 <br>
 
-<table class="project-table">
+<table class="record-table">
 
-	<td>Week Date</td><td>Week Num</td><td>Date</td><td>Pride</td>
-	<td>Comm</td><td>Expct</td><td>Chall</td><td>Pulse</td>
+	<div class='page-title'>{{ project }} entries</div>
+
+	<tr class='first-row'><td>Week Date</td><td>Week Num</td><td>Date</td><td>Pride</td>
+	<td>Comm</td><td>Expct</td><td>Chall</td><td>Pulse</td></tr>
 
 	{% for s in scores %}
 
-	<tr>
+	<tr class='record'>
 		<td>{{ s.week_date }}</td><td>{{ s.week_num}}</td><td>{{ s.timestamp }}</td><td>{{ s.pride }}</td>
 		<td>{{ s.communication }}</td><td>{{ s.expectations }}</td><td>{{ s.challenge }}</td><td>{{ s.pulse }}</td>
   </tr>

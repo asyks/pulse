@@ -28,8 +28,6 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
     ts_year, ts_month, ts_weekday, ts_day = ts.year, ts.month, ts.weekday(), ts.day
     adjust_month_or_year = False
-    logging.warning(ts_weekday)
-    logging.warning('%s, %s, %s' % (ts_year, ts_month, ts_day))
 
     if ts_weekday in (3,4,5,6):
       ts_day = ts_day - ts_weekday
@@ -136,10 +134,10 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
     return cls(project = pj)
 
   @classmethod
-  def remove_project(cls, pj, ac=False, dct=datetime.utcnow()):
+  def remove_project(cls, pj):
     project = cls.all()
     project = project.filter('project =', pj).get()
-    db.delete(project)
+    cls.delete(project)
 
   @classmethod
   def put_project(cls, project): ## takes one project model instance and puts it into the datastore

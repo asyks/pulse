@@ -4,38 +4,47 @@
 
 	<br>
 
-	<table class="project-table">
+	<div class='page-title'>Project Management</div>
 
-		<td>Project</td><td>Date Added</td>
+	<form method='post' action='/admin/projects/remove'>
 
-		{% for p in projects %}
+		<table class="record-table">
 
-		<tr>
-			<td>{{ p.project }}</td><td>{{ p.date_added }}</td>
-		</tr>
+			<tr class='first-row'><td class='half-column'>Project</td><td>Date Added</td></tr>
 
-		{% endfor %}
+			{% for p in projects %}
 
-	</table>
+			<tr class='record'>
+				<td>
+					<input type="radio" name="project" value="{{ p.project }}">{{ p.project }}</input>
+				</td>
+				<td>{{ p.date_added }}</td>
+			</tr>
+
+			{% endfor %}
+
+		</table>
+
+		<br>
+
+		<input type='submit' value='Remove Project'></input>
+
+	</form>
 
 	<br>
 
-		<div name='projects-menu'>
+	<form method='post' action='/admin/projects/add'>
 
-			<form method='post'>
+		<table name='projects-admin-table'>
+			<tr>
+				<td>
+					<input type='text' name='project'></input>
+				</td>
+			</tr>
+		</table>
 
-				<table name='projects-admin-table'>
-					<tr>
-						<td>
-              <input type='text' name='project'></input>
-						</td>
-					</tr>
-				</table>
+		<input type='submit' value='Add Project'></input>
 
-				<input type='submit' value='Add Projects'></input>
-
-			</form>
-
-		</div>
+	</form>
 
 {% endblock %}

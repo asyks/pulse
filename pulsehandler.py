@@ -72,6 +72,10 @@ class Home(Handler): ## Handler for Home page requests
   def get(self):
 
     self.params['user'] = self.user
+
+    projects = Projects.get_projects()
+    self.params['projects'] = projects
+
     self.render('home.html', **self.params)
 
 
@@ -157,35 +161,52 @@ class Survey(Handler): ## Handler for Survey page requests
   def get(self):
 
     self.params['user'] = self.user
-    projects = self.request.GET.getall('project')
-    self.params['projects'] = projects 
+
+    projects = Projects.get_projects()
+    self.params['projects'] = projects
+
+    selected_projects = self.request.GET.getall('project')
+    self.params['selected_projects'] = selected_projects 
+
     self.params['have_error'] = False 
 
     self.render('surveys.html', **self.params)
 
   def post(self):
 
-    un, pj, fb = str(self.user), self.request.POST.getall('project'), self.request.POST.getall('feedback') 
+    self.params['user'] = self.user
 
-    self.params['fbs'] = fb
+    projects = Projects.get_projects()
+    self.params['projects'] = projects
 
-    pr, cm = self.request.POST.getall('pride'), self.request.POST.getall('communication') 
-    ex, ch = self.request.POST.getall('expectations'), self.request.POST.getall('challenge') 
+    selected_projects = self.request.POST.getall('project')
+    self.params['selected_projects'] = selected_projects 
 
-    self.params['prs'], self.params['cms'], self.params['exs'], self.params['chs'] = pr, cm, ex, ch
+    prs, cms = self.request.POST.getall('pride'), self.request.POST.getall('communication') 
+    exs, chs = self.request.POST.getall('expectations'), self.request.POST.getall('challenge') 
+    fbs = self.request.POST.getall('feedback') 
+
+    prs = [ int(pr) if pr != '' else '' for pr in prs ]
+    cms = [ int(cm) if cm != '' else '' for cm in cms ]
+    exs = [ int(ex) if ex != '' else '' for ex in exs ]
+    chs = [ int(ch) if ch != '' else '' for ch in chs ]
+    logging.warning(prs)
+    self.params['prs'], self.params['cms'], self.params['exs'], self.params['chs'] = prs, cms, exs, chs
+    self.params['fbs'] = fbs
 
     have_error = False 
     self.params['pulse_error'] = [] 
 
-    if validate_all_projects(pj):
+    if validate_all_projects(selected_projects):
       have_error = True
       self.params['pulse_error'].append('One of the projects you selected is invalid') 
 
-    if not validate_all_scores(pr, cm, ex, ch):
+    if not validate_all_scores(prs, cms, exs, chs):
       have_error=True
       self.params['pulse_error'].append('One of the scores you selected is invalid')
 
     self.params['have_error'] = have_error
+
     logging.warning(have_error)
 
     if have_error is True:
@@ -193,10 +214,10 @@ class Survey(Handler): ## Handler for Survey page requests
 
     else: ## if all form inputs are valid then put the scores into Google DataStore
 
-      scores = [ Scores.create_score(un, pj[i], int(pr[i]), int(cm[i]), int(ex[i]), int(ch[i]), fb[i]) for i in range(0, len(pj)) ]
+      scores = [ Scores.create_score(un, projects[i], prs[i], cms[i], exs[i], ch[i], fb[i]) for i in range(0, len(projects)) ]
       Scores.put_scores(scores)
 
-      self.redirect('/survey/forms')
+      self.redirect('/')
 
 
 class AdminImport(Handler): ## Class that handles requests of the import import admin page
@@ -231,6 +252,7 @@ class AdminDrops(Handler): ## Class that handles requests for the drops tables a
     self.redirect('/admin/drops') 
 
 
+
 class AdminProjects(Handler): ## Class that handles requests for the project admin page
 
   def get(self):
@@ -240,11 +262,21 @@ class AdminProjects(Handler): ## Class that handles requests for the project adm
     self.params['projects'] = projects
     self.render('projects.html', **self.params)
 
+
+class AdminProjectsAdd(Handler): ## Class that handles project add reqests
   def post(self):
 
     project = self.request.get('project')
     project = Projects.create_project(project)
     Projects.put_project(project)
+    self.redirect('/admin/projects')
+
+
+class AdminProjectsRemove(Handler): ## Class that handles project add reqests
+  def post(self):
+
+    project = self.request.get('project')
+    project = Projects.remove_project(project)
     self.redirect('/admin/projects')
 
 
@@ -335,6 +367,8 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/admin/import/?', AdminImport),
                                (r'/admin/drops/?', AdminDrops),
                                (r'/admin/projects/?', AdminProjects),
+                               (r'/admin/projects/add/?', AdminProjectsAdd),
+                               (r'/admin/projects/remove/?', AdminProjectsRemove),
                                (r'/.*', Error)
                                ],
                                 debug=True)

@@ -49,11 +49,11 @@
 
   <body class="vis-block">
 
-    <a href="/" class="main-title">Team Pulse</a>
-
     <div id="auth" class="auth">you're logged in as: {{ user | safe }} ,
       wrong user? <a href="/logout">click here</a>
     </div>
+
+    <a href="/" class="main-title">Team Pulse</a>
 
 		{% block content %}
 
