@@ -8,39 +8,11 @@
 
 		<table>
 			<tr>
+				{% for p in projects %}
 				<td>
-					<input type="checkbox" name="projects" value="Chiquita" id="box">Chiquita</br>
+					<input type="checkbox" name="selected-project" value="{{ p.project }}" id="box">{{ p.project }}</br>
 				</td>
-				<td>
-					<input type="checkbox" name="projects" value="HTC" id="box">HTC</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="LENOX" id="box" >LENOX</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="Modea" id="box">Modea</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="Riunite" id="box">Riunite</br>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="checkbox" name="projects" value="nTelos" id="box">nTelos</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="UVA Health System" id="box" >UVA Health System</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="5 Hour Energy" id="box" >5 Hour Energy</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="Duke Health" id="box" >Duke Health</br>
-				</td>
-				<td>
-					<input type="checkbox" name="projects" value="Disney" id="box" >Disney</br>
-				</td>
-			</tr>
+				{% endfor %}
 		</table>
 
 		<br>

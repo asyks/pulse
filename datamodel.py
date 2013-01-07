@@ -51,6 +51,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
     pl = (pr + cm + ex + ch) / 4.0
 
+    logging.warning('score created')
     return cls(username = un,
                project = pj,
                pride = pr,

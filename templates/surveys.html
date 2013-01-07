@@ -7,25 +7,21 @@
 	<form method='post' id='pulse-form'>
 
 	<div class="error">
-		{% if have_error %}
-		{% for error in  pulse_error %} 
-		{{ error }} 
-		{% endfor %}
-		{% endif %}
+		{% if have_error %}	{% for error in  pulse_error %} {{ error }} {% endfor %} {% endif %}
 	</div>
 
 	<br>
 
-	{% for project in selected_projects %}
+	{% for sel_pj in selected_projects %}
 
 	<table class="project-input">
 
 		<td class="label">Project:
-			<select name="project">
+			<select name="selected-project">
 				<option value=""></option>
 
 				{% for p in projects %}
-				<option value="{{ p.project }}" {% if project == p.project %} selected {% endif %}>{{ p.project }}</option>
+				<option value={{ p.project }} {% if sel_pj == p.project %} selected {% endif %}>{{ p.project }}</option>
 				{% endfor %}
 
 			</select>
@@ -42,7 +38,7 @@
 					<option value=""></option>
 
 					{% for i in range(1, 11) %}
-					<option value={{ i }} {% if have_error and prs[selected_projects.index(project)] == i %} selected {% endif %}>{{ i }}</option>
+					<option value={{ i }} {% if have_error and prs[selected_projects.index(sel_pj)] == i %} selected {% endif %}>{{ i }}</option>
 					{% endfor %}
 
 				</td>
@@ -52,7 +48,7 @@
 					<option value=""></option>
 
 					{% for i in range(1, 11) %}
-					<option value="{{ i }}" {% if have_error and cms[selected_projects.index(project)] == i %} selected {% endif %}>{{ i }}</option>
+					<option value="{{ i }}" {% if have_error and cms[selected_projects.index(sel_pj)] == i %} selected {% endif %}>{{ i }}</option>
 					{% endfor %}
 
 				</td>
@@ -62,7 +58,7 @@
 					<option value=""></option>
 
 					{% for i in range(1, 11) %}
-					<option value="{{ i }}" {% if have_error and exs[selected_projects.index(project)] == i %} selected {% endif %}>{{ i }}</option>
+					<option value="{{ i }}" {% if have_error and exs[selected_projects.index(sel_pj)] == i %} selected {% endif %}>{{ i }}</option>
 					{% endfor %}
 
 				</td>
@@ -72,7 +68,7 @@
 
 					<option value=""></option>
 					{% for i in range(1, 11) %}
-					<option value="{{ i }}" {% if have_error and chs[selected_projects.index(project)] == i %} selected {% endif %}>{{ i }}</option>
+					<option value="{{ i }}" {% if have_error and chs[selected_projects.index(sel_pj)] == i %} selected {% endif %}>{{ i }}</option>
 					{% endfor %}
 
 				</td>
@@ -85,9 +81,7 @@
 			<tr class="label"><td>Feedback:</td></tr>
 			<tr>
 				<td>
-					<textarea name="feedback">{% if have_error %}
-																		{{ fbs[selected_projects.index(project)] }}
-																		{% endif %}</textarea>
+					<textarea name="feedback">{% if have_error %} {{ fbs[selected_projects.index(sel_pj)] }} {% endif %}</textarea>
 				</td>
 			</tr>
 

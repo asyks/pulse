@@ -143,14 +143,18 @@ class Picks(Handler): ## Handler for all Picks requests
   def get(self):
 
     self.params['user'] = self.user
+
+    projects = Projects.get_projects()
+    self.params['projects'] = projects
+
     self.render('picks.html', **self.params)
 
   def post(self): ## posting to Picks redirects the user to surveys
 
-    projects = self.request.POST.getall('projects')
+    projects = self.request.POST.getall('selected-project')
 
-    join_char = '&project='
-    projects_url = '/survey/entry-form/?project='
+    join_char = '&selected-project='
+    projects_url = '/survey/entry-form/?selected-project='
     projects_url += join_char.join(projects)
 
     self.redirect(projects_url)
@@ -163,12 +167,13 @@ class Survey(Handler): ## Handler for Survey page requests
     self.params['user'] = self.user
 
     projects = Projects.get_projects()
-    self.params['projects'] = projects
+    self.params['projects'] = list(projects)
 
-    selected_projects = self.request.GET.getall('project')
+    selected_projects = self.request.GET.getall('selected-project')
     self.params['selected_projects'] = selected_projects 
 
-    self.params['have_error'] = False 
+    have_error = False 
+    self.params['have_error'] = have_error
 
     self.render('surveys.html', **self.params)
 
@@ -177,9 +182,9 @@ class Survey(Handler): ## Handler for Survey page requests
     self.params['user'] = self.user
 
     projects = Projects.get_projects()
-    self.params['projects'] = projects
+    self.params['projects'] = list(projects)
 
-    selected_projects = self.request.POST.getall('project')
+    selected_projects = self.request.POST.getall('selected-project')
     self.params['selected_projects'] = selected_projects 
 
     prs, cms = self.request.POST.getall('pride'), self.request.POST.getall('communication') 
@@ -190,7 +195,7 @@ class Survey(Handler): ## Handler for Survey page requests
     cms = [ int(cm) if cm != '' else '' for cm in cms ]
     exs = [ int(ex) if ex != '' else '' for ex in exs ]
     chs = [ int(ch) if ch != '' else '' for ch in chs ]
-    logging.warning(prs)
+
     self.params['prs'], self.params['cms'], self.params['exs'], self.params['chs'] = prs, cms, exs, chs
     self.params['fbs'] = fbs
 
@@ -207,14 +212,13 @@ class Survey(Handler): ## Handler for Survey page requests
 
     self.params['have_error'] = have_error
 
-    logging.warning(have_error)
-
     if have_error is True:
       self.render("surveys.html", **self.params)
 
     else: ## if all form inputs are valid then put the scores into Google DataStore
 
-      scores = [ Scores.create_score(un, projects[i], prs[i], cms[i], exs[i], ch[i], fb[i]) for i in range(0, len(projects)) ]
+      pjs, un = selected_projects, str(self.user)
+      scores = [ Scores.create_score(un, pjs[i], prs[i], cms[i], exs[i], chs[i], fbs[i]) for i in range(0, len(pjs)) ]
       Scores.put_scores(scores)
 
       self.redirect('/')
@@ -250,7 +254,6 @@ class AdminDrops(Handler): ## Class that handles requests for the drops tables a
 
     Scores.drop_table()
     self.redirect('/admin/drops') 
-
 
 
 class AdminProjects(Handler): ## Class that handles requests for the project admin page

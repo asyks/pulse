@@ -32,7 +32,6 @@ def validate_all_scores(pr, cm, ex, ch):
 def score_validate(scores): 
   for score in scores:
     if not score or score not in range(1,11):
-      logging.warning(score)
       return False
   return True 
 
