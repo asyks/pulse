@@ -235,3 +235,19 @@ tr.first-row {
 	left: 1200px;
 	bottom: 1350px;
 }
+
+.admin-column-1 {
+	float: left;
+	width: 50%;
+}
+
+.admin-column-2 {
+	float: right;
+	width: 50%;
+}
+
+.admin-section-title {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}

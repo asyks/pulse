@@ -125,6 +125,12 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     all_scores = cls.all()
     db.delete(all_scores)
 
+  @classmethod
+  def remove_project(cls, pj):
+    scores = cls.all()
+    scores = project.filter('project =', pj).get()
+    cls.delete(project)
+
 class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   project = db.StringProperty(required=True)
@@ -142,7 +148,6 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   @classmethod
   def put_project(cls, project): ## takes one project model instance and puts it into the datastore
-    logging.warning(project)
     project.put()
 
   @classmethod

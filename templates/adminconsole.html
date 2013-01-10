@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div name='import-menu'>
+
+	<div class='admin-column-1'>
+
+		<div class='admin-section-title'>Import from Google Docs:</div>
+
+			<form method='post'>
+
+				<table name='import-table'>
+					<tr>
+						<td>
+							<label>Feed:</label>
+						</td>
+						<td>
+							<select name='feed'>
+								<option value='cells'>cells</option>
+								<option value='list'>list</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>SSkey:</label>
+						</td>
+						<td>
+							<input type='text' name='sskey'></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>WrkSht:</label>
+						</td>
+						<td>
+							<input type='text' name='worksheet'></input>
+						</td>
+					</tr>
+				</table>
+
+				<input type='submit' value='Import'></input>
+
+			</form>
+
+		</div>
+
+		<div class='admin-column-2'>
+
+     <div class='admin-section-title'>Drop a Table</div>
+
+			<form method='post' action='/admin/drops/'>
+
+				<table name='import-table'>
+					<tr>
+						<td>
+							<label>Choose a table:</label>
+						</td>
+						<td>
+							<select name='drops'>
+								<option value='scores'>scores</option>
+								<option value='users'>scores</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+
+				<input type='submit' value='Drop Tables'></input>
+
+			</form>
+
+		</div>
+
+</div>
+
+{% endblock %}

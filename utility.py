@@ -14,7 +14,7 @@ def format_datetime(date_time):
 def make_last_edit_str(time):
   return 'This page was last edited on: %s' % time
  
-## pulse form validation stuff
+## datastore entry validation stuff
 
 PROJECT_RE = re.compile(r'([0-9a-zA-Z_-]+)/?')
 
@@ -25,6 +25,17 @@ def validate_all_projects(projects):
 def project_validate(project):
   if not PROJECT_RE.match(project):
     return False
+
+def project_entry_validate(project):
+  if PROJECT_RE.match(project):
+    return True
+  else:
+    return False
+
+def project_exists(project, projects):
+  for p in projects:
+    if str(project) == str(p.project):
+      return True
 
 def validate_all_scores(pr, cm, ex, ch):
   return score_validate(pr) and score_validate(cm) and score_validate(ex) and score_validate(ch) 

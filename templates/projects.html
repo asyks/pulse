@@ -6,6 +6,10 @@
 
 	<div class='page-title'>Project Management</div>
 
+  <div class="error">
+		{% if have_error %} {{ error }} {% endif %}
+	</div>
+
 	<form method='post' action='/admin/projects/remove'>
 
 		<table class="record-table">
@@ -33,7 +37,7 @@
 
 	<br>
 
-	<form method='post' action='/admin/projects/add'>
+	<form method='post' action='/admin/projects'>
 
 		<table name='projects-admin-table'>
 			<tr>

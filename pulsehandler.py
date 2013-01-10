@@ -224,62 +224,85 @@ class Survey(Handler): ## Handler for Survey page requests
       self.redirect('/')
 
 
-class AdminImport(Handler): ## Class that handles requests of the import import admin page
+class AdminConsole(Handler): ## Class that handles requests of the import import admin page
 
   def get(self):
     
-    self.render('import.html')
+    self.params['user'] = self.user
+    self.render('adminconsole.html', **self.params)
+
+
+class AdminImport(Handler): ## Class that handles requests of the import import admin page
 
   def post(self):
 
     feed = self.request.get('feed') or 'cells'
-    ## '0AocOg3jXOHrbdDkzWm9KSVB2TzBZcmphX21QZ2owRVE'
     sskey = self.request.get('sskey') or '0AocOg3jXOHrbdEV4WmdaQW9yTnM4d05wQlpGRzlJS0E'
-    ## '0AocOg3jXOHrbdEV4WmdaQW9yTnM4d05wQlpGRzlJS0E'
     worksheet = self.request.get('worksheet') or 'od6'
 
     scores = get_scores_from_atom(feed, sskey, worksheet) 
 
     Scores.put_scores(scores)
-    self.redirect('/admin/import')
+    self.redirect('/admin/console')
 
 
 class AdminDrops(Handler): ## Class that handles requests for the drops tables admin page
 
-  def get(self):
-
-    self.render('drops.html')
-
   def post(self):
 
     Scores.drop_table()
-    self.redirect('/admin/drops') 
+    self.redirect('/admin/console') 
 
 
 class AdminProjects(Handler): ## Class that handles requests for the project admin page
 
-  def get(self):
-  
+  def render_admin_projects(self, **params):
+
+    self.params = params
     self.params['user'] = self.user
+
     projects = Projects.get_projects()
     self.params['projects'] = projects
     self.render('projects.html', **self.params)
+    
+  def get(self):
+  
+    have_error, error = False, None
+    self.params['have_error']  = have_error
+    self.params['error'] = error
 
+    self.render_admin_projects(**self.params)
 
-class AdminProjectsAdd(Handler): ## Class that handles project add reqests
   def post(self):
 
+    have_error, error = False, None
+    projects = Projects.get_projects()
+    projects = list(projects)
     project = self.request.get('project')
-    project = Projects.create_project(project)
-    Projects.put_project(project)
-    self.redirect('/admin/projects')
+
+    entry_is_valid = project_entry_validate(project)
+    if project is '' or not entry_is_valid:
+      have_error, error = True, 'that project name is invalid'
+    elif project_exists(project, projects):
+      logging.warning('triggered')
+      have_error, error = True, 'that project already exists'
+    else:
+      project = Projects.create_project(project)
+      Projects.put_project(project)
+
+    self.params['have_error']  = have_error
+    self.params['error'] = error
+
+    self.render_admin_projects(**self.params)
 
 
-class AdminProjectsRemove(Handler): ## Class that handles project add reqests
+class AdminProjectsRemove(Handler): ## Class that handles project remove reqests
+
   def post(self):
 
     project = self.request.get('project')
     project = Projects.remove_project(project)
+
     self.redirect('/admin/projects')
 
 
@@ -359,18 +382,16 @@ class Error(Handler): ## Default handler for 404 errors
 PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' # regex for handling wiki page requests
 
 app = webapp2.WSGIApplication([(r'/?', Home),
-                               (r'/signup/?', Signup),
-                               (r'/login/?', Login),
                                (r'/logout/?', Logout),
                                (r'/visuals/table/' + PROJECT_RE, Table),
                                (r'/visuals/charts/' + PROJECT_RE, Charts),
                                (r'/visuals/summary/?', Summary ),
-                               (r'/survey/entry-form/?', Survey),
                                (r'/survey/project-select/?', Picks),
+                               (r'/survey/entry-form/?', Survey),
+                               (r'/admin/console/?', AdminConsole),
                                (r'/admin/import/?', AdminImport),
-                               (r'/admin/drops/?', AdminDrops),
+                               (r'/admin/drop/?', AdminDrops),
                                (r'/admin/projects/?', AdminProjects),
-                               (r'/admin/projects/add/?', AdminProjectsAdd),
                                (r'/admin/projects/remove/?', AdminProjectsRemove),
                                (r'/.*', Error)
                                ],
