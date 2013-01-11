@@ -113,6 +113,10 @@ class CommentTable(Handler): ## Handler for all Comment Tables requests
 
 class UserCommentTable(Handler): ## Handler for all Comment Tables requests
 
+  def render_usercommenttable(self, project):
+    return
+    
+
   def get(self, project):
 
     self.params['user'] = self.user
@@ -123,11 +127,20 @@ class UserCommentTable(Handler): ## Handler for all Comment Tables requests
     scores = list(scores)
 
     self.params['scores'] = scores
-    for score in scores:
-      logging.warning(score.key())
 
     self.render('usercommenttable.html', **self.params)
 
+  def post(self, project):
+
+    project = project.replace('-',' ')
+    project = str(project)
+
+    score_key = self.request.get('selected-score')
+    logging.warning(score_key)
+    Scores.remove_score(score_key)
+
+    self.redirect('/scores/table/comments/users/' + project)
+    
 
 class Charts(Handler): ## Handler for all Visuals requests
 

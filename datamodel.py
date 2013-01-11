@@ -126,10 +126,9 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     db.delete(all_scores)
 
   @classmethod
-  def remove_project(cls, pj):
-    scores = cls.all()
-    scores = project.filter('project =', pj).get()
-    cls.delete(project)
+  def remove_score(cls, score_key):
+    logging.warning(score_key)
+    db.delete(score_key)
 
 class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
