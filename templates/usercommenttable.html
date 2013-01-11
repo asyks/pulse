@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<form method='post' id='score-form'>
+
+	<table class="comment-table">
+
+		<div class='page-title'>{{ project }} entries</div>
+
+		<input type='submit' value='Remove' class='score-remove-submit'>
+ 
+		<tr class='first-row'>
+			<td></td>
+			<td>Week</td>
+			<td>User Name</td>
+			<td>Pride</td>
+			<td>Comm</td>
+			<td>Exp</td>
+			<td>Chal</td>
+			<td>Pulse</td>
+			<td class='comment-column'>Comment</td>
+		</tr>
+
+		{% for s in scores %}
+
+		<tr class='record'>
+			<td>
+				<input type='radio' value={{ s.key() }}>
+			</td>
+			<td>{{ s.week_date }}</td>
+			<td>{{ s.username }}</td>
+			<td>{{ s.pride }}</td>
+			<td>{{ s.communication }}</td>
+			<td>{{ s.expectations }}</td>
+			<td>{{ s.challenge }}</td>
+			<td>{{ s.pulse }}</td>
+			<td class='comment-column'>{{ s.feedback }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</table>
+
+</form>
+
+{% endblock %}

@@ -85,8 +85,23 @@ table[class=record-table] {
 }
 
 table[class=record-table] td{
+	width: 16.5%;
   border: 2px solid grey;
 	padding: 2px;
+}
+
+table[class=comment-table] {
+	width: 1000px;
+  border: 2px solid grey;
+}
+
+table[class=comment-table] td{
+  border: 2px solid grey;
+	padding: 2px;
+}
+
+td.comment-column {
+	width: 40%;
 }
 
 td.column-two {
@@ -124,7 +139,6 @@ tr.first-row {
 	border-bottom: 4px solid #666;
 	text-decoration: none;
 }
-
 
 .page-title {
 	color: #222;
@@ -249,5 +263,9 @@ tr.first-row {
 .admin-section-title {
 	font-size: 20px;
 	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.score-remove-submit {
 	margin-bottom: 20px;
 }

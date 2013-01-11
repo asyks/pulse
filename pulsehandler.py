@@ -95,6 +95,40 @@ class Table(Handler): ## Handler for all Tables requests
     self.render('table.html', **self.params)
 
 
+class CommentTable(Handler): ## Handler for all Comment Tables requests
+
+  def get(self, project):
+
+    self.params['user'] = self.user
+    self.params['project'] = str(project)
+
+    project = project.replace('-',' ')
+    scores = Scores.get_by_project(project, reverse_sort=True)
+    scores = list(scores)
+
+    self.params['scores'] = scores
+
+    self.render('commenttable.html', **self.params)
+
+
+class UserCommentTable(Handler): ## Handler for all Comment Tables requests
+
+  def get(self, project):
+
+    self.params['user'] = self.user
+    self.params['project'] = str(project)
+
+    project = project.replace('-',' ')
+    scores = Scores.get_by_project(project, reverse_sort=True)
+    scores = list(scores)
+
+    self.params['scores'] = scores
+    for score in scores:
+      logging.warning(score.key())
+
+    self.render('usercommenttable.html', **self.params)
+
+
 class Charts(Handler): ## Handler for all Visuals requests
 
   def get(self, project):
@@ -383,11 +417,13 @@ PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' # regex for handling wiki page requests
 
 app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/logout/?', Logout),
-                               (r'/visuals/table/' + PROJECT_RE, Table),
                                (r'/visuals/charts/' + PROJECT_RE, Charts),
                                (r'/visuals/summary/?', Summary ),
                                (r'/survey/project-select/?', Picks),
                                (r'/survey/entry-form/?', Survey),
+                               (r'/scores/table/' + PROJECT_RE, Table),
+                               (r'/scores/table/comments/' + PROJECT_RE, CommentTable),
+                               (r'/scores/table/comments/users/' + PROJECT_RE, UserCommentTable),
                                (r'/admin/console/?', AdminConsole),
                                (r'/admin/import/?', AdminImport),
                                (r'/admin/drop/?', AdminDrops),
