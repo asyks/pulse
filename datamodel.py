@@ -130,6 +130,7 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     logging.warning(score_key)
     db.delete(score_key)
 
+
 class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   project = db.StringProperty(required=True)
@@ -154,3 +155,34 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
     projects = cls.all()
     projects = projects.order('date_added').run()
     return projects
+
+
+class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
+
+  user_name = db.StringProperty(required=True)
+  table_access = db.BooleanProperty(required=True)
+  admin_access = db.BooleanProperty(required=True)
+  date_added = db.DateTimeProperty(auto_now_add=True) 
+
+  @classmethod
+  def create_user(cls, us):
+    return cls(user_name = us,
+               table_access = False,
+               admin_access = False)
+
+  @classmethod
+  def remove_user(cls, us):
+    user = cls.all()
+    user = user.filter('user_name =', us).get()
+    cls.delete(user)
+
+  @classmethod
+  def put_user(cls, user): ## takes one project model instance and puts it into the datastore
+    user.put()
+
+  @classmethod
+  def get_users(cls): ## gets a list of n score instances by project and timestamp and returns them
+    users = cls.all()
+    logging.warning(users)
+    users = users.order('date_added').run()
+    return users

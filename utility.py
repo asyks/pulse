@@ -37,6 +37,11 @@ def project_exists(project, projects):
     if str(project) == str(p.project):
       return True
 
+def user_exists(user, users):
+  for u in users:
+    if str(user) == str(u.user_name):
+      return True
+
 def validate_all_scores(pr, cm, ex, ch):
   return score_validate(pr) and score_validate(cm) and score_validate(ex) and score_validate(ch) 
 

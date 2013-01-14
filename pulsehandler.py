@@ -67,6 +67,27 @@ class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of 
       self.format = 'html'
 
 
+class SpecialHandler(Handler): ## Pulse RequestHandler class: parent of all other request handlers
+    
+  def initialize(self, *a, **kw):
+
+    webapp2.RequestHandler.initialize(self, *a, **kw)
+
+    self.user = users.get_current_user()
+    if not self.user: # or self.user is None:
+      request_uri = self.request.uri 
+      login_url = users.create_login_url()
+      self.redirect(login_url)
+
+    if not str(self.user) == 'aaron.sykes@modea.com':
+      self.redirect('/')
+
+    if self.request.url.endswith('.json'):
+      self.format = 'json'
+    else:
+      self.format = 'html'
+
+
 class Home(Handler): ## Handler for Home page requests
 
   def get(self):
@@ -79,7 +100,7 @@ class Home(Handler): ## Handler for Home page requests
     self.render('home.html', **self.params)
 
 
-class Table(Handler): ## Handler for all Tables requests
+class Table(SpecialHandler): ## Handler for all Tables requests
 
   def get(self, project):
 
@@ -95,7 +116,7 @@ class Table(Handler): ## Handler for all Tables requests
     self.render('table.html', **self.params)
 
 
-class CommentTable(Handler): ## Handler for all Comment Tables requests
+class CommentTable(SpecialHandler): ## Handler for all Comment Tables requests
 
   def get(self, project):
 
@@ -111,7 +132,7 @@ class CommentTable(Handler): ## Handler for all Comment Tables requests
     self.render('commenttable.html', **self.params)
 
 
-class UserCommentTable(Handler): ## Handler for all Comment Tables requests
+class UserCommentTable(SpecialHandler): ## Handler for all Comment Tables requests
 
   def render_usercommenttable(self, project):
     return
@@ -271,7 +292,7 @@ class Survey(Handler): ## Handler for Survey page requests
       self.redirect('/')
 
 
-class AdminConsole(Handler): ## Class that handles requests of the import import admin page
+class AdminConsole(SpecialHandler): ## Class that handles requests of the import import admin page
 
   def get(self):
     
@@ -279,7 +300,7 @@ class AdminConsole(Handler): ## Class that handles requests of the import import
     self.render('adminconsole.html', **self.params)
 
 
-class AdminImport(Handler): ## Class that handles requests of the import import admin page
+class AdminImport(SpecialHandler): ## Class that handles requests of the import import admin page
 
   def post(self):
 
@@ -293,7 +314,7 @@ class AdminImport(Handler): ## Class that handles requests of the import import 
     self.redirect('/admin/console')
 
 
-class AdminDrops(Handler): ## Class that handles requests for the drops tables admin page
+class AdminDrops(SpecialHandler): ## Class that handles requests for the drops tables admin page
 
   def post(self):
 
@@ -301,7 +322,7 @@ class AdminDrops(Handler): ## Class that handles requests for the drops tables a
     self.redirect('/admin/console') 
 
 
-class AdminProjects(Handler): ## Class that handles requests for the project admin page
+class AdminProjects(SpecialHandler): ## Class that handles requests for the project admin page
 
   def render_admin_projects(self, **params):
 
@@ -343,7 +364,7 @@ class AdminProjects(Handler): ## Class that handles requests for the project adm
     self.render_admin_projects(**self.params)
 
 
-class AdminProjectsRemove(Handler): ## Class that handles project remove reqests
+class AdminProjectsRemove(SpecialHandler): ## Class that handles project remove reqests
 
   def post(self):
 
@@ -370,6 +391,58 @@ class Logout(Handler): ## Class that handles user login requests
   def get(self):
 
     self.logout(self.user) ## removes user cookie  
+
+
+class AdminUsers(SpecialHandler): ## Class that handles requests for the project admin page
+
+  def render_admin_users(self, **params):
+
+    self.params = params
+    self.params['user'] = self.user
+
+    users = SpecialUsers.get_users()
+    logging.warning(users)
+    self.params['users'] = users
+    self.render('users.html', **self.params)
+    
+  def get(self):
+  
+    have_error, error = False, None
+    self.params['have_error']  = have_error
+    self.params['error'] = error
+
+    self.render_admin_users(**self.params)
+
+  def post(self):
+
+    have_error, error = False, None
+    users = SpecialUsers.get_users()
+    users = list(users)
+    user = self.request.get('user')
+
+    if not email_validate(user):
+      have_error, error = True, 'that user is invalid'
+    elif user_exists(user, users):
+      logging.warning('triggered')
+      have_error, error = True, 'that user already exists'
+    else:
+      user = SpecialUsers.create_user(user)
+      SpecialUsers.put_user(user)
+
+    self.params['have_error']  = have_error
+    self.params['error'] = error
+
+    self.render_admin_users(**self.params)
+
+
+class AdminUsersRemove(SpecialHandler): ## Class that handles project remove reqests
+
+  def post(self):
+
+    project = self.request.get('user')
+    project = SpecialUser.remove_user(user)
+
+    self.redirect('/admin/users')
 
 
 class Signup(Handler): ## Handler for all signup requests
@@ -442,6 +515,8 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/admin/drop/?', AdminDrops),
                                (r'/admin/projects/?', AdminProjects),
                                (r'/admin/projects/remove/?', AdminProjectsRemove),
+                               (r'/admin/users/?', AdminUsers),
+                               (r'/admin/users/remove/?', AdminUsersRemove),
                                (r'/.*', Error)
                                ],
                                 debug=True)

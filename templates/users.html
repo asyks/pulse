@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<br>
+
+	<div class='page-title'>Special User Management</div>
+
+  <div class="error">
+		{% if have_error %} {{ error }} {% endif %}
+	</div>
+
+	<form method='post' action='/admin/users/remove'>
+
+		<table class="record-table">
+
+			<tr class='first-row'>
+				<td class='half-column'>User</td>
+				<td>Date Added</td>
+			</tr>
+
+			{% for u in users %}
+
+			<tr class='record'>
+				<td>
+					<input type="radio" name="user" value="{{ u.user_name }}">
+						{{ u.user_name }}
+					</input>
+				</td>
+				<td>{{ u.date_added }}</td>
+			</tr>
+
+			{% endfor %}
+
+		</table>
+
+		<br>
+
+		<input type='submit' value='Remove User'></input>
+
+	</form>
+
+	<br>
+
+	<form method='post' action='/admin/users'>
+
+		<table name='projects-admin-table'>
+			<tr>
+				<td>
+					<input type='text' name='user'></input>
+				</td>
+			</tr>
+		</table>
+
+		<input type='submit' value='Add User'></input>
+
+	</form>
+
+{% endblock %}
