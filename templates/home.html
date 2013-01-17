@@ -19,7 +19,9 @@
 			<div class='home-title'>Project Visualizations:</div>
 
 			{% for p in projects %}
-			<a href='/visuals/charts/{{ p.project}}'>{{ p.project }}</a>
+			<a href='/visuals/charts/{{ p.project.replace(' ','-')}}'>
+				{{ p.project }}
+			</a>
 			<br>
 			{% endfor %}
 

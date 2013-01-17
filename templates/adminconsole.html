@@ -1,15 +1,16 @@
-{% extends "base.html" %}
+{% extends "adminbase.html" %}
 
 {% block content %}
 
-<div name='import-menu'>
+	<br>
 
-	<div class='admin-column-1'>
+	<div class='page-title'>Import and Export</div>
 
-		<div class='admin-section-title'>Import from Google Docs:</div>
+	<div name='import-menu'>
 
+		<div class='admin-column-1'>
+			<div class='admin-section-title'>Import from Google Docs:</div>
 			<form method='post' action='/admin/import'>
-
 				<table name='import-table'>
 					<tr>
 						<td>
@@ -39,19 +40,13 @@
 						</td>
 					</tr>
 				</table>
-
 				<input type='submit' value='Import'></input>
-
 			</form>
-
 		</div>
 
 		<div class='admin-column-2'>
-
-     <div class='admin-section-title'>Drop a Table</div>
-
+			<div class='admin-section-title'>Drop a Table</div>
 			<form method='post' action='/admin/drop'>
-
 				<table name='import-table'>
 					<tr>
 						<td>
@@ -65,13 +60,10 @@
 						</td>
 					</tr>
 				</table>
-
 				<input type='submit' value='Drop Tables'></input>
-
 			</form>
-
 		</div>
 
-</div>
+	</div>
 
 {% endblock %}

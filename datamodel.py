@@ -127,7 +127,6 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 
   @classmethod
   def remove_score(cls, score_key):
-    logging.warning(score_key)
     db.delete(score_key)
 
 
@@ -183,6 +182,5 @@ class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
   @classmethod
   def get_users(cls): ## gets a list of n score instances by project and timestamp and returns them
     users = cls.all()
-    logging.warning(users)
     users = users.order('date_added').run()
     return users

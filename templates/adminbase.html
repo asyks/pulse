@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+
+		<title>Team Pulse</title>
+
+		<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/static/adminstyle.css" />
+
+	</head>
+
+	<body id="normal">
+
+		<div id="auth" class="auth">you're logged in as: {{ user | safe }} , 
+			wrong user? <a href="/logout">click here</a>
+		</div>
+
+		<a href="/" class="main-title">Team Pulse</a>
+
+		<div class="admin-nav-container">
+			<ul class="admin-nav">
+				<li><a href="/">Home</a></li>
+				<li><a href="/admin/console/">Admin Console</a></li>
+				<li><a href="/admin/projects/">Projects Admin</a></li>
+				<li><a href="/admin/users/">Users Admin</a></li>
+			</ul>
+		</div>
+
+		<div id="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+
+	</body>
+
+</html>

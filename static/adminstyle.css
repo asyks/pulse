@@ -1,0 +1,33 @@
+
+div.admin-nav-container {
+	width: 1200px;	
+	display: block;
+	margin-bottom: 60px;
+}
+
+ul.admin-nav {
+  margin:20px;
+  padding:0;
+  list-style:none;
+  width:1000px;
+}
+
+ul.admin-nav li {
+	display: inline;
+}
+
+ul.admin-nav li a {
+  text-decoration:none;
+  padding:5px 0;
+  width:230px;
+  background:#999;
+  color:#eee;
+  float:left;
+  text-align:center;
+  border-left:10px solid #fff;
+}
+
+ul.admin-nav li a:hover {
+  background:#C0C0C0;
+  color:#000
+}

@@ -61,6 +61,8 @@ class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of 
       login_url = users.create_login_url()
       self.redirect(login_url)
 
+    self.params['user'] = self.user
+
     if self.request.url.endswith('.json'):
       self.format = 'json'
     else:
@@ -79,8 +81,16 @@ class SpecialHandler(Handler): ## Pulse RequestHandler class: parent of all othe
       login_url = users.create_login_url()
       self.redirect(login_url)
 
-    if not str(self.user) == 'aaron.sykes@modea.com':
+    special_users, name_match = list(SpecialUsers.get_users()), False 
+    for u in special_users:
+      if str(self.user) == str(u.user_name): 
+        name_match = True
+        
+    if not name_match:
       self.redirect('/')
+      return
+
+    self.params['user'] = self.user
 
     if self.request.url.endswith('.json'):
       self.format = 'json'
@@ -92,8 +102,6 @@ class Home(Handler): ## Handler for Home page requests
 
   def get(self):
 
-    self.params['user'] = self.user
-
     projects = Projects.get_projects()
     self.params['projects'] = projects
 
@@ -104,14 +112,11 @@ class Table(SpecialHandler): ## Handler for all Tables requests
 
   def get(self, project):
 
-    self.params['user'] = self.user
+    project = project.replace('-',' ')
     self.params['project'] = str(project)
 
-    project = project.replace('-',' ')
     scores = Scores.get_by_project(project, reverse_sort=True)
-    scores = list(scores)
-
-    self.params['scores'] = scores
+    self.params['scores'] = list(scores)
 
     self.render('table.html', **self.params)
 
@@ -120,66 +125,55 @@ class CommentTable(SpecialHandler): ## Handler for all Comment Tables requests
 
   def get(self, project):
 
-    self.params['user'] = self.user
+    project = project.replace('-',' ')
     self.params['project'] = str(project)
 
-    project = project.replace('-',' ')
     scores = Scores.get_by_project(project, reverse_sort=True)
-    scores = list(scores)
-
-    self.params['scores'] = scores
+    self.params['scores'] = list(scores)
 
     self.render('commenttable.html', **self.params)
 
 
 class UserCommentTable(SpecialHandler): ## Handler for all Comment Tables requests
 
-  def render_usercommenttable(self, project):
-    return
-    
-
-  def get(self, project):
-
-    self.params['user'] = self.user
-    self.params['project'] = str(project)
+  def render_page(self, project):
 
     project = project.replace('-',' ')
-    scores = Scores.get_by_project(project, reverse_sort=True)
-    scores = list(scores)
+    self.params['project'] = project
 
-    self.params['scores'] = scores
+    scores = Scores.get_by_project(project, reverse_sort=True)
+    self.params['scores'] = list(scores)
 
     self.render('usercommenttable.html', **self.params)
 
-  def post(self, project):
+  def get(self, project):
 
-    project = project.replace('-',' ')
     project = str(project)
+    self.render_page(project)
+
+  def post(self, project): ## remove selected score
 
     score_key = self.request.get('selected-score')
-    logging.warning(score_key)
     Scores.remove_score(score_key)
 
-    self.redirect('/scores/table/comments/users/' + project)
+    project = str(project)
+    self.render_page(project)
     
 
 class Charts(Handler): ## Handler for all Visuals requests
 
   def get(self, project):
 
-    self.params['user'] = self.user
+    project = project.replace('-',' ')
     self.params['project'] = str(project)
 
-    project = project.replace('-',' ')
-    scores = Scores.get_by_project(project)
-    scores = list(scores) or None
+    scores = list(Scores.get_by_project(project)) or None
 
     if scores is None: ## this conditional redirect will need to be replaced before going into production
       self.redirect('/')
       return
 
     enough_entries, visual_objects = createChartObjects(scores) 
-    logging.warning(enough_entries)
 
     if not enough_entries: ## this conditional redirect will need to be replaced before going into production
       self.redirect('/')
@@ -200,7 +194,6 @@ class Summary(Handler):
 
     ## get current week and then query scores by that week or the most recent week
     current_week = Scores.get_max_week()
-    logging.warning(current_week)
     scores = Scores.get_by_week_num(current_week)
     summary_gauge_object = createSummaryObject(scores)
     self.params['summary_gauge_object'] = summary_gauge_object 
@@ -209,8 +202,6 @@ class Summary(Handler):
 class Picks(Handler): ## Handler for all Picks requests
 
   def get(self):
-
-    self.params['user'] = self.user
 
     projects = Projects.get_projects()
     self.params['projects'] = projects
@@ -232,8 +223,6 @@ class Survey(Handler): ## Handler for Survey page requests
 
   def get(self):
 
-    self.params['user'] = self.user
-
     projects = Projects.get_projects()
     self.params['projects'] = list(projects)
 
@@ -246,8 +235,6 @@ class Survey(Handler): ## Handler for Survey page requests
     self.render('surveys.html', **self.params)
 
   def post(self):
-
-    self.params['user'] = self.user
 
     projects = Projects.get_projects()
     self.params['projects'] = list(projects)
@@ -327,10 +314,9 @@ class AdminProjects(SpecialHandler): ## Class that handles requests for the proj
   def render_admin_projects(self, **params):
 
     self.params = params
-    self.params['user'] = self.user
-
     projects = Projects.get_projects()
     self.params['projects'] = projects
+
     self.render('projects.html', **self.params)
     
   def get(self):
@@ -344,15 +330,13 @@ class AdminProjects(SpecialHandler): ## Class that handles requests for the proj
   def post(self):
 
     have_error, error = False, None
-    projects = Projects.get_projects()
-    projects = list(projects)
+    projects = list(Projects.get_projects())
     project = self.request.get('project')
 
     entry_is_valid = project_entry_validate(project)
     if project is '' or not entry_is_valid:
       have_error, error = True, 'that project name is invalid'
     elif project_exists(project, projects):
-      logging.warning('triggered')
       have_error, error = True, 'that project already exists'
     else:
       project = Projects.create_project(project)
@@ -374,18 +358,6 @@ class AdminProjectsRemove(SpecialHandler): ## Class that handles project remove 
     self.redirect('/admin/projects')
 
 
-class Login(Handler): ## Class that handles user login requests
-  
-  def get(self):
-
-    self.render('/login-form.html')
- 
-  def post(self):
-
-    username = self.request.get('username')
-    password = self.request.get('password')
-
-
 class Logout(Handler): ## Class that handles user login requests
 
   def get(self):
@@ -395,14 +367,12 @@ class Logout(Handler): ## Class that handles user login requests
 
 class AdminUsers(SpecialHandler): ## Class that handles requests for the project admin page
 
-  def render_admin_users(self, **params):
+  def render_page(self, **params):
 
     self.params = params
-    self.params['user'] = self.user
-
     users = SpecialUsers.get_users()
-    logging.warning(users)
     self.params['users'] = users
+
     self.render('users.html', **self.params)
     
   def get(self):
@@ -411,19 +381,17 @@ class AdminUsers(SpecialHandler): ## Class that handles requests for the project
     self.params['have_error']  = have_error
     self.params['error'] = error
 
-    self.render_admin_users(**self.params)
+    self.render_page(**self.params)
 
   def post(self):
 
     have_error, error = False, None
-    users = SpecialUsers.get_users()
-    users = list(users)
+    users = list(SpecialUsers.get_users())
     user = self.request.get('user')
 
     if not email_validate(user):
       have_error, error = True, 'that user is invalid'
     elif user_exists(user, users):
-      logging.warning('triggered')
       have_error, error = True, 'that user already exists'
     else:
       user = SpecialUsers.create_user(user)
@@ -432,61 +400,17 @@ class AdminUsers(SpecialHandler): ## Class that handles requests for the project
     self.params['have_error']  = have_error
     self.params['error'] = error
 
-    self.render_admin_users(**self.params)
+    self.render_page(**self.params)
 
 
 class AdminUsersRemove(SpecialHandler): ## Class that handles project remove reqests
 
   def post(self):
 
-    project = self.request.get('user')
-    project = SpecialUser.remove_user(user)
+    user = self.request.get('user')
+    user = SpecialUsers.remove_user(user)
 
     self.redirect('/admin/users')
-
-
-class Signup(Handler): ## Handler for all signup requests
-
-  def get(self):
-
-    self.render('/signup-form.html')
-
-  def post(self): ## user signup process: tests against regex and then if username is in datastore 
-
-    self.username = self.request.get('username')
-    self.password = self.request.get('password')
-    self.verify = self.request.get('verify')
-    self.email = self.request.get('email')
-    have_error = False
-
-    params = dict(username = self.username, email = self.email) 
- 
-    if not user_validate(self.username):
-      have_error = True
-      params['error_username'] = 'That username is invalid' 
-    elif Users.by_name(self.username):
-      have_error = True
-      params['error_username'] = 'That username is already taken' 
-
-    if not password_validate(self.password):
-      have_error=True
-      params['error_password'] = 'That password is invalid'
-    elif not password_verify(self.password, self.verify):
-      have_error = True
-      params['error_verify'] = 'Those passwords do not match'
-
-    if not email_validate(self.email):
-      have_error = True
-      params['error_email'] = 'That is not a valid email'
-
-    if have_error:
-      self.render('/signup-form.html', **params) 
-
-    else:
-      new_user = Users.register(self.username, self.password, self.email)
-      new_user.put()
-      self.login(new_user)
-      self.redirect(last_page)
 
 
 class Error(Handler): ## Default handler for 404 errors

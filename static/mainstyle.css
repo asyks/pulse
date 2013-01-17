@@ -141,6 +141,7 @@ tr.first-row {
 }
 
 .page-title {
+	display: block;
 	color: #222;
 	font-size: 28px;
 	font-weight: bold;
@@ -250,14 +251,20 @@ tr.first-row {
 	bottom: 1350px;
 }
 
+div.import-menu {
+}
+
 .admin-column-1 {
+	position: absolute;
 	float: left;
 	width: 50%;
 }
 
 .admin-column-2 {
+	position: absolute;
 	float: right;
 	width: 50%;
+	left: 50%;
 }
 
 .admin-section-title {
