@@ -403,12 +403,25 @@ class AdminUsers(SpecialHandler): ## Class that handles requests for the project
     self.render_page(**self.params)
 
 
-class AdminUsersRemove(SpecialHandler): ## Class that handles project remove reqests
+class AdminUsersModify(SpecialHandler): ## Class that handles project remove reqests
 
   def post(self):
 
     user = self.request.get('user')
-    user = SpecialUsers.remove_user(user)
+    remove = self.request.get('remove')
+    table_access = self.request.get('table-access')
+    admin_access = self.request.get('admin-access')
+    
+    if not user:
+      self.redirect('/admin/users')
+      return
+
+    if remove:
+      SpecialUsers.remove_user(user)
+    if table_access and not remove:
+      SpecialUsers.flip_table_access(user)
+    if admin_access and not remove:
+      SpecialUsers.flip_admin_access(user)
 
     self.redirect('/admin/users')
 
@@ -440,7 +453,7 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/admin/projects/?', AdminProjects),
                                (r'/admin/projects/remove/?', AdminProjectsRemove),
                                (r'/admin/users/?', AdminUsers),
-                               (r'/admin/users/remove/?', AdminUsersRemove),
+                               (r'/admin/users/modify/?', AdminUsersModify),
                                (r'/.*', Error)
                                ],
                                 debug=True)

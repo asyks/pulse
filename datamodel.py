@@ -170,17 +170,41 @@ class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
                admin_access = False)
 
   @classmethod
+  def put_user(cls, user):
+    user.put()
+
+  @classmethod
+  def get_users(cls):
+    users = cls.all()
+    users = users.order('date_added').run()
+    return users
+
+  @classmethod
   def remove_user(cls, us):
     user = cls.all()
     user = user.filter('user_name =', us).get()
     cls.delete(user)
 
   @classmethod
-  def put_user(cls, user): ## takes one project model instance and puts it into the datastore
-    user.put()
-
+  def flip_table_access(cls, us):
+    user = cls.all()
+    user = user.filter('user_name =', us).get()
+    access = user.table_access
+    if access is True:
+      user.table_access = False
+    if access is False:
+      user.table_access = True
+    cls.put_user(user)
+    
   @classmethod
-  def get_users(cls): ## gets a list of n score instances by project and timestamp and returns them
-    users = cls.all()
-    users = users.order('date_added').run()
-    return users
+  def flip_admin_access(cls, us):
+    user = cls.all()
+    user = user.filter('user_name =', us).get()
+    access = user.admin_access
+    if access is True:
+      user.admin_access = False
+      user.table_access = False
+    if access is False:
+      user.admin_access = True
+      user.table_access = True
+    cls.put_user(user)

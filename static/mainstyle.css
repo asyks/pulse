@@ -119,7 +119,7 @@ td.label {
 }
 
 tr[class=record]:nth-child(even) {
-	background-color: #E0FFFF;
+	background-color: #D3D3D3;
 }
 
 tr.first-row {
