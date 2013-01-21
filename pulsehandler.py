@@ -62,6 +62,8 @@ class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of 
       self.redirect(login_url)
 
     self.params['user'] = self.user
+    projects = Projects.get_projects()
+    self.params['projects'] = list(projects)
 
     if self.request.url.endswith('.json'):
       self.format = 'json'
@@ -69,7 +71,7 @@ class Handler(webapp2.RequestHandler): ## Pulse RequestHandler class: parent of 
       self.format = 'html'
 
 
-class SpecialHandler(Handler): ## Pulse RequestHandler class: parent of all other request handlers
+class AdminHandler(Handler): ## Pulse RequestHandler class: parent of all other request handlers
     
   def initialize(self, *a, **kw):
 
@@ -83,7 +85,36 @@ class SpecialHandler(Handler): ## Pulse RequestHandler class: parent of all othe
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     for u in special_users:
-      if str(self.user) == str(u.user_name): 
+      if str(self.user) == str(u.user_name) and u.admin_access is True: 
+        name_match = True
+        
+    if not name_match:
+      self.redirect('/')
+      return
+
+    self.params['user'] = self.user
+
+    if self.request.url.endswith('.json'):
+      self.format = 'json'
+    else:
+      self.format = 'html'
+
+
+class TableHandler(Handler): ## Pulse RequestHandler class: parent of all other request handlers
+    
+  def initialize(self, *a, **kw):
+
+    webapp2.RequestHandler.initialize(self, *a, **kw)
+
+    self.user = users.get_current_user()
+    if not self.user: # or self.user is None:
+      request_uri = self.request.uri 
+      login_url = users.create_login_url()
+      self.redirect(login_url)
+
+    special_users, name_match = list(SpecialUsers.get_users()), False 
+    for u in special_users:
+      if str(self.user) == str(u.user_name) and u.table_access is True: 
         name_match = True
         
     if not name_match:
@@ -103,12 +134,12 @@ class Home(Handler): ## Handler for Home page requests
   def get(self):
 
     projects = Projects.get_projects()
-    self.params['projects'] = projects
+    self.params['projects'] = list(projects)
 
     self.render('home.html', **self.params)
 
 
-class Table(SpecialHandler): ## Handler for all Tables requests
+class Table(TableHandler): ## Handler for all Tables requests
 
   def get(self, project):
 
@@ -121,7 +152,7 @@ class Table(SpecialHandler): ## Handler for all Tables requests
     self.render('table.html', **self.params)
 
 
-class CommentTable(SpecialHandler): ## Handler for all Comment Tables requests
+class CommentTable(TableHandler): ## Handler for all Comment Tables requests
 
   def get(self, project):
 
@@ -134,7 +165,7 @@ class CommentTable(SpecialHandler): ## Handler for all Comment Tables requests
     self.render('commenttable.html', **self.params)
 
 
-class UserCommentTable(SpecialHandler): ## Handler for all Comment Tables requests
+class UserCommentTable(AdminHandler): ## Handler for all Comment Tables requests
 
   def render_page(self, project):
 
@@ -204,7 +235,7 @@ class Picks(Handler): ## Handler for all Picks requests
   def get(self):
 
     projects = Projects.get_projects()
-    self.params['projects'] = projects
+    self.params['projects'] = list(projects)
 
     self.render('picks.html', **self.params)
 
@@ -279,7 +310,7 @@ class Survey(Handler): ## Handler for Survey page requests
       self.redirect('/')
 
 
-class AdminConsole(SpecialHandler): ## Class that handles requests of the import import admin page
+class AdminConsole(AdminHandler): ## Class that handles requests of the import import admin page
 
   def get(self):
     
@@ -287,7 +318,7 @@ class AdminConsole(SpecialHandler): ## Class that handles requests of the import
     self.render('adminconsole.html', **self.params)
 
 
-class AdminImport(SpecialHandler): ## Class that handles requests of the import import admin page
+class AdminImport(AdminHandler): ## Class that handles requests of the import import admin page
 
   def post(self):
 
@@ -301,7 +332,7 @@ class AdminImport(SpecialHandler): ## Class that handles requests of the import 
     self.redirect('/admin/console')
 
 
-class AdminDrops(SpecialHandler): ## Class that handles requests for the drops tables admin page
+class AdminDrops(AdminHandler): ## Class that handles requests for the drops tables admin page
 
   def post(self):
 
@@ -309,7 +340,7 @@ class AdminDrops(SpecialHandler): ## Class that handles requests for the drops t
     self.redirect('/admin/console') 
 
 
-class AdminProjects(SpecialHandler): ## Class that handles requests for the project admin page
+class AdminProjects(AdminHandler): ## Class that handles requests for the project admin page
 
   def render_admin_projects(self, **params):
 
@@ -348,7 +379,7 @@ class AdminProjects(SpecialHandler): ## Class that handles requests for the proj
     self.render_admin_projects(**self.params)
 
 
-class AdminProjectsRemove(SpecialHandler): ## Class that handles project remove reqests
+class AdminProjectsRemove(AdminHandler): ## Class that handles project remove reqests
 
   def post(self):
 
@@ -365,7 +396,7 @@ class Logout(Handler): ## Class that handles user login requests
     self.logout(self.user) ## removes user cookie  
 
 
-class AdminUsers(SpecialHandler): ## Class that handles requests for the project admin page
+class AdminUsers(AdminHandler): ## Class that handles requests for the project admin page
 
   def render_page(self, **params):
 
@@ -403,7 +434,7 @@ class AdminUsers(SpecialHandler): ## Class that handles requests for the project
     self.render_page(**self.params)
 
 
-class AdminUsersModify(SpecialHandler): ## Class that handles project remove reqests
+class AdminUsersModify(AdminHandler): ## Class that handles project remove reqests
 
   def post(self):
 

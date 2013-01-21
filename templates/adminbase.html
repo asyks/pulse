@@ -8,6 +8,7 @@
 
 		<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
 		<link rel="stylesheet" type="text/css" href="/static/adminstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
 
 	</head>
 
@@ -19,14 +20,14 @@
 
 		<a href="/" class="main-title">Team Pulse</a>
 
-		<div class="admin-nav-container">
-			<ul class="admin-nav">
+	<nav>
+		<ul class="top-nav">
 				<li><a href="/">Home</a></li>
 				<li><a href="/admin/console/">Admin Console</a></li>
 				<li><a href="/admin/projects/">Projects Admin</a></li>
 				<li><a href="/admin/users/">Users Admin</a></li>
-			</ul>
-		</div>
+		</ul>
+	</nav>
 
 		<div id="content">
 			{% block content %}

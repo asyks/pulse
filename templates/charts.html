@@ -7,6 +7,7 @@
     <title>Team Pulse</title>
 
     <link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
 
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
@@ -130,6 +131,27 @@
     </div>
 
     <a href="/" class="main-title">Team Pulse</a>
+
+		{% block navigation %}
+		<nav>
+			<ul class="top-nav">
+				<li><a href='/'>Home</a></li>
+				<li><a href='/survey/project-select/'>Survey</a></li>
+				<li><a href='/visuals/summary/'>Summary</a></li>
+				<li>Projects
+					<ul>
+						{% for p in projects %}
+						<li>
+							<a href='/visuals/charts/{{p.project.replace(' ','-')}}'>
+								{{ p.project }}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		{% endblock %}
 
 		{% block content %}
 

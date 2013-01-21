@@ -2,27 +2,49 @@
 
 <html>
 
-	<head>
+<head>
 
-		<title>Team Pulse</title>
+	<title>Team Pulse</title>
 
-		<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+	<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+	<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
 
-	</head>
+</head>
 
-	<body id="normal">
+<body id="normal">
 
-		<div id="auth" class="auth">you're logged in as: {{ user | safe }} , 
-			wrong user? <a href="/logout">click here</a>
-		</div>
+	<div id="auth" class="auth">you're logged in as: {{ user | safe }} , 
+		wrong user? <a href="/logout">click here</a>
+	</div>
 
-		<a href="/" class="main-title">Team Pulse</a>
+	<a href="/" class="main-title">Team Pulse</a>
 
-		<div id="content">
-			{% block content %}
-			{% endblock %}
-		</div>
+	{% block navigation %}
+	<nav>
+		<ul class="top-nav">
+			<li><a href='/'>Home</a></li>
+			<li><a href='/survey/project-select/'>Survey</a></li>
+			<li><a href='/visuals/summary/'>Summary</a></li>
+			<li>Projects
+				<ul>
+					{% for p in projects %}
+					<li>
+						<a href='/visuals/charts/{{ p.project.replace(' ','-')}}'>
+							{{ p.project }}
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+	</nav>
+	{% endblock %}
 
-	</body>
+	<div id="content">
+		{% block content %}
+		{% endblock %}
+	</div>
+
+</body>
 
 </html>
