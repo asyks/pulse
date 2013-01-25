@@ -1,12 +1,10 @@
 
 ## standard python library imports
 import hashlib, hmac, string, random, re, logging
-
 ## pulse class/object imports
 from datetime import datetime
 
-## date format and string substitution procedures for wiki pages last edited footer
-
+## date format and string substitution procedures
 def format_datetime(date_time):
   time_format = '%x' 
   return date_time.strftime(time_format)
@@ -15,9 +13,7 @@ def make_last_edit_str(time):
   return 'This page was last edited on: %s' % time
  
 ## datastore entry validation stuff
-
 PROJECT_RE = re.compile(r'([0-9a-zA-Z_-]+)/?')
-
 def validate_all_projects(projects):
   for project in projects:
     return project_validate(str(project))
@@ -52,11 +48,9 @@ def score_validate(scores):
   return True 
 
 ## sign-up form validation stuff
-
 USER_RE = re.compile("^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile("^.{3,20}$")
 EMAIL_RE = re.compile("^[\S]+@[\S]+\.[\S]+$")
-
 def user_validate(u):
   if USER_RE.match(u):
     return True
@@ -76,9 +70,7 @@ def email_validate(e):
     return True
 
 ## cookie setting stuff
-
 secret = 'you will never guess me'
-
 def make_secure_val(val):
   return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
@@ -88,7 +80,6 @@ def check_secure_val(secure_val):
     return val 
 
 ## password hashing stuff
-
 def make_salt():
   return ''.join(random.choice(string.letters) for x in range(5))
 
