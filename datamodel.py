@@ -7,6 +7,8 @@ from google.appengine.ext import db
 import logging
 import calendar
 
+def scores_key(group='default'):
+  return db.Key.from_path('Scores', group)
 
 class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores model
 
@@ -52,7 +54,8 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     pl = (pr + cm + ex + ch) / 4.0
 
     logging.warning('score created')
-    return cls(username = un,
+    return cls(parent = scores_key(),
+               username = un,
                project = pj,
                pride = pr,
                communication = cm,
@@ -129,6 +132,8 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
   def remove_score(cls, score_key):
     db.delete(score_key)
 
+def projects_key(group='default'):
+  return db.Key.from_path('Projects', group)
 
 class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
@@ -137,7 +142,8 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   @classmethod
   def create_project(cls, pj):
-    return cls(project = pj)
+    return cls(parent = projects_key(),
+               project = pj)
 
   @classmethod
   def remove_project(cls, pj):
@@ -155,6 +161,8 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
     projects = projects.order('date_added').run()
     return projects
 
+def specialusers_key(group='default'):
+  return db.Key.from_path('SpecialUsers', group)
 
 class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
 
@@ -165,7 +173,8 @@ class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
 
   @classmethod
   def create_user(cls, us):
-    return cls(user_name = us,
+    return cls(parent = specialusers_key(),
+               user_name = us,
                table_access = False,
                admin_access = False)
 
