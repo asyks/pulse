@@ -151,6 +151,13 @@ class Logout(Handler):
     login_url = users.create_logout_url('/')
     self.redirect(login_url)
 
+class AllRecordTable(TableHandler):
+
+  def get(self):
+    scores = Scores.get_scores()
+    self.params['scores'] = list(scores)
+    self.render('tableall.html', **self.params)
+
 class Table(TableHandler):
 
   def get(self, project):
@@ -217,6 +224,16 @@ class Summary(Handler):
     summary_gauge_object = createSummaryObject(scores)
     self.params['summary_gauge_object'] = summary_gauge_object 
     self.render('summary.html', **self.params)
+
+class Breakout(Handler):
+
+  def get(self):
+    current_week = Scores.get_max_week()
+    scores = Scores.get_by_week_num(current_week)
+    breakout_gauges = createBreakoutObject(scores)
+    logging.warning(breakout_gauges)
+    self.params['breakout_gauges'] = breakout_gauges 
+    self.render('breakout.html', **self.params)
 
 class Picks(Handler):
 
@@ -409,8 +426,10 @@ app = webapp2.WSGIApplication([(r'/?', Home),
                                (r'/logout/?', Logout),
                                (r'/visuals/charts/' + PROJECT_RE, Charts),
                                (r'/visuals/summary/?', Summary ),
+                               (r'/visuals/breakout/?', Breakout ),
                                (r'/survey/project-select/?', Picks),
                                (r'/survey/entry-form/?', Survey),
+                               (r'/scores/table/all', AllRecordTable),
                                (r'/scores/table/' + PROJECT_RE, Table),
                                (r'/scores/table/comments/' + PROJECT_RE, CommentTable),
                                (r'/scores/table/comments/users/' + PROJECT_RE, UserCommentTable),

@@ -76,6 +76,13 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
     db.put(scores)
 
   @classmethod
+  def get_scores(cls):
+    logging.warning("getting scores from the datastore")
+    scores = cls.all()
+    scores = scores.order('-timestamp').run()
+    return scores
+
+  @classmethod
   def get_by_project(cls, pj, reverse_sort=False): ## gets a list of n score instances by project and timestamp and returns them
     sort = 'timestamp'
     if reverse_sort:

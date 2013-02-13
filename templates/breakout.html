@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title>Team Pulse</title>
+
+		<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
+
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+	{% block javascript %}
+
+	<script type="text/javascript">
+
+	google.load('visualization', '1.0', {'packages':['corechart','gauge']});
+
+	google.setOnLoadCallback(drawChart);
+
+	function drawChart() {
+  {% for gauge in breakout_gauges %}
+		draw{{gauge[0].replace(' ','_')}}Gauge();
+	{% endfor %}
+	}
+
+  {% for gauge in breakout_gauges %}
+	function draw{{gauge[0].replace(' ','_')}}Gauge() { 
+
+		var JSONObject = {{ gauge[1]|safe }}; 
+
+		var options = {
+			width: 1200, height: 300,
+			min: 0, max: 10,
+			greenFrom:7, greenTo:10,
+			yellowFrom:4, yellowTo: 7,
+			redFrom: 0, redTo: 4,
+			minorTicks: 5
+		};
+
+		var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+		var chart = new google.visualization.Gauge(document.getElementById('{{ "%s_gauge" % gauge[0].replace(' ','_') }}' ));
+		chart.draw(data_table, options);
+	}
+  {% endfor %}
+
+	</script>
+
+	{% endblock %}
+
+  </head>
+
+  <body class="vis-block">
+
+    <div id="auth" class="auth">you're logged in as: {{ user | safe }} ,
+      wrong user? <a href="/logout">click here</a>
+    </div>
+
+    <a href="/" class="main-title">Team Pulse</a>
+
+		{% block navigation %}
+		<nav>
+			<ul class="top-nav">
+				<li><a href='/'>Home</a></li>
+				<li><a href='/survey/project-select/'>Survey</a></li>
+				<li><a href='/visuals/summary/'>Summary</a></li>
+				<li>Projects
+					<ul>
+						{% for p in projects %}
+						<li>
+							<a href='/visuals/charts/{{p.project.replace(' ','-')}}'>
+								{{ p.project }}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		{% endblock %}
+
+		{% block content %}
+
+		<div class="vis-title">
+			<a href="/visuals/breakout">This Week's Projects</a>
+		</div>
+
+		{% for gauge in breakout_gauges %}
+		<h2>{{ gauge[0] }}</h2>
+		<div class='summary-gauge' id='{{ "%s_gauge" % gauge[0].replace(' ','_')| safe }}'></div>
+		{% endfor %}
+
+		{% endblock %}
+
+	</body>
+
+</html>

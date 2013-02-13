@@ -62,7 +62,7 @@ def createWeeksObject(scores):
   return weeks
 
 def findAverage(total, entries):
-  return round(total/entries, 2)
+  return round(float(total)/float(entries), 2)
 
 def createLineChartObject(weeks):
 
@@ -84,43 +84,43 @@ def createLineChartObject(weeks):
 
 def createPulseGaugeObject(weeks, n):
 
-  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  gauge_object, cols_one, cols_two = dict(), dict(), dict() 
   columns, rows = list(), list()
 
   cols_one['id'], cols_one['label'], cols_one['type'] = 'week', 'Week', 'string'
   cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
   columns.append(cols_one)
   columns.append(cols_two)
-  guage_object['cols'] = columns
+  gauge_object['cols'] = columns
 
   rows.append( {'c':[{'v': format_datetime(weeks[n]['wk'])}, {'v': findAverage(weeks[n]['pl'], weeks[n]['wk_en'])}]} )
-  guage_object['rows'] = rows
+  gauge_object['rows'] = rows
 
-  guage_object = json.dumps(guage_object)
+  gauge_object = json.dumps(gauge_object)
 
-  return guage_object
+  return gauge_object
 
 
 def createBreakoutGaugeObject(weeks, n):
 
-  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  gauge_object, cols_one, cols_two = dict(), dict(), dict() 
   columns, rows = list(), list()
 
   cols_one['id'], cols_one['label'], cols_one['type'] = 'score', 'Score', 'string'
   cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
   columns.append(cols_one)
   columns.append(cols_two)
-  guage_object['cols'] = columns
+  gauge_object['cols'] = columns
 
   rows.append( {'c':[{'v': 'Pride'}, {'v': findAverage(weeks[n]['pr'], weeks[n]['wk_en'])}]} )
   rows.append( {'c':[{'v': 'Communication'}, {'v': findAverage(weeks[n]['cm'], weeks[n]['wk_en'])}]} )
   rows.append( {'c':[{'v': 'Expectations'}, {'v': findAverage(weeks[n]['ex'], weeks[n]['wk_en'])}]} )
   rows.append( {'c':[{'v': 'Challenge'}, {'v': findAverage(weeks[n]['ch'], weeks[n]['wk_en'])}]} )
-  guage_object['rows'] = rows
+  gauge_object['rows'] = rows
 
-  guage_object = json.dumps(guage_object)
+  gauge_object = json.dumps(gauge_object)
 
-  return guage_object
+  return gauge_object
 
 
 def createChartObjects(scores):
@@ -133,13 +133,13 @@ def createChartObjects(scores):
     this_week_pulse_gauge_object = createPulseGaugeObject(weeks, -1)
     last_week_pulse_gauge_object = createPulseGaugeObject(weeks, -2)
     this_week_breakout_gauge_object = createBreakoutGaugeObject(weeks, -1)
-    last_week_breakout_guage_object = createBreakoutGaugeObject(weeks, -2)
+    last_week_breakout_gauge_object = createBreakoutGaugeObject(weeks, -2)
 
     visual_objects = ( line_chart_object,
 											 this_week_pulse_gauge_object,
 											 last_week_pulse_gauge_object,
 											 this_week_breakout_gauge_object,
-											 last_week_breakout_guage_object)
+											 last_week_breakout_gauge_object)
   else:
     enough_entries = False
     visual_objects = (None, None, None, None, None)
@@ -150,40 +150,84 @@ def createPulseifiedObject(scores):
 
   pulseified_object = dict()
 
-  for score in scores:  
+  for score in scores:
     logging.warning(score.project)
     logging.warning(score.pulse)
     if score.project in pulseified_object:
       pulse_list = pulseified_object[score.project]
       pulse_list[0] += score.pulse
-      pulse_list[1] += 1
+      pulse_list[1] += score.pride
+      pulse_list[2] += score.communication
+      pulse_list[3] += score.expectations
+      pulse_list[4] += score.challenge
+      pulse_list[5] += 1
     else:
       pulse_list = pulseified_object[score.project] = list()
-      pulse_list.append(score.pulse); pulse_list.append(1)
+      pulse_list.append(score.pulse)
+      pulse_list.append(score.pride)
+      pulse_list.append(score.communication)
+      pulse_list.append(score.expectations)
+      pulse_list.append(score.challenge)
+      pulse_list.append(1)
 
   return pulseified_object
       
 def createChartifiedObject(obj):
 
-  guage_object, cols_one, cols_two = dict(), dict(), dict() 
+  gauge_object, cols_one, cols_two = dict(), dict(), dict() 
   columns, rows = list(), list()
 
   cols_one['id'], cols_one['label'], cols_one['type'] = 'project', 'Project', 'string'
   cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
   columns.append(cols_one)
   columns.append(cols_two)
-  guage_object['cols'] = columns
+  gauge_object['cols'] = columns
 
   for key in obj:
-    rows.append( {'c':[{'v': key}, {'v': findAverage(obj[key][0], obj[key][1])}]} )
-  guage_object['rows'] = rows
+    rows.append( {'c':[{'v': key}, {'v': findAverage(obj[key][0], obj[key][5])}]} )
+  gauge_object['rows'] = rows
 
-  guage_object = json.dumps(guage_object)
+  gauge_object = json.dumps(gauge_object)
 
-  return guage_object
+  return gauge_object
 
 def createSummaryObject(scores):
 
   pulseified_object = createPulseifiedObject(scores)
   summary_gauge_object = createChartifiedObject(pulseified_object)
   return summary_gauge_object
+
+def createProjectBreakoutObject(obj):
+
+  breakout_gauges = list()
+
+  for key in obj:
+
+    gauge = list()
+    gauge_object, cols_one, cols_two = dict(), dict(), dict() 
+    columns, rows = list(), list()
+
+    cols_one['id'], cols_one['label'], cols_one['type'] = 'score', 'Score', 'string'
+    cols_two['id'], cols_two['label'], cols_two['type'] = 'pulse', 'Pulse', 'number'
+    columns.append(cols_one)
+    columns.append(cols_two)
+    gauge_object['cols'] = columns
+
+    rows.append( {'c':[{'v': 'Pride'}, {'v': findAverage(obj[key][1], obj[key][5])}]} )
+    rows.append( {'c':[{'v': 'Communication'}, {'v': findAverage(obj[key][2], obj[key][5])}]} )
+    rows.append( {'c':[{'v': 'Expectations'}, {'v': findAverage(obj[key][3], obj[key][5])}]} )
+    rows.append( {'c':[{'v': 'Challenge'}, {'v': findAverage(obj[key][4], obj[key][5])}]} )
+    gauge_object['rows'] = rows
+
+    gauge_object = json.dumps(gauge_object)
+    gauge.append(key.replace('\'','_').replace('-','_'))
+    gauge.append(gauge_object)
+    breakout_gauges.append(gauge)
+
+  return breakout_gauges 
+
+def createBreakoutObject(scores):
+
+  pulseified_object = createPulseifiedObject(scores)
+  breakout_gauges = createProjectBreakoutObject(pulseified_object)
+  return breakout_gauges
