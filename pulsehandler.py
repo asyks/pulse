@@ -86,7 +86,9 @@ class AdminHandler(Handler):
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     for u in special_users:
-      if str(self.user) == str(u.user_name) and u.admin_access is True: 
+      if str(self.user) == str(u.user_name) or \
+      str(self.user) == str(u.user_name).split('@')[0] and \
+      u.admin_access is True: 
         name_match = True
         
     if not name_match:
@@ -119,7 +121,9 @@ class TableHandler(Handler):
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     for u in special_users:
-      if str(self.user) == str(u.user_name) and u.table_access is True: 
+      if str(self.user) == str(u.user_name) or \
+      str(self.user) == str(u.user_name).split('@')[0] and \
+      u.table_access is True: 
         name_match = True
         
     if not name_match:
@@ -143,7 +147,9 @@ class Home(Handler):
 class Logout(Handler):
 
   def get(self):
-    self.logout(self.user) ## removes user cookie  
+    request_uri = self.request.uri
+    login_url = users.create_logout_url('/')
+    self.redirect(login_url)
 
 class Table(TableHandler):
 
@@ -303,6 +309,7 @@ class AdminProjects(AdminHandler):
 
   def render_admin_projects(self, **params):
     self.params = params
+    self.params['projects'] = Projects.get_projects()
     self.render('projects.html', **self.params)
     
   def get(self):
@@ -313,7 +320,7 @@ class AdminProjects(AdminHandler):
 
   def post(self):
     have_error, error = False, None
-    projects = list(Projects.get_projects())
+    projects = self.params['projects']
     project = self.request.get('project')
 
     entry_is_valid = project_entry_validate(project)

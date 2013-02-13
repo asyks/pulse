@@ -22,10 +22,21 @@
 
 	<nav>
 		<ul class="top-nav">
-				<li><a href="/">Home</a></li>
-				<li><a href="/admin/console/">Admin Console</a></li>
-				<li><a href="/admin/projects/">Projects Admin</a></li>
-				<li><a href="/admin/users/">Users Admin</a></li>
+			<li><a href="/">Home</a></li>
+			<li><a href="/admin/console/">Admin Console</a></li>
+			<li><a href="/admin/projects/">Projects Admin</a></li>
+			<li><a href="/admin/users/">Users Admin</a></li>
+			<li>Project Tables
+				<ul>
+					{% for p in projects %}
+					<li>
+						<a href='/scores/table/{{ p.project.replace(' ','-')}}'>
+							{{ p.project }}
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
 		</ul>
 	</nav>
 

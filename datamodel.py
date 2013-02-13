@@ -152,11 +152,13 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
     cls.delete(project)
 
   @classmethod
-  def put_project(cls, project): ## takes one project model instance and puts it into the datastore
+  def put_project(cls, project):
+    logging.warning("putting %s into the datastore" % project)
     project.put()
 
   @classmethod
-  def get_projects(cls): ## gets a list of n score instances by project and timestamp and returns them
+  def get_projects(cls):
+    logging.warning("getting projects from the datastore")
     projects = cls.all()
     projects = projects.order('date_added').run()
     return projects
