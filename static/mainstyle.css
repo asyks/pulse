@@ -256,15 +256,17 @@ div.import-menu {
 
 .admin-column-1 {
 	position: absolute;
+	display: block;
 	float: left;
-	width: 50%;
+	width: 500px;
 }
 
 .admin-column-2 {
 	position: absolute;
+	display: block;
+	margin-left: 400px;
 	float: right;
-	width: 50%;
-	left: 50%;
+	width: 500px;
 }
 
 .admin-section-title {

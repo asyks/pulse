@@ -2,24 +2,25 @@
 
 <html>
 
-	<head>
+<head>
 
-		<title>Team Pulse</title>
+	<title>Team Pulse</title>
 
-		<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
-		<link rel="stylesheet" type="text/css" href="/static/adminstyle.css" />
-		<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
+	<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
+	<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
 
-	</head>
+</head>
 
-	<body id="normal">
+<body id="normal">
 
-		<div id="auth" class="auth">you're logged in as: {{ user | safe }} , 
-			wrong user? <a href="/logout">click here</a>
-		</div>
+	<div id="auth" class="auth">
+		you're logged in as: {{ user | safe }}, wrong user?
+		 <a href="/logout">click here</a>
+	</div>
 
-		<a href="/" class="main-title">Team Pulse</a>
+	<a href="/" class="main-title">Team Pulse</a>
 
+	{% block navigation %}
 	<nav>
 		<ul class="top-nav">
 			<li><a href="/">Home</a></li>
@@ -39,12 +40,13 @@
 			</li>
 		</ul>
 	</nav>
+	{% endblock %}
 
-		<div id="content">
-			{% block content %}
-			{% endblock %}
-		</div>
+	<div id="content">
+		{% block content %}
+		{% endblock %}
+	</div>
 
-	</body>
+</body>
 
 </html>
