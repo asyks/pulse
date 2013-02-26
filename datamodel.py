@@ -165,7 +165,6 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 
   @classmethod
   def get_projects(cls):
-    logging.warning("getting projects from the datastore")
     projects = cls.all()
     projects = projects.order('date_added').run()
     return projects

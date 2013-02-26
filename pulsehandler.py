@@ -79,6 +79,7 @@ class AdminHandler(Handler):
     webapp2.RequestHandler.initialize(self, *a, **kw)
 
     self.user = users.get_current_user()
+    logging.warning(self.user)
     if not self.user:
       request_uri = self.request.uri 
       login_url = users.create_login_url()
@@ -86,7 +87,8 @@ class AdminHandler(Handler):
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     for u in special_users:
-      if str(self.user) == str(u.user_name) or \
+      if str(self.user.email()) == str(u.user_name) or \
+      str(self.user.email().lower()) == str(u.user_name) or \
       str(self.user) == str(u.user_name).split('@')[0] and \
       u.admin_access is True: 
         name_match = True
@@ -122,6 +124,7 @@ class TableHandler(Handler):
     special_users, name_match = list(SpecialUsers.get_users()), False 
     for u in special_users:
       if str(self.user) == str(u.user_name) or \
+      str(self.user.email().lower()) == str(u.user_name) or \
       str(self.user) == str(u.user_name).split('@')[0] and \
       u.table_access is True: 
         name_match = True
@@ -325,8 +328,9 @@ class AdminDrops(AdminHandler):
 class AdminProjects(AdminHandler):
 
   def render_admin_projects(self, **params):
-    self.params = params
-    self.params['projects'] = Projects.get_projects()
+    projects = list(Projects.get_projects())
+    self.params['projectList'] = projects
+    self.params['projects'] = projects
     self.render('projects.html', **self.params)
     
   def get(self):
@@ -351,7 +355,6 @@ class AdminProjects(AdminHandler):
 
     self.params['have_error']  = have_error
     self.params['error'] = error
-
     self.render_admin_projects(**self.params)
 
 class AdminProjectsRemove(AdminHandler):
@@ -365,7 +368,7 @@ class AdminUsers(AdminHandler):
 
   def render_page(self, **params):
     self.params = params
-    users = SpecialUsers.get_users()
+    users = list(SpecialUsers.get_users())
     self.params['users'] = users
     self.render('users.html', **self.params)
     
