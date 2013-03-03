@@ -188,6 +188,7 @@ class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
 
   @classmethod
   def put_user(cls, user):
+    logging.warning("putting %s into the datastore" % user)
     user.put()
 
   @classmethod

@@ -22,9 +22,8 @@
 	{% block navigation %}
 	<nav>
 		<ul class="top-nav">
-			<li><a href='/'>Home</a></li>
-			<li><a href='/admin/console'>Admin Console</a></li>
-			<li>Project Tables
+			<li><a href='/scores/table/all'>All Records</a></li>
+			<li>Basic Tables
 				<ul>
 					{% for p in projects %}
 					<li>
@@ -35,6 +34,31 @@
 					{% endfor %}
 				</ul>
 			</li>
+			<li>Comments
+				<ul>
+					{% for p in projects %}
+					<li>
+						<a href='/scores/table/comments/{{ p.project.replace(' ','-')}}'>
+							{{ p.project }}
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
+      {% if admin_access %}
+			<li><a href='/admin/console'>Admin Console</a></li>
+			<li>User Comments
+				<ul>
+					{% for p in projects %}
+					<li>
+						<a href='/scores/table/comments/users/{{ p.project.replace(' ','-')}}'>
+							{{ p.project }}
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
+			{% endif %}
 		</ul>
 	</nav>
 	{% endblock %}

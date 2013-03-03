@@ -86,18 +86,16 @@ class AdminHandler(Handler):
       self.redirect(login_url)
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
-    for u in special_users:
-      if str(self.user.email()) == str(u.user_name) or \
-      str(self.user.email().lower()) == str(u.user_name) or \
-      str(self.user) == str(u.user_name).split('@')[0] and \
-      u.admin_access is True: 
-        name_match = True
+    special, admin, table = check_access_level(self.user,special_users)
         
-    if not name_match:
+    if not special or not admin:
       self.redirect('/')
       return
 
     self.params['user'] = self.user
+    self.params['special'] = special
+    self.params['admin_access'] = admin
+    self.params['table_access'] = table
     projects = Projects.get_projects()
     self.params['projects'] = list(projects)
 
@@ -122,18 +120,16 @@ class TableHandler(Handler):
       self.redirect(login_url)
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
-    for u in special_users:
-      if str(self.user) == str(u.user_name) or \
-      str(self.user.email().lower()) == str(u.user_name) or \
-      str(self.user) == str(u.user_name).split('@')[0] and \
-      u.table_access is True: 
-        name_match = True
+    special, admin, table = check_access_level(self.user,special_users)
         
-    if not name_match:
+    if not special or not table:
       self.redirect('/')
       return
 
     self.params['user'] = self.user
+    self.params['special'] = special
+    self.params['admin_access'] = admin
+    self.params['table_access'] = table
     projects = Projects.get_projects()
     self.params['projects'] = list(projects)
 
@@ -177,7 +173,7 @@ class CommentTable(TableHandler):
     self.params['project'] = str(project)
     scores = Scores.get_by_project(project, reverse_sort=True)
     self.params['scores'] = list(scores)
-    self.render('commenttable.html', **self.params)
+    self.render('tablecomment.html', **self.params)
 
 class UserCommentTable(AdminHandler):
 
@@ -186,7 +182,7 @@ class UserCommentTable(AdminHandler):
     self.params['project'] = project
     scores = Scores.get_by_project(project, reverse_sort=True)
     self.params['scores'] = list(scores)
-    self.render('usercommenttable.html', **self.params)
+    self.render('tablecommentuser.html', **self.params)
 
   def get(self, project):
     project = str(project)
@@ -327,7 +323,7 @@ class AdminDrops(AdminHandler):
 
 class AdminProjects(AdminHandler):
 
-  def render_admin_projects(self, **params):
+  def render_admin_projects(self):
     projects = list(Projects.get_projects())
     self.params['projectList'] = projects
     self.params['projects'] = projects
@@ -337,7 +333,7 @@ class AdminProjects(AdminHandler):
     have_error, error = False, None
     self.params['have_error']  = have_error
     self.params['error'] = error
-    self.render_admin_projects(**self.params)
+    self.render_admin_projects()
 
   def post(self):
     have_error, error = False, None
@@ -355,7 +351,7 @@ class AdminProjects(AdminHandler):
 
     self.params['have_error']  = have_error
     self.params['error'] = error
-    self.render_admin_projects(**self.params)
+    self.render_admin_projects()
 
 class AdminProjectsRemove(AdminHandler):
 
@@ -366,17 +362,16 @@ class AdminProjectsRemove(AdminHandler):
 
 class AdminUsers(AdminHandler):
 
-  def render_page(self, **params):
-    self.params = params
-    users = list(SpecialUsers.get_users())
-    self.params['users'] = users
+  def render_admin_users(self):
+    userList = list(SpecialUsers.get_users())
+    self.params['userList'] = userList
     self.render('users.html', **self.params)
     
   def get(self):
     have_error, error = False, None
     self.params['have_error']  = have_error
     self.params['error'] = error
-    self.render_page(**self.params)
+    self.render_admin_users()
 
   def post(self):
     have_error, error = False, None
@@ -393,7 +388,7 @@ class AdminUsers(AdminHandler):
 
     self.params['have_error']  = have_error
     self.params['error'] = error
-    self.render_page(**self.params)
+    self.render_admin_users()
 
 class AdminUsersModify(AdminHandler):
 

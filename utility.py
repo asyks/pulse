@@ -4,6 +4,20 @@ import hashlib, hmac, string, random, re, logging
 ## pulse class/object imports
 from datetime import datetime
 
+## admin and table access checking stuff
+def check_access_level(user, special_users):
+  special, admin, table = False, False, False
+  for u in special_users:
+    if str(user.email()) == str(u.user_name) or \
+    str(user.email().lower()) == str(u.user_name) or \
+    str(user) == str(u.user_name).split('@')[0]:
+      special = True
+      if u.admin_access is True:
+        admin = True
+      if u.table_access is True:
+        table = True
+    return special, admin, table
+
 ## date format and string substitution procedures
 def format_datetime(date_time):
   time_format = '%x' 
