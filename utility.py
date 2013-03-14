@@ -16,7 +16,8 @@ def check_access_level(user, special_users):
         admin = True
       if u.table_access is True:
         table = True
-    return special, admin, table
+      break
+  return special, admin, table
 
 ## date format and string substitution procedures
 def format_datetime(date_time):

@@ -31,7 +31,7 @@
 				<ul>
 					{% for p in projects %}
 					<li>
-						<a href='/visuals/charts/{{ p.project.replace(' ','-')}}'>
+						<a href='/visuals/charts/{{ p.project.replace(' ','-').replace("'","_")}}'>
 							{{ p.project }}
 						</a>
 					</li>

@@ -79,14 +79,13 @@ class AdminHandler(Handler):
     webapp2.RequestHandler.initialize(self, *a, **kw)
 
     self.user = users.get_current_user()
-    logging.warning(self.user)
     if not self.user:
       request_uri = self.request.uri 
       login_url = users.create_login_url()
       self.redirect(login_url)
 
-    special_users, name_match = list(SpecialUsers.get_users()), False 
-    special, admin, table = check_access_level(self.user,special_users)
+    special_users = list(SpecialUsers.get_users())
+    special,admin,table = check_access_level(self.user,special_users)
         
     if not special or not admin:
       self.redirect('/')
@@ -160,7 +159,7 @@ class AllRecordTable(TableHandler):
 class Table(TableHandler):
 
   def get(self, project):
-    project = project.replace('-',' ')
+    project = project.replace('-',' ').replace('_',"'")
     self.params['project'] = str(project)
     scores = Scores.get_by_project(project, reverse_sort=True)
     self.params['scores'] = list(scores)
@@ -169,7 +168,7 @@ class Table(TableHandler):
 class CommentTable(TableHandler):
 
   def get(self, project):
-    project = project.replace('-',' ')
+    project = project.replace('-',' ').replace('_',"'")
     self.params['project'] = str(project)
     scores = Scores.get_by_project(project, reverse_sort=True)
     self.params['scores'] = list(scores)
@@ -178,7 +177,7 @@ class CommentTable(TableHandler):
 class UserCommentTable(AdminHandler):
 
   def render_page(self, project):
-    project = project.replace('-',' ')
+    project = project.replace('-',' ').replace('_',"'")
     self.params['project'] = project
     scores = Scores.get_by_project(project, reverse_sort=True)
     self.params['scores'] = list(scores)
@@ -197,7 +196,7 @@ class UserCommentTable(AdminHandler):
 class Charts(Handler):
 
   def get(self, project):
-    project = project.replace('-',' ')
+    project = project.replace('-',' ').replace('_',"'")
     self.params['project'] = str(project)
     scores = list(Scores.get_by_project(project)) or None
     if scores is None:
@@ -309,8 +308,9 @@ class AdminImport(AdminHandler):
 
   def post(self):
     feed = self.request.get('feed') or 'cells'
-    sskey = self.request.get('sskey') or '0AocOg3jXOHrbdEV4WmdaQW9yTnM4d05wQlpGRzlJS0E'
-    worksheet = self.request.get('worksheet') or 'od6'
+    sskey = self.request.get('sskey') or \
+    '0AoTNJnkeM_tBdFpDc0NHUmJ3QXZzN1RUSTBXSnVMa0E'
+    worksheet = self.request.get('worksheet') or 'od7'
     scores = get_scores_from_atom(feed, sskey, worksheet) 
     Scores.put_scores(scores)
     self.redirect('/admin/console')
@@ -324,9 +324,9 @@ class AdminDrops(AdminHandler):
 class AdminProjects(AdminHandler):
 
   def render_admin_projects(self):
-    projects = list(Projects.get_projects())
-    self.params['projectList'] = projects
-    self.params['projects'] = projects
+    new_projects = list(Projects.get_projects_use_key())
+    self.params['projectList'] = new_projects
+    self.params['projects'] = new_projects
     self.render('projects.html', **self.params)
     
   def get(self):
@@ -357,14 +357,14 @@ class AdminProjectsRemove(AdminHandler):
 
   def post(self):
     project = self.request.get('project')
-    project = Projects.remove_project(project)
+    prject = Projects.remove_project(project)
     self.redirect('/admin/projects')
 
 class AdminUsers(AdminHandler):
 
   def render_admin_users(self):
-    userList = list(SpecialUsers.get_users())
-    self.params['userList'] = userList
+    new_users = list(SpecialUsers.get_users_use_key())
+    self.params['userList'] = new_users
     self.render('users.html', **self.params)
     
   def get(self):

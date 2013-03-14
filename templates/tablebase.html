@@ -27,7 +27,7 @@
 				<ul>
 					{% for p in projects %}
 					<li>
-						<a href='/scores/table/{{ p.project.replace(' ','-')}}'>
+						<a href='/scores/table/{{p.project.replace(" ","-").replace("'","_")}}'>
 							{{ p.project }}
 						</a>
 					</li>
@@ -38,7 +38,7 @@
 				<ul>
 					{% for p in projects %}
 					<li>
-						<a href='/scores/table/comments/{{ p.project.replace(' ','-')}}'>
+						<a href='/scores/table/comments/{{p.project.replace(" ","-").replace("'","_")}}'>
 							{{ p.project }}
 						</a>
 					</li>
@@ -51,7 +51,7 @@
 				<ul>
 					{% for p in projects %}
 					<li>
-						<a href='/scores/table/comments/users/{{ p.project.replace(' ','-')}}'>
+						<a href='/scores/table/comments/users/{{ p.project.replace(" ","-").replace("'","_")}}'>
 							{{ p.project }}
 						</a>
 					</li>

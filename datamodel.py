@@ -169,6 +169,13 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
     projects = projects.order('date_added').run()
     return projects
 
+  @classmethod
+  def get_projects_use_key(cls):
+    projects = cls.all()
+    projects = projects.ancestor(projects_key())
+    projects = projects.order('date_added').run()
+    return projects
+
 def specialusers_key(group='default'):
   return db.Key.from_path('SpecialUsers', group)
 
@@ -194,6 +201,13 @@ class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
   @classmethod
   def get_users(cls):
     users = cls.all()
+    users = users.order('date_added').run()
+    return users
+
+  @classmethod
+  def get_users_use_key(cls):
+    users = cls.all()
+    users = users.ancestor(specialusers_key())
     users = users.order('date_added').run()
     return users
 
