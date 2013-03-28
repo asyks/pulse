@@ -66,6 +66,7 @@ def score_validate(scores):
 USER_RE = re.compile("^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile("^.{3,20}$")
 EMAIL_RE = re.compile("^[\S]+@[\S]+\.[\S]+$")
+
 def user_validate(u):
   if USER_RE.match(u):
     return True

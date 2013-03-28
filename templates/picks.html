@@ -7,12 +7,14 @@
 	<form method='post' id='pick-form'>
 
 		<table>
+			{% for p in projects %}
 			<tr>
-				{% for p in projects %}
 				<td>
-					<input type="checkbox" name="selected-project" value="{{ p.project }}" id="box">{{ p.project }}</br>
+					<input type="checkbox" name="selected-project" value="{{ p.project }}" id="box">
+					{{ p.project }}
 				</td>
-				{% endfor %}
+			<tr>
+			{% endfor %}
 		</table>
 
 		<br>
