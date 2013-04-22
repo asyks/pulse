@@ -147,7 +147,7 @@ document.getElementById('this_week_breakout_gauge_div').style.left =
 {% block content %}
 
 <div class="vis-title">
-	<a href="/visuals/charts/{{ project}}">
+	<a href="/visuals/charts/{{project.replace(' ','-').replace("'","_")}}">
 	{{ project }} Visualizations
 	</a>
 </div>

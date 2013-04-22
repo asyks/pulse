@@ -7,16 +7,30 @@
 	<div class='home-title'>Welcome Admin,</div>
 
 	<div class='home-intro'>
+		<p>
 		<span>TEAM<span>PULSE</span></span> administration is pretty 
-		simple. Projects can be added and removed using the Projects Admin
-		page. Users can be added removed and granted privileges using the
-		Users Admin page. There is also import and drop tables functions 
-		on the Admin Console page located at: "/admin/console".
+		simple. There are two levels of access: TABLE, and ADMIN access.
+		</p>
+		<p>
+		  Users with TABLE privilege are limited to viewing: All Records,
+		Project Tables, and Comments Pages. 
+		</p>
+		<p>
+		  Users with ADMIN privilege can view Users Tables, Projects 
+		Admin, and Users Admin Pages. These pages can be used to remove
+		individual scores; add or remove projects; and modify user
+		privileges respectively.  
+		</p>
 	</div>
 
-	<div class="survey-link">
-		<a href='/survey/project-select/'>
-			Take the survey
+	<div class="button-link">
+		<a href='/admin/users/'>
+			Manage users	
+		</a>
+	</div>
+	<div class="button-link">
+		<a href='/admin/projects/'>
+			Manage projects	
 		</a>
 	</div>
 

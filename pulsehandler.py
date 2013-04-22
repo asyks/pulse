@@ -298,7 +298,7 @@ class Survey(Handler):
       Scores.put_scores(scores)
       self.redirect('/')
 
-class AdminHome(AdminHandler):
+class AdminHome(TableHandler):
 
   def get(self):
     self.params['user'] = self.user
@@ -318,14 +318,14 @@ class AdminImport(AdminHandler):
     '0AoTNJnkeM_tBdFpDc0NHUmJ3QXZzN1RUSTBXSnVMa0E'
     worksheet = self.request.get('worksheet') or 'od7'
     scores = get_scores_from_atom(feed, sskey, worksheet) 
-    Scores.put_scores(scores)
+    ##Scores.put_scores(scores) ## uncomment to enable import
     logging.warning('import deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console')
 
 class AdminDrops(AdminHandler):
 
   def post(self):
-    ##Scores.drop_table()
+    ##Scores.drop_table() ## uncomment to enable table drop 
     logging.warning('table drop deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console') 
 

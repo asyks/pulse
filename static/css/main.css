@@ -55,7 +55,7 @@ div.home-content {
 	font-size: 25px;
 }
 
-div.survey-link {
+div.button-link {
 	float: left;
 	margin-top: 40px;
 	margin-left: 5px;
@@ -69,7 +69,7 @@ div.survey-link {
 	box-shadow: 2px 2px 2px #111111;
 }
 
-div.survey-link a {
+div.button-link a {
 	color: #F5F5DC;
 	text-shadow: 1px 1px #111111;
 }
