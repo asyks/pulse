@@ -1,0 +1,25 @@
+{% extends "adminbase.html" %}
+
+{% block content %}
+
+<div class="home-content">
+
+	<div class='home-title'>Welcome Admin,</div>
+
+	<div class='home-intro'>
+		<span>TEAM<span>PULSE</span></span> administration is pretty 
+		simple. Projects can be added and removed using the Projects Admin
+		page. Users can be added removed and granted privileges using the
+		Users Admin page. There is also import and drop tables functions 
+		on the Admin Console page located at: "/admin/console".
+	</div>
+
+	<div class="survey-link">
+		<a href='/survey/project-select/'>
+			Take the survey
+		</a>
+	</div>
+
+</div>
+
+{% endblock %}

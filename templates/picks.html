@@ -1,25 +1,29 @@
-{% extends "base.html" %}
+{% extends "frontbase.html" %}
 
 {% block content %}
 
-	<h2>Team Pulse Survey:</h2>
+<div class="survey-content">
 
-	<form method='post' id='pick-form'>
+<div class="page-title">Select the projects you want to score</div>
 
-		<table>
-			{% for p in projects %}
-			<tr>
-				<td>
-					<input type="checkbox" name="selected-project" value="{{ p.project }}" id="box">
-					{{ p.project }}
-				</td>
-			<tr>
-			{% endfor %}
-		</table>
+<form method="post" id="pick-form">
 
-		<br>
-		<input type="submit">
+<div class="picks-content">
+	<table>
+		{% for p in projects %}
+		<tr>
+			<td>
+				<input type="checkbox" name="selected-project" value="{{ p.project }}" id="box">
+				{{ p.project }}
+			</td>
+		<tr>
+		{% endfor %}
+	</table>
+</div>
 
-	</form>
+	<input type="submit" value="Next Step >>>">
+</form>
+
+</div>
 
 {% endblock %}

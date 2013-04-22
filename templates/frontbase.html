@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block navigation %}
+<ul class="top-nav">
+<li><a href='/' class="nav-title">TEAM<span>PULSE</span></a></li>
+<li><a href='/'>Home</a></li>
+<li><a href='/survey/project-select/'>Survey</a></li>
+<li><a href='/visuals/summary/'>Summary</a></li>
+<li><a href='/visuals/breakout/'>Breakout</a></li>
+<li>Projects
+<ul>
+{% for p in projects %}
+<li>
+<a 
+href='/visuals/charts/{{p.project.replace(' ','-').replace("'","_")}}'>
+{{ p.project }}
+</a>
+</li>
+	{% endfor %}
+</ul>
+</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+{% endblock %}

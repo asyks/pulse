@@ -2,63 +2,59 @@
 
 {% block content %}
 
-	<br>
+<div class='page-title'>User Management</div>
 
-	<div class='page-title'>Special User Management</div>
-  <div class="error">
-		{% if have_error %} {{ error }} {% endif %}
+<div class="error">
+	{% if have_error %} {{ error }} {% endif %}
+</div>
+
+<form method='post' action='/admin/users/modify'>
+
+	<table class="record-table">
+		<tr class='first-row'>
+			<td class='half-column'>User</td>
+			<td>Table Access</td>
+			<td>Admin Access</td>
+		</tr>
+		{% for u in userList %}
+		<tr class='record'>
+			<td>
+				<input type="radio" name="user" value="{{ u.user_name }}">
+					{{ u.user_name }}
+				</input>
+			</td>
+			<td>{{ u.table_access }}</td>
+			<td>{{ u.admin_access }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+	<div class="user-options">
+		<input type="checkbox" name="remove" value="Remove User">
+			Remove user
+		</input>
+		<input type="checkbox" name="table-access" value="Table Access">
+			Grant table access
+		</input>
+		<input type="checkbox" name="admin-access" value="Admin Access">
+			Grant admin access
+		</input>
 	</div>
 
-	<form method='post' action='/admin/users/modify'>
-		<table class="record-table">
-			<tr class='first-row'>
-				<td class='half-column'>User</td>
-				<td>Table Access</td>
-				<td>Admin Access</td>
-			</tr>
+	<input type='submit' value='Modify User'>
+</form>
 
-			{% for u in userList %}
+<form method='post' action='/admin/users'>
 
-			<tr class='record'>
-				<td>
-					<input type="radio" name="user" value="{{ u.user_name }}">
-						{{ u.user_name }}
-					</input>
-				</td>
-				<td>
-						{{ u.table_access }}
-				</td>
-				<td>
-						{{ u.admin_access }}
-				</td>
-			</tr>
+	<table name='projects-admin-table'>
+		<tr>
+			<td>
+				<input type='text' name='user'>
+			</td>
+		</tr>
+	</table>
 
-			{% endfor %}
-
-		</table>
-
-	<br>
-
-		<input type="checkbox" name="remove">Remove User</input>
-		<input type="checkbox" name="table-access">Table Access</input>
-		<input type="checkbox" name="admin-access">Admin Access</input>
-
-	<br>
-
-		<input type='submit' value='Modify User'></input>
-	</form>
-
-	<br>
-
-	<form method='post' action='/admin/users'>
-		<table name='projects-admin-table'>
-			<tr>
-				<td>
-					<input type='text' name='user'></input>
-				</td>
-			</tr>
-		</table>
-		<input type='submit' value='Add User'></input>
-	</form>
+	<input type='submit' value='Add User'>
+</form>
 
 {% endblock %}

@@ -1,17 +1,13 @@
-{% extends "tablebase.html" %}
+{% extends "adminbase.html" %}
 
 {% block content %}
 
-<br>
+<div class="table-content">
 
 <form method='post' id='score-form'>
-
 	<table class="comment-table">
-
 		<div class='page-title'>{{ project }} entries</div>
-
 		<input type='submit' value='Remove' class='score-remove-submit'>
- 
 		<tr class='first-row'>
 			<td></td>
 			<td>Week</td>
@@ -23,9 +19,7 @@
 			<td>Pulse</td>
 			<td class='comment-column'>Comment</td>
 		</tr>
-
 		{% for s in scores %}
-
 		<tr class='record'>
 			<td>
 				<input type='radio' name='selected-score' value={{ s.key() }}>
@@ -39,11 +33,10 @@
 			<td>{{ s.pulse }}</td>
 			<td class='comment-column'>{{ s.feedback }}</td>
 		</tr>
-
 		{% endfor %}
-
 	</table>
-
 </form>
+
+</div>
 
 {% endblock %}

@@ -1,0 +1,72 @@
+
+div.table-content {
+	width: 80%;
+	margin: 0 auto;
+}
+
+table[class=project-input] {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 100%;
+}
+
+table[class=pulse-input] {
+	margin-bottom: 15px;
+	width: 100%;
+}
+
+tr[class=pulse-input] > td{
+	width: 12.5%;
+}
+
+table[class=feedback-input] {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 100%;
+}
+
+table[class=record-table] {
+	width: 1000px;
+  border: 2px solid grey;
+}
+
+table[class=record-table] td{
+	width: 16.5%;
+}
+
+table[class=comment-table] {
+	width: 1000px;
+  border: 2px solid grey;
+}
+
+td.comment-column {
+	width: 40%;
+}
+
+td.column-two {
+	width: 25%;
+}
+
+td.half-column {
+	width: 50%;
+}
+
+td.label {
+  display: block;
+  font-size: 20px;
+	text-align: left;
+}
+
+tr[class=record]:nth-child(even) {
+	background-color: #D3D3D3;
+}
+
+tr[class=record]:nth-child(odd) {
+	background-color: #EEEEEE;
+}
+
+tr.first-row {
+	font-size: 20px;
+	font-weight: bold;
+	background-color: #EEEEEE;
+}

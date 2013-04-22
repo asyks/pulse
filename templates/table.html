@@ -1,37 +1,31 @@
-{% extends "tablebase.html" %}
+{% extends "adminbase.html" %}
 
 {% block content %}
 
-<br>
-
-<table class="record-table">
-
-	<div class='page-title'>{{ project }} entries</div>
-
-	<tr class='first-row'>
-		<td>Week Date</td>
-		<td>Date</td>
-		<td>Pride</td>
-		<td>Communication</td>
-		<td>Expectations</td>
-		<td>Challenge</td>
-		<td>Pulse</td>
-	</tr>
-
-	{% for s in scores %}
-
-	<tr class='record'>
-		<td>{{ s.week_date }}</td>
-		<td>{{ s.timestamp }}</td>
-		<td>{{ s.pride }}</td>
-		<td>{{ s.communication }}</td>
-		<td>{{ s.expectations }}</td>
-		<td>{{ s.challenge }}</td>
-		<td>{{ s.pulse }}</td>
-  </tr>
-
-	{% endfor %}
-
-</table>
+<div class="table-content">
+	<table class="record-table">
+		<div class='page-title'>{{ project }} entries</div>
+		<tr class='first-row'>
+			<td>Week Date</td>
+			<td>Date</td>
+			<td>Pride</td>
+			<td>Communication</td>
+			<td>Expectations</td>
+			<td>Challenge</td>
+			<td>Pulse</td>
+		</tr>
+		{% for s in scores %}
+		<tr class='record'>
+			<td>{{ s.week_date }}</td>
+			<td>{{ s.timestamp }}</td>
+			<td>{{ s.pride }}</td>
+			<td>{{ s.communication }}</td>
+			<td>{{ s.expectations }}</td>
+			<td>{{ s.challenge }}</td>
+			<td>{{ s.pulse }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
 
 {% endblock %}

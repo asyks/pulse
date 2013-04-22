@@ -1,52 +1,55 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
-<html>
+{% block head %}
+{% endblock %}
 
-<head>
+{% block navigation %}
+<ul class="top-nav">
+<li><a href="/" class="nav-title">Team<span>PULSE</span></a></li>
+<li><a href="/admin/home">Admin Home</a></li>
+<li><a href="/admin/projects">Projects Admin</a></li>
+<li><a href="/admin/users">Users Admin</a></li>
+<li><a href="/scores/table/all">All Records</a></li>
+<li>Project Tables
+<ul>
+{% for p in projects %}
+<li>
+<a
+href='/scores/table/{{p.project.replace(' ','-').replace("'","_")}}'>
+{{ p.project }}
+</a>
+</li>
+{% endfor %}
+</ul>
+</li>
+<li>Comments
+<ul>
+{% for p in projects %}
+<li>
+<a
+href='/scores/table/comments/{{p.project.replace(' ','-').replace("'","_")}}'>
+{{ p.project }}
+</a>
+</li>
+{% endfor %}
+</ul>
+</li>
+<li>Users Tables
+<ul>
+{% for p in projects %}
+<li>
+<a
+href='/scores/table/comments/users/{{p.project.replace(' ','-').replace("'","_")}}'>
+{{ p.project }}
+</a>
+</li>
+	{% endfor %}
+</ul>
+</li>
+</ul>
+{% endblock %}
 
-	<title>Team Pulse</title>
-
-	<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
-	<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
-
-</head>
-
-<body id="normal">
-
-	<div id="auth" class="auth">
-		you're logged in as: {{ user | safe }}, wrong user?
-		 <a href="/logout">click here</a>
-	</div>
-
-	<a href="/" class="main-title">Team Pulse</a>
-
-	{% block navigation %}
-	<nav>
-		<ul class="top-nav">
-			<li><a href="/">Home</a></li>
-			<li><a href="/admin/console/">Admin Console</a></li>
-			<li><a href="/admin/projects/">Projects Admin</a></li>
-			<li><a href="/admin/users/">Users Admin</a></li>
-			<li>Project Tables
-				<ul>
-					{% for p in projects %}
-					<li>
-						<a href='/scores/table/{{ p.project.replace(' ','-').replace("'","_")}}'>
-							{{ p.project }}
-						</a>
-					</li>
-					{% endfor %}
-				</ul>
-			</li>
-		</ul>
-	</nav>
-	{% endblock %}
-
-	<div id="content">
-		{% block content %}
-		{% endblock %}
-	</div>
-
-</body>
-
-</html>
+<div id="content">
+{% block content %}
+{% endblock %}
+</div>

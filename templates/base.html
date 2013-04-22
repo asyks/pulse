@@ -4,48 +4,33 @@
 
 <head>
 
-	<title>Team Pulse</title>
+<title>Team Pulse</title>
 
-	<link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
-	<link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/nav.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/table.css"/>
+<script type="text/javascript" src="/static/js/ga.js"></script>
+
+{% block head %}
+{% endblock %}
 
 </head>
 
-<body id="normal">
+<body>
 
-	<div id="auth" class="auth">
-		you're logged in as: {{ user | safe }}, wrong user?
-		 <a href="/logout">click here</a>
-	</div>
+<nav>
+{% block navigation %}
+{% endblock %}
+</nav>
 
-	<a href="/" class="main-title">Team Pulse</a>
+<div id="auth" class="auth">
+	{{ user | safe }} (<a href="/logout">logout</a>)
+</div>
 
-	{% block navigation %}
-	<nav>
-		<ul class="top-nav">
-			<li><a href='/'>Home</a></li>
-			<li><a href='/survey/project-select/'>Survey</a></li>
-			<li><a href='/visuals/summary/'>Summary</a></li>
-			<li><a href='/visuals/breakout/'>Breakout</a></li>
-			<li>Projects
-				<ul>
-					{% for p in projects %}
-					<li>
-						<a href='/visuals/charts/{{ p.project.replace(' ','-').replace("'","_")}}'>
-							{{ p.project }}
-						</a>
-					</li>
-					{% endfor %}
-				</ul>
-			</li>
-		</ul>
-	</nav>
-	{% endblock %}
-
-	<div id="content">
-		{% block content %}
-		{% endblock %}
-	</div>
+<div id="content" class="main">
+{% block content %}
+{% endblock %}
+</div>
 
 </body>
 

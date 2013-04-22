@@ -32,7 +32,8 @@ class Handler(webapp2.RequestHandler):
   def set_user_cookie(self, val):
     name = 'user_id'
     cookie_val = make_secure_val(val)
-    self.response.headers.add_header('Set-Cookie', '%s=%s; Path=/' % (name, cookie_val))
+    self.response.headers.add_header('Set-Cookie', 
+      '%s=%s; Path=/' % (name, cookie_val))
  
   def read_user_cookie(self):
     name = 'user_id'
@@ -86,7 +87,6 @@ class AdminHandler(Handler):
 
     special_users = list(SpecialUsers.get_users())
     special,admin,table = check_access_level(self.user,special_users)
-        
     if not special or not admin:
       self.redirect('/')
       return
@@ -298,6 +298,12 @@ class Survey(Handler):
       Scores.put_scores(scores)
       self.redirect('/')
 
+class AdminHome(AdminHandler):
+
+  def get(self):
+    self.params['user'] = self.user
+    self.render('adminhome.html', **self.params)
+
 class AdminConsole(AdminHandler):
 
   def get(self):
@@ -313,12 +319,14 @@ class AdminImport(AdminHandler):
     worksheet = self.request.get('worksheet') or 'od7'
     scores = get_scores_from_atom(feed, sskey, worksheet) 
     Scores.put_scores(scores)
+    logging.warning('import deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console')
 
 class AdminDrops(AdminHandler):
 
   def post(self):
-    Scores.drop_table()
+    ##Scores.drop_table()
+    logging.warning('table drop deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console') 
 
 class AdminProjects(AdminHandler):
@@ -427,10 +435,11 @@ app = webapp2.WSGIApplication([(r'/?', Home),
   (r'/visuals/breakout/?', Breakout ),
   (r'/survey/project-select/?', Picks),
   (r'/survey/entry-form/?', Survey),
-  (r'/scores/table/all', AllRecordTable),
+  (r'/scores/table/all/?', AllRecordTable),
   (r'/scores/table/' + PROJECT_RE, Table),
   (r'/scores/table/comments/' + PROJECT_RE, CommentTable),
   (r'/scores/table/comments/users/' + PROJECT_RE, UserCommentTable),
+  (r'/admin/home/?', AdminHome),
   (r'/admin/console/?', AdminConsole),
   (r'/admin/import/?', AdminImport),
   (r'/admin/drop/?', AdminDrops),

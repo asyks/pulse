@@ -1,173 +1,163 @@
-<!DOCTYPE html>
+{% extends 'visualsbase.html' %}
 
-<html>
+{% block javascript %}
 
-  <head>
+<script type="text/javascript">
 
-    <title>Team Pulse</title>
+google.load('visualization','1.0',{'packages':['corechart','gauge']});
 
-    <link rel="stylesheet" type="text/css" href="/static/mainstyle.css" />
-    <link rel="stylesheet" type="text/css" href="/static/headerstyle.css" />
+google.setOnLoadCallback(drawCharts);
 
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+var windowHeight = .9 * window.outerHeight;
+var windowWidth = .9 * window.outerWidth;
+var lineChartHeight = .5 * windowHeight;
+var lineChartWidth = .6 * windowWidth;
+var gaugeWidth = .2 * windowWidth;
+var pulseGaugeHeight = .3333 * windowHeight;
+var breakoutGaugeHeight = .6666 * windowHeight;
 
+function drawCharts() {
+	drawLineChart();
+	drawThisWeekPulseGauge();
+	drawLastWeekPulseGauge();
+	drawThisWeekBreakoutGauge();
+	drawLastWeekBreakoutGauge();
+}
 
-		{% block javascript %}
+function drawLineChart() {
 
-		<script type="text/javascript">
+	var JSONObject = {{ line_chart_object|safe }}; 
 
-		google.load('visualization', '1.0', {'packages':['corechart','gauge']});
+	var options = {
+		width: lineChartWidth, height: lineChartHeight,  
+		curveType: "function",
+		vAxis: {viewWindowMode: "pretty"},
+		hAxis: {viewWindowMode: "pretty"},  
+		legend: {position: 'none'},
+		chartArea:{width: '90%', height: '90%'}
+	};
 
-		google.setOnLoadCallback(drawCharts);
+	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+	var chart = new google.visualization.LineChart(
+		document.getElementById('line_chart_div')
+	);
+	chart.draw(data_table, options);
+}
 
-		function drawCharts() {
-			drawLineChart();
-      drawThisWeekPulseGauge();
-			drawLastWeekPulseGauge();
-			drawThisWeekBreakoutGauge();
-			drawLastWeekBreakoutGauge();
-		}
+function drawThisWeekPulseGauge() {
 
-		function drawLineChart() { // Google vis api function for the line chart
+	var JSONObject = {{ this_week_pulse_gauge_object|safe }}; 
 
-			var JSONObject = {{ line_chart_object|safe }}; 
+	var options = {
+		width: gaugeWidth, height: pulseGaugeHeight,
+		min: 0, max: 10,
+		greenFrom:7, greenTo:10,
+		yellowFrom:4, yellowTo: 7,
+		redFrom: 0, redTo: 4,
+		minorTicks: 5
+	};
 
-			var options = {
-				width: 900, height: 450,  
-				curveType: "function",
-				vAxis: {viewWindowMode: "pretty"},
-				hAxis: {viewWindowMode: "pretty"},  
-				legend: {position: 'none'},
-				chartArea:{width: '90%', height: '90%'}
-			};
+	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+	var chart = new google.visualization.Gauge(
+		document.getElementById('this_week_pulse_gauge_div')
+	);
+	chart.draw(data_table, options);
+}
 
-			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
-			var chart = new google.visualization.LineChart(document.getElementById('line_chart_div'));
-			chart.draw(data_table, options);
-		}
+function drawLastWeekPulseGauge() {
 
-		function drawThisWeekPulseGauge() { // Google vis api function for the current week's pulse guage
+	var JSONObject = {{ last_week_pulse_gauge_object|safe }}; 
 
-			var JSONObject = {{ this_week_pulse_gauge_object|safe }}; 
+	var options = {
+		width: gaugeWidth, height: pulseGaugeHeight,
+		min: 0, max: 10,
+		greenFrom:7, greenTo:10,
+		yellowFrom:4, yellowTo: 7,
+		redFrom: 0, redTo: 4,
+		minorTicks: 5
+	};
 
-			var options = {
-				width: 300, height: 300,
-				min: 0, max: 10,
-				greenFrom:7, greenTo:10,
-				yellowFrom:4, yellowTo: 7,
-				redFrom: 0, redTo: 4,
-				minorTicks: 5
-			};
+	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+	var chart = new google.visualization.Gauge(
+		document.getElementById('last_week_pulse_gauge_div')
+	);
+	chart.draw(data_table, options);
+}
 
-			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
-			var chart = new google.visualization.Gauge(document.getElementById('this_week_pulse_gauge_div'));
-			chart.draw(data_table, options);
-		}
+function drawThisWeekBreakoutGauge() { 
 
-		function drawLastWeekPulseGauge() { // Google vis api function for the previous week's pluse guage
+	var JSONObject = {{ this_week_breakout_gauge_object|safe }}; 
 
-			var JSONObject = {{ last_week_pulse_gauge_object|safe }}; 
+	var options = {
+		width: gaugeWidth, height: breakoutGaugeHeight,
+		min: 0, max: 10,
+		greenFrom:7, greenTo:10,
+		yellowFrom:4, yellowTo: 7,
+		redFrom: 0, redTo: 4,
+		minorTicks: 5
+	};
 
-			var options = {
-				width: 300, height: 300,
-				min: 0, max: 10,
-				greenFrom:7, greenTo:10,
-				yellowFrom:4, yellowTo: 7,
-				redFrom: 0, redTo: 4,
-				minorTicks: 5
-			};
+	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+	var chart = new google.visualization.Gauge(
+		document.getElementById('this_week_breakout_gauge_div')
+	);
+	chart.draw(data_table, options);
+}
 
-			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
-			var chart = new google.visualization.Gauge(document.getElementById('last_week_pulse_gauge_div'));
-			chart.draw(data_table, options);
-		}
+function drawLastWeekBreakoutGauge() {
 
-		function drawThisWeekBreakoutGauge() { // Google vis api function for the previous week's pluse guage
+	var JSONObject = {{ last_week_breakout_gauge_object|safe }}; 
 
-			var JSONObject = {{ this_week_breakout_gauge_object|safe }}; 
+	var options = {
+		width: gaugeWidth, height: breakoutGaugeHeight,
+		min: 0, max: 10,
+		greenFrom:7, greenTo:10,
+		yellowFrom:4, yellowTo: 7,
+		redFrom: 0, redTo: 4,
+		minorTicks: 5
+	};
 
-			var options = {
-				width: 300, height: 600,
-				min: 0, max: 10,
-				greenFrom:7, greenTo:10,
-				yellowFrom:4, yellowTo: 7,
-				redFrom: 0, redTo: 4,
-				minorTicks: 5
-			};
+	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
+	var chart = new google.visualization.Gauge(
+		document.getElementById('last_week_breakout_gauge_div')
+	);
+	chart.draw(data_table, options);
 
-			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
-			var chart = new google.visualization.Gauge(document.getElementById('this_week_breakout_gauge_div'));
-			chart.draw(data_table, options);
-		}
+lastWeekTop = 1.65 * pulseGaugeHeight + 5 + 'px';
+document.getElementById('last_week_breakout_gauge_div').style.top = 
+	lastWeekTop
 
-		function drawLastWeekBreakoutGauge() { // Google vis api function for the previous week's pluse guage
+lineChartLeft = gaugeWidth + 5 + 'px';
+document.getElementById('line_chart_div').style.left = lineChartLeft;
 
-			var JSONObject = {{ last_week_breakout_gauge_object|safe }}; 
+thisWeekTop = 1.65 * pulseGaugeHeight + 5 + 'px';
+thisWeekLeft = gaugeWidth + lineChartWidth + 5 + 'px';
+document.getElementById('this_week_pulse_gauge_div').style.left = 
+	thisWeekLeft;
+document.getElementById('this_week_breakout_gauge_div').style.top = 
+	thisWeekTop;
+document.getElementById('this_week_breakout_gauge_div').style.left = 
+	thisWeekLeft;
+}
 
-			var options = {
-				width: 300, height: 600,
-				min: 0, max: 10,
-				greenFrom:7, greenTo:10,
-				yellowFrom:4, yellowTo: 7,
-				redFrom: 0, redTo: 4,
-				minorTicks: 5
-			};
+</script>
 
-			var data_table = new google.visualization.DataTable(JSONObject, 0.5);
-			var chart = new google.visualization.Gauge(document.getElementById('last_week_breakout_gauge_div'));
-			chart.draw(data_table, options);
-		}
+{% endblock %}
 
-    </script>
+{% block content %}
 
-		{% endblock %}
+<div class="vis-title">
+	<a href="/visuals/charts/{{ project}}">
+	{{ project }} Visualizations
+	</a>
+</div>
 
-  </head>
+<div class="vis-block">
+	<div class="line-chart" id="line_chart_div"></div>
+	<div class="pulse-gauge" id="last_week_pulse_gauge_div"></div>
+	<div class="pulse-gauge" id="this_week_pulse_gauge_div"></div>
+	<div class="breakout-guage" id="last_week_breakout_gauge_div"></div>
+	<div class="breakout-guage" id="this_week_breakout_gauge_div"></div>
+</div>
 
-  <body class="vis-block">
-
-    <div id="auth" class="auth">you're logged in as: {{ user | safe }} ,
-      wrong user? <a href="/logout">click here</a>
-    </div>
-
-    <a href="/" class="main-title">Team Pulse</a>
-
-		{% block navigation %}
-		<nav>
-			<ul class="top-nav">
-				<li><a href='/'>Home</a></li>
-				<li><a href='/survey/project-select/'>Survey</a></li>
-				<li><a href='/visuals/summary/'>Summary</a></li>
-				<li><a href='/visuals/breakout/'>Breakout</a></li>
-				<li>Projects
-					<ul>
-						{% for p in projects %}
-						<li>
-							<a href='/visuals/charts/{{p.project.replace(' ','-')}}'>
-								{{ p.project }}
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</li>
-			</ul>
-		</nav>
-		{% endblock %}
-
-		{% block content %}
-
-		<div class="vis-title">
-			<a href="/visuals/charts/{{ project}}">{{ project }} Visualizations</a>
-		</div>
-
-			<div class="line-chart" id="line_chart_div"></div>
-			<div class="pulse-gauge" id="last_week_pulse_gauge_div"></div>
-			<div class="pulse-gauge" id="this_week_pulse_gauge_div"></div>
-			<div class="breakout-guage" id="last_week_breakout_gauge_div"></div>
-			<div class="breakout-guage" id="this_week_breakout_gauge_div"></div>
-
-		{% endblock %}
-
-	</body>
-
-</html>
+{% endblock %}

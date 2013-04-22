@@ -1,23 +1,24 @@
 
-body[id=normal] {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 18px;
-    width: 1000px;
-    margin: 0 auto;
-    padding: 10px;
-    color: #333;
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	margin: 0;
+	color: #626262;
 }
 
 .error {
-    color: red;
+	color: red;
 }
 
 a {
+	color: #626262;
   text-decoration: none;
 }
 
 select {
 	font-size: 20px;
+	font-family: Helvetica, Arial, sans-serif;
+	color: #626262;
 }
 
 textarea {
@@ -27,16 +28,53 @@ textarea {
   font-family: monospace;
 }
 
-div[class=home-section] {
+input {
+	font-family: Helvetica, Arial, sans-serif;
+	color: #626262;
+}
+
+div.home-intro span {
+	font-style: bold;
+}
+
+div.home-intro span > span {
+	color: #f26624;
+}
+
+div.main {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+div.home-content {
+	width: 40%;
+	margin-top: 100px;
+	margin-left: 20px;
+	font-size: 25px;
+}
+
+div.survey-link {
+	float: left;
+	margin-top: 40px;
+	margin-left: 5px;
+	padding: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background: #f26624;
 	font-size: 22px;
-	margin: 15px;	
+	box-shadow: 2px 2px 2px #111111;
 }
 
-div[class=home-title] {
-	font-size: 24px;
+div.survey-link a {
+	color: #F5F5DC;
+	text-shadow: 1px 1px #111111;
 }
 
-form[id=pulse-form] {
+form#pulse-form {
 	font-size: 20px;
 }
 
@@ -58,79 +96,8 @@ input[type=submit] {
   font-size: 20px;
 }
 
-table[class=project-input] {
-	margin-top: 15px;
-	margin-bottom: 15px;
-	width: 100%;
-}
-
-table[class=pulse-input] {
-	margin-bottom: 15px;
-	width: 100%;
-}
-
-tr[class=pulse-input] > td{
-	width: 12.5%;
-}
-
-table[class=feedback-input] {
-	margin-top: 15px;
-	margin-bottom: 15px;
-	width: 100%;
-}
-
-table[class=record-table] {
-	width: 1000px;
-  border: 2px solid grey;
-}
-
-table[class=record-table] td{
-	width: 16.5%;
-  border: 2px solid grey;
-	padding: 2px;
-}
-
-table[class=comment-table] {
-	width: 1000px;
-  border: 2px solid grey;
-}
-
-table[class=comment-table] td{
-  border: 2px solid grey;
-	padding: 2px;
-}
-
-td.comment-column {
-	width: 40%;
-}
-
-td.column-two {
-	width: 25%;
-}
-
-td.half-column {
-	width: 50%;
-}
-
-td.label {
-  display: block;
-  font-size: 20px;
-	text-align: left;
-}
-
-tr[class=record]:nth-child(even) {
-	background-color: #D3D3D3;
-}
-
-tr.first-row {
-	font-size: 20px;
-	font-weight: bold;
-	background-color: #FFFFFF;
-}
-
-.main-title {
+div.main-title {
 	display: block;
-	color: #222;
 	font-size: 40px;
 	font-weight: bold;
 	text-align: center;
@@ -140,13 +107,27 @@ tr.first-row {
 	text-decoration: none;
 }
 
-.page-title {
+div.page-title {
 	display: block;
-	color: #222;
-	font-size: 28px;
+	font-size: 30px;
 	font-weight: bold;
 	margin-bottom: 15px;
 	text-decoration: none;
+}
+
+div.home-title {
+	padding-bottom: 20px;
+	font-size: 60px;
+	font-style: bold;
+}
+
+div.survey-content {
+	width: 70%;
+	margin: 0 auto;
+}
+
+div.picks-content {
+	padding-bottom: 20px;
 }
 
 .vis-title {
@@ -201,54 +182,27 @@ tr.first-row {
   font-size: 22px;
 }
 
-#auth {
-	width: 100%;
+div.auth {
+	float: right;
+	margin-right: 20px;
 	text-align: right;
+	font-size: 12px;
 }
 
 .vis-block {
-  width: 1500px;
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 18px;
-	margin: 0 auto;
 	padding: 10px;
 }
 
 .line-chart {
-	width:900px; 
-	height:450px;
+	position: absolute;
 }
 
 .pulse-gauge {
-	width:300px;
-	height:300px;
+	position: absolute;
 }
 
 .breakout-guage {
-  width:300px;
-	height:600px;
-}
-
-#line_chart_div {
-	left: 300px;	
-}
-
-#last_week_pulse_gauge_div {
-	bottom: 450px;
-}
-
-#this_week_pulse_gauge_div {
-	left:1200px;
-	bottom: 750px;
-}
-
-#last_week_breakout_gauge_div {
-	bottom: 750px;
-}
-
-#this_week_breakout_gauge_div {
-	left: 1200px;
-	bottom: 1350px;
+	position: absolute;
 }
 
 div.import-menu {
