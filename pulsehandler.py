@@ -58,8 +58,9 @@ class Handler(webapp2.RequestHandler):
     self.user = users.get_current_user()
     if not self.user:
       request_uri = self.request.uri 
-      login_url = users.create_login_url()
+      login_url = users.create_login_url(request_uri)
       self.redirect(login_url)
+      return
 
     self.params['user'] = self.user
     projects = Projects.get_projects()
@@ -82,8 +83,9 @@ class AdminHandler(Handler):
     self.user = users.get_current_user()
     if not self.user:
       request_uri = self.request.uri 
-      login_url = users.create_login_url()
+      login_url = users.create_login_url(request_uri)
       self.redirect(login_url)
+      return
 
     special_users = list(SpecialUsers.get_users())
     special,admin,table = check_access_level(self.user,special_users)
@@ -115,8 +117,9 @@ class TableHandler(Handler):
     self.user = users.get_current_user()
     if not self.user:
       request_uri = self.request.uri 
-      login_url = users.create_login_url()
+      login_url = users.create_login_url(request_uri)
       self.redirect(login_url)
+      return
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     special, admin, table = check_access_level(self.user,special_users)
@@ -146,8 +149,8 @@ class Logout(Handler):
 
   def get(self):
     request_uri = self.request.uri
-    login_url = users.create_logout_url('/')
-    self.redirect(login_url)
+    logout_url = users.create_logout_url('/')
+    self.redirect(logout_url)
 
 class AllRecordTable(TableHandler):
 
