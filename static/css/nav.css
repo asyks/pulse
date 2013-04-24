@@ -19,7 +19,7 @@ nav ul.top-nav {
 
 div.nav-title {
 	float: left;
-	margin-top: 45px;
+	margin-top: 33px;
 	margin-left: 20px;
 	margin-right: 10px;
 }
@@ -30,6 +30,15 @@ a.nav-title {
 
 a.nav-title span {
 	color: #f26624;
+}
+
+img.logo {
+	float: left;
+}
+
+div.site-title {
+	margin-top: 12px;
+	margin-left: 70px;
 }
 
 nav > ul > li {
