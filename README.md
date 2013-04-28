@@ -7,7 +7,7 @@ The purpose of the *Team Health Score* project is to collect employee ratings of
 
 Improvements:
 --------------
-Team Pulse is an improved version of the original team health score app in use at Modea for measuring employee satisfaction. Team Pulse is an improvement over the old team health score in the following ways:
+Team Pulse is an improved version of the original team health score app in use at Modea for measuring employee satisfaction. Team Pulse is an improvement over the old team health score in the following ways.
  * it's more flexible - we have more control over what the app does, how it performs, and how it looks
  * it's more automatic - less work for Courtney and me to do on a weekly basis
  * it's sustainable - I won't have to update scripts on a weekly basis to get visualizations to work
@@ -35,7 +35,7 @@ administration site section which allows anyone with access to add/remove users 
 
 Rating Categories
 --------------
-The 4 rating categories are defined accordingly:
+The 4 rating categories are defined accordingly.
  * Pride - I'm proud of the work my team has done in the past week
  * Expectations - The expectations placed on me in the past week have been fair
  * Challenge - During the past week I have felt challenged while working on this project
