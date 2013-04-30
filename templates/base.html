@@ -4,7 +4,7 @@
 
 <head>
 
-<title>Team Pulse</title>
+<title>Pulse</title>
 
 <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
 <link rel="stylesheet" type="text/css" href="/static/css/nav.css"/>
@@ -20,10 +20,12 @@ href="http://fonts.googleapis.com/css?family=Ubuntu:400,700">
 
 <body>
 
-<nav>
-{% block navigation %}
-{% endblock %}
-</nav>
+<header>
+	<nav>
+	{% block navigation %}
+	{% endblock %}
+	</nav>
+</header>
 
 <div id="auth" class="auth">
 	{{ user | safe }} (<a href="/logout">logout</a>)

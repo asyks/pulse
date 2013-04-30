@@ -123,7 +123,6 @@ class TableHandler(Handler):
 
     special_users, name_match = list(SpecialUsers.get_users()), False 
     special, admin, table = check_access_level(self.user,special_users)
-        
     if not special or not table:
       self.redirect('/')
       return
@@ -318,10 +317,10 @@ class AdminImport(AdminHandler):
   def post(self):
     feed = self.request.get('feed') or 'cells'
     sskey = self.request.get('sskey') or \
-    '0AoTNJnkeM_tBdFpDc0NHUmJ3QXZzN1RUSTBXSnVMa0E'
+    '0AoTNJnkeM_tBdGJ6d0NWWXZYbzVIYndZb0RfWHpWbXc'
     worksheet = self.request.get('worksheet') or 'od7'
     scores = get_scores_from_atom(feed, sskey, worksheet) 
-    ##Scores.put_scores(scores) ## uncomment to enable import
+    Scores.put_scores(scores) ## uncomment to enable import
     logging.warning('import deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console')
 
