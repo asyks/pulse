@@ -245,3 +245,9 @@ div.import-menu {
 .score-remove-submit {
 	margin-bottom: 20px;
 }
+.email-text {
+	width: 800px;
+	margin-left: 20px;
+	margin-top: 125px;
+	font-size: 18px;
+}
