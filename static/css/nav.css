@@ -7,7 +7,13 @@ header {
 	background: -webkit-linear-gradient(top, #4b3a30 0%, #2e241f 80%); 
 }
 
-nav {
+nav.front-nav {
+  font-size: 16px;
+	width: 1250px;
+}
+
+nav.admin-nav {
+  font-size: 16px;
 	width: 1250px;
 }
 
@@ -45,15 +51,22 @@ div.site-title {
 }
 
 nav > ul > li {
-	width: 140px;
 	height: 100%;
 	float: left;
 	display: block; 
 	padding-top: 10px;
 	padding-bottom: 10px;
-	border-left: 1px solid #111111;
+	border-left: 1px solid #626262;
 	text-align: center;
 	color: #ae9677; 
+}
+
+nav.front-nav > ul > li {
+	width: 160px;
+}
+
+nav.admin-nav > ul > li {
+	width: 140px;
 }
 
 nav > ul > li:first-child {

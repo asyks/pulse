@@ -67,6 +67,7 @@ div.button-link {
 	float: left;
 	margin-top: 40px;
 	margin-left: 5px;
+	margin-bottom: 40px;
 	padding: 10px;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -244,10 +245,4 @@ div.import-menu {
 
 .score-remove-submit {
 	margin-bottom: 20px;
-}
-.email-text {
-	width: 800px;
-	margin-left: 20px;
-	margin-top: 125px;
-	font-size: 18px;
 }

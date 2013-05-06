@@ -7,7 +7,6 @@ import logging
 from datamodel import *
 from utility import *
 
-
 def createWeeksObject(scores):
 
   current_week = scores[0].week_date
@@ -81,7 +80,6 @@ def createLineChartObject(weeks):
 
   return line_chart_object
  
-
 def createPulseGaugeObject(weeks, n):
 
   gauge_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -99,7 +97,6 @@ def createPulseGaugeObject(weeks, n):
   gauge_object = json.dumps(gauge_object)
 
   return gauge_object
-
 
 def createBreakoutGaugeObject(weeks, n):
 
@@ -121,7 +118,6 @@ def createBreakoutGaugeObject(weeks, n):
   gauge_object = json.dumps(gauge_object)
 
   return gauge_object
-
 
 def createChartObjects(scores):
 

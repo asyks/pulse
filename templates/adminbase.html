@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block navigation %}
+<nav class="admin-nav">
 <div class="nav-title">
 	<a href='/' class="nav-title">
 	<img src="/static/img/logo.png" class="logo" height=50 width=60>
@@ -14,10 +15,10 @@
 </div>
 <ul class="top-nav">
 <li><a href="/admin/home">Admin Home</a></li>
-<li><a href="/admin/projects">Projects Admin</a></li>
-<li><a href="/admin/users">Users Admin</a></li>
-<li><a href="/scores/table/all">All Records</a></li>
-<li>Project Tables
+<li><a href="/admin/projects">Manage Projects</a></li>
+<li><a href="/admin/users">Manage Users</a></li>
+<li><a href="/scores/table/all">All Responses</a></li>
+<li>View Team Records
 <ul>
 {% for p in projects %}
 <li>
@@ -29,7 +30,7 @@ href='/scores/table/{{p.project.replace(' ','-').replace("'","_")}}'>
 {% endfor %}
 </ul>
 </li>
-<li>Comments
+<li>Comment Records
 <ul>
 {% for p in projects %}
 <li>
@@ -41,7 +42,7 @@ href='/scores/table/comments/{{p.project.replace(' ','-').replace("'","_")}}'>
 {% endfor %}
 </ul>
 </li>
-<li>Users Tables
+<li>User Responses
 <ul>
 {% for p in projects %}
 <li>
@@ -54,6 +55,7 @@ href='/scores/table/comments/users/{{p.project.replace(' ','-').replace("'","_")
 </ul>
 </li>
 </ul>
+</nav>
 {% endblock %}
 
 <div id="content">

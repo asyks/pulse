@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block navigation %}
+<nav class="front-nav">
 <div class="nav-title">
 	<a href='/' class="nav-title">
 	<img src="/static/img/logo.png" class="logo" height=50 width=60>
@@ -17,7 +18,7 @@
 <li><a href='/survey/project-select/'>SURVEY</a></li>
 <li><a href='/visuals/summary/'>SUMMARY</a></li>
 <li><a href='/visuals/breakout/'>BREAKOUT</a></li>
-<li>PROJECTS
+<li>TEAM RESULTS
 <ul>
 {% for p in projects %}
 <li>
@@ -31,6 +32,7 @@ href='/visuals/charts/{{p.project.replace(' ','-').replace("'","_")}}'>
 </li>
 <li><a href='/admin/home/'>ADMIN</a></li>
 </ul>
+</nav>
 {% endblock %}
 
 {% block content %}
