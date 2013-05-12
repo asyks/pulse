@@ -34,7 +34,9 @@ function drawLineChart() {
 		vAxis: {viewWindowMode: "pretty"},
 		hAxis: {viewWindowMode: "pretty"},  
 		legend: {position: 'none'},
-		chartArea:{width: '90%', height: '90%'}
+		chartArea:{width: '90%', height: '90%'},
+		title: 'Team Health Score Trending',
+    titleTextStyle: {color: '#626262', fontSize: 16}
 	};
 
 	var data_table = new google.visualization.DataTable(JSONObject, 0.5);
@@ -123,21 +125,22 @@ function drawLastWeekBreakoutGauge() {
 	);
 	chart.draw(data_table, options);
 
-lastWeekTop = 1.65 * pulseGaugeHeight + 5 + 'px';
-document.getElementById('last_week_breakout_gauge_div').style.top = 
-	lastWeekTop
+mainTop = '200px';
+lastWeekTop = 1.65 * pulseGaugeHeight + 40 + 'px';
+document.getElementById('last_week_pulse_gauge_div').style.top = mainTop
+document.getElementById('last_week_breakout_gauge_div').style.top = lastWeekTop
 
 lineChartLeft = gaugeWidth + 22 + 'px';
+document.getElementById('line_chart_div').style.top = mainTop;
 document.getElementById('line_chart_div').style.left = lineChartLeft;
 
-thisWeekTop = 1.65 * pulseGaugeHeight + 5 + 'px';
+thisWeekTop = 1.65 * pulseGaugeHeight + 40 + 'px';
 thisWeekLeft = gaugeWidth + lineChartWidth + 48 + 'px';
-document.getElementById('this_week_pulse_gauge_div').style.left = 
-	thisWeekLeft;
-document.getElementById('this_week_breakout_gauge_div').style.top = 
-	thisWeekTop;
-document.getElementById('this_week_breakout_gauge_div').style.left = 
-	thisWeekLeft;
+document.getElementById('this_week_pulse_gauge_div').style.top = mainTop;
+document.getElementById('this_week_pulse_gauge_div').style.left = thisWeekLeft;
+document.getElementById('this_week_breakout_gauge_div').style.top = thisWeekTop;
+document.getElementById('this_week_breakout_gauge_div').style.left = thisWeekLeft;
+document.getElementById('this_week_respondents').style.left = thisWeekLeft;
 }
 
 </script>
@@ -148,9 +151,17 @@ document.getElementById('this_week_breakout_gauge_div').style.left =
 
 <div class="vis-title">
 	<a href="/visuals/charts/{{project.replace(' ','-').replace("'","_")}}">
-	{{ project }} Visualizations
+	{{ project }} Historical Results
 	</a>
 </div>
+<div class="respondents-container">
+	<div class="week-respondents" id="last_week_respondents">
+		Number of respondents: {{last_week_respondents}}
+	</div>
+	<div class="week-respondents" id="this_week_respondents">
+		Number of respondents: {{this_week_respondents}}
+	</div>
+<div>
 
 <div class="vis-block">
 	<div class="line-chart" id="line_chart_div"></div>

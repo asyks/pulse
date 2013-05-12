@@ -214,6 +214,8 @@ class Charts(Handler):
       self.params['last_week_pulse_gauge_object'] =  visual_objects[2]
       self.params['this_week_breakout_gauge_object'] = visual_objects[3]
       self.params['last_week_breakout_gauge_object'] = visual_objects[4]
+      self.params['this_week_respondents'] = visual_objects[5]
+      self.params['last_week_respondents'] = visual_objects[6]
     self.render('charts.html', **self.params)
 
 class Summary(Handler):
@@ -230,9 +232,9 @@ class Breakout(Handler):
   def get(self):
     current_week = Scores.get_max_week()
     scores = Scores.get_by_week_num(current_week)
-    breakout_gauges = createBreakoutObject(scores)
-    logging.warning(breakout_gauges)
+    breakout_gauges, respondents_dict = createBreakoutObject(scores)
     self.params['breakout_gauges'] = breakout_gauges 
+    self.params['respondents'] = respondents_dict
     self.render('breakout.html', **self.params)
 
 class Picks(Handler):
@@ -451,4 +453,4 @@ app = webapp2.WSGIApplication([(r'/?', Home),
   (r'/admin/users/modify/?', AdminUsersModify),
   (r'/.*', Error)
   ],
-  debug=True)
+  debug=False)

@@ -43,12 +43,13 @@ function draw{{gauge[0].replace(' ','_')}}Gauge() {
 {% block visualization %}
 
 <div class="vis-title">
-	<a href="/visuals/breakout">This Week's Projects</a>
+	<a href="/visuals/breakout">Last Week's Results</a>
 </div>
 
 {% for gauge in breakout_gauges %}
-<h2>{{ gauge[0] }}</h2>
-<div class='summary-gauge' id='{{ "%s_gauge" % gauge[0].replace(' ','_')| safe }}'></div>
+<div class="project-title">{{ gauge[0] }}</div>
+<div class="project-respondents">Number of respondents: {{ respondents[gauge[0]] }}</div>
+<div class="summary-gauge" id='{{ "%s_gauge" % gauge[0].replace(' ','_')| safe }}'></div>
 {% endfor %}
 
 {% endblock %}

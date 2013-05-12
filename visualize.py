@@ -7,6 +7,7 @@ import logging
 from datamodel import *
 from utility import *
 
+
 def createWeeksObject(scores):
 
   current_week = scores[0].week_date
@@ -15,8 +16,6 @@ def createWeeksObject(scores):
   store_op, reset_op, iterate_op = False, False, True ## set initial state: iterate but don't store or reset
 
   for score in scores:
-#    logging.warning('week_date is %s' % score.week_date)
-#    logging.warning('current week is %s' % current_week)
 
     pr, cm, ex, ch, pl = score.pride, score.communication, score.expectations, score.challenge, score.pulse
     
@@ -80,6 +79,7 @@ def createLineChartObject(weeks):
 
   return line_chart_object
  
+
 def createPulseGaugeObject(weeks, n):
 
   gauge_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -93,10 +93,9 @@ def createPulseGaugeObject(weeks, n):
 
   rows.append( {'c':[{'v': format_datetime(weeks[n]['wk'])}, {'v': findAverage(weeks[n]['pl'], weeks[n]['wk_en'])}]} )
   gauge_object['rows'] = rows
-
   gauge_object = json.dumps(gauge_object)
-
   return gauge_object
+
 
 def createBreakoutGaugeObject(weeks, n):
 
@@ -119,6 +118,7 @@ def createBreakoutGaugeObject(weeks, n):
 
   return gauge_object
 
+
 def createChartObjects(scores):
 
   weeks = createWeeksObject(scores)
@@ -126,29 +126,31 @@ def createChartObjects(scores):
   if len(weeks) >= 2:
     enough_entries = True     
     line_chart_object = createLineChartObject(weeks)
+    this_week_respondents = weeks[-1]['wk_en']
+    last_week_respondents = weeks[-2]['wk_en']
     this_week_pulse_gauge_object = createPulseGaugeObject(weeks, -1)
     last_week_pulse_gauge_object = createPulseGaugeObject(weeks, -2)
     this_week_breakout_gauge_object = createBreakoutGaugeObject(weeks, -1)
     last_week_breakout_gauge_object = createBreakoutGaugeObject(weeks, -2)
 
-    visual_objects = ( line_chart_object,
+    visual_object = ( line_chart_object,
 											 this_week_pulse_gauge_object,
 											 last_week_pulse_gauge_object,
 											 this_week_breakout_gauge_object,
-											 last_week_breakout_gauge_object)
+											 last_week_breakout_gauge_object,
+                       this_week_respondents,
+                       last_week_respondents)
   else:
     enough_entries = False
-    visual_objects = (None, None, None, None, None)
+    visual_object = (None, None, None, None, None)
 
-  return enough_entries, visual_objects 
+  return enough_entries, visual_object 
 
 def createPulseifiedObject(scores):
 
   pulseified_object = dict()
 
   for score in scores:
-    logging.warning(score.project)
-    logging.warning(score.pulse)
     if score.project in pulseified_object:
       pulse_list = pulseified_object[score.project]
       pulse_list[0] += score.pulse
@@ -225,5 +227,9 @@ def createProjectBreakoutObject(obj):
 def createBreakoutObject(scores):
 
   pulseified_object = createPulseifiedObject(scores)
+  respondents_dict = dict()
+  for key in pulseified_object:
+    new_key = key.replace('\'','_').replace('-','_')
+    respondents_dict[new_key] = pulseified_object[key][5]
   breakout_gauges = createProjectBreakoutObject(pulseified_object)
-  return breakout_gauges
+  return breakout_gauges, respondents_dict
