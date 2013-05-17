@@ -18,7 +18,7 @@
 		<select name="selected-project">
 			<option value=""></option>
 			{% for p in projects %}
-			<option value={{ p.project }} {% if sel_pj == p.project %} selected {% endif %}>{{ p.project }}</option>
+			<option value={{ p.project.replace(' ','-').replace("'","_") }} {% if sel_pj == p.project %} selected {% endif %}>{{ p.project }}</option>
 			{% endfor %}
 		</select>
 	</td>

@@ -247,22 +247,37 @@ div.import-menu {
 	margin-bottom: 20px;
 }
 
-div.email-text {
-	float: left;
+.summary-gauge-block {
+	width: 1000px;
+	height: 225px;
+}
+
+.summary-gauge-row {
 	width: 100%;
-	margin-left: 20px;
+}
+
+.row-one {
+	height: 25px;
+}
+
+.row-two {
+	height: 225px;
 }
 
 .project-title {
-	width: 500px;
 	float: left;
 	font-size: 24px;
 	font-weight: bold;
 }
 
 .project-respondents {
-	width: 300px;
 	float: right;
+}
+
+.summary-gauge {
+	width: 1000px;
+	height: 225px;
+	float: left;
 }
 
 .respondents-container {
@@ -273,4 +288,10 @@ div.email-text {
 .week-respondents {
 	position: absolute;
 	width:300px;
+}
+
+div.email-text {
+	float: left;
+	width: 100%;
+	margin-left: 20px;
 }

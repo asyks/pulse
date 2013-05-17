@@ -298,7 +298,7 @@ class Survey(Handler):
 
     else:
       pjs, un = selected_projects, str(self.user)
-      scores = [ Scores.create_score(un, pjs[i], prs[i], cms[i], exs[i], chs[i], fbs[i]) for i in range(0, len(pjs)) ]
+      scores = [ Scores.create_score(un, pjs[i].replace('-',' ').replace('_',"'"), prs[i], cms[i], exs[i], chs[i], fbs[i]) for i in range(0, len(pjs)) ]
       Scores.put_scores(scores)
       self.redirect('/')
 

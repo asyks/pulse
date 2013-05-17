@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 
-google.load('visualization','1.0',{'packages':['corechart','gauge']});
+google.load('visualization', '1', {packages: ['gauge']});
 
 google.setOnLoadCallback(drawChart);
 
@@ -20,7 +20,7 @@ function draw{{gauge[0].replace(' ','_')}}Gauge() {
 	var JSONObject = {{ gauge[1]|safe }}; 
 
 	var options = {
-		width: 1000, height: 300,
+		width: 1000, height: 225,
 		min: 0, max: 10,
 		greenFrom:7, greenTo:10,
 		yellowFrom:4, yellowTo: 7,
@@ -47,9 +47,15 @@ function draw{{gauge[0].replace(' ','_')}}Gauge() {
 </div>
 
 {% for gauge in breakout_gauges %}
-<div class="project-title">{{ gauge[0] }}</div>
-<div class="project-respondents">Number of respondents: {{ respondents[gauge[0]] }}</div>
-<div class="summary-gauge" id='{{ "%s_gauge" % gauge[0].replace(' ','_')| safe }}'></div>
+<div class="summary-gauge-block">
+	<div class="summary-gauge-row row-one">
+		<div class="project-title">{{ gauge[0] }}</div>
+		<div class="project-respondents">Number of respondents: {{ respondents[gauge[0]] }}</div>
+	</div>
+	<div class="summary-gauge-row row-two">
+		<div class="summary-gauge" id='{{ "%s_gauge" % gauge[0].replace(' ','_')| safe }}'></div>
+	</div>
+</div>
 {% endfor %}
 
 {% endblock %}
