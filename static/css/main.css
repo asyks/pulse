@@ -211,6 +211,10 @@ div.auth {
 	position: absolute;
 }
 
+.line-chart-text {
+	position: absolute;
+}
+
 .pulse-gauge {
 	position: absolute;
 }

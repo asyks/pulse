@@ -133,6 +133,8 @@ document.getElementById('last_week_breakout_gauge_div').style.top = lastWeekTop
 lineChartLeft = gaugeWidth + 22 + 'px';
 document.getElementById('line_chart_div').style.top = mainTop;
 document.getElementById('line_chart_div').style.left = lineChartLeft;
+document.getElementById('line_chart_text_div').style.top = 220 + lineChartHeight + 'px';
+document.getElementById('line_chart_text_div').style.left = lineChartLeft;
 
 thisWeekTop = 1.65 * pulseGaugeHeight + 40 + 'px';
 thisWeekLeft = gaugeWidth + lineChartWidth + 48 + 'px';
@@ -161,10 +163,15 @@ document.getElementById('this_week_respondents').style.left = thisWeekLeft;
 	<div class="week-respondents" id="this_week_respondents">
 		Number of respondents: {{this_week_respondents}}
 	</div>
-<div>
+</div>
 
 <div class="vis-block">
-	<div class="line-chart" id="line_chart_div"></div>
+	<div class="line-chart-container">
+		<div class="line-chart" id="line_chart_div"></div>
+		<div class="line-chart-text" id="line_chart_text_div">
+      mouse-over the graph to display the pulse for each week
+    </div>
+	</div>
 	<div class="pulse-gauge" id="last_week_pulse_gauge_div"></div>
 	<div class="pulse-gauge" id="this_week_pulse_gauge_div"></div>
 	<div class="breakout-guage" id="last_week_breakout_gauge_div"></div>
