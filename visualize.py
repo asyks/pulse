@@ -1,28 +1,29 @@
 
-## standard python library imports
-import json
-import logging
+##
+# The visualize module contains procedures for transforming lists of datastore objects into
+# python dictionaries which are then transformed into JSON for use by Google Charts API
+##
 
-## pulse class/object imports
+# standard python library imports
+import json, logging
+# pulse class/object imports
 from datamodel import *
 from utility import *
 
-
+# creates a list of weeks in order of oldest to newest 
 def createWeeksObject(scores):
 
   current_week = scores[0].week_date
   weeks = list()
   wk_en, sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = 0,0,0,0,0,0
-  store_op, reset_op, iterate_op = False, False, True ## set initial state: iterate but don't store or reset
+  store_op, reset_op, iterate_op = False, False, True  # set initial state: iterate but don't store or reset
 
   for score in scores:
-
     pr, cm, ex, ch, pl = score.pride, score.communication, score.expectations, score.challenge, score.pulse
-    
-    if score.week_date != current_week: ## if state is start of new week then store and reset
+    if score.week_date != current_week:  # if state is start of new week then execute store and reset operations
       store_op, reset_op = True, True
-
-    if store_op: ## store operation
+    # store before operation
+    if store_op:  
       week = dict()
       week['wk'] = current_week
       week['wk_en'] = wk_en
@@ -32,21 +33,20 @@ def createWeeksObject(scores):
       week['ch'] = sum_of_ch
       week['pl'] = sum_of_pl
       weeks.append(week)
-
-    if reset_op: ## reset operation
-      current_week = score.week_date ## reset current_week
+    # reset operation
+    if reset_op:  
+      current_week = score.week_date  # reset current_week
       wk_en, sum_of_pr, sum_of_cm, sum_of_ex, sum_of_ch, sum_of_pl = 0,0,0,0,0,0
       store_op, reset_op = False, False
-
-    ## iterate operation
+    # iterate operation
     wk_en += 1  
     sum_of_pr += pr
     sum_of_cm += cm
     sum_of_ex += ex
     sum_of_ch += ch
     sum_of_pl += pl
-
-    if scores.index(score) == len(scores) - 1: ## if state is end of iterator then store
+    # store after operation
+    if scores.index(score) == len(scores) - 1:
       week = dict()
       week['wk'] = current_week
       week['wk_en'] = wk_en
@@ -56,12 +56,13 @@ def createWeeksObject(scores):
       week['ch'] = sum_of_ch
       week['pl'] = sum_of_pl
       weeks.append(week)
-
   return weeks
 
+# computes the average by dividing total by entries and rounds the output to 2 decimal places
 def findAverage(total, entries):
   return round(float(total)/float(entries), 2)
 
+# returns a JSON object suitible for use with Google Charts API line chart
 def createLineChartObject(weeks):
 
   line_chart_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -79,7 +80,7 @@ def createLineChartObject(weeks):
 
   return line_chart_object
  
-
+# returns a JSON object containing a single guage suitible for use with Google Charts API guage chart
 def createPulseGaugeObject(weeks, n):
 
   gauge_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -96,7 +97,7 @@ def createPulseGaugeObject(weeks, n):
   gauge_object = json.dumps(gauge_object)
   return gauge_object
 
-
+# returns a JSON object containing a set of breakout guages suitible for use with Google Charts API guage chart
 def createBreakoutGaugeObject(weeks, n):
 
   gauge_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -119,6 +120,7 @@ def createBreakoutGaugeObject(weeks, n):
   return gauge_object
 
 
+# procedure called by pulsehandler Charts view to create a chart JSON object
 def createChartObjects(scores):
 
   weeks = createWeeksObject(scores)
@@ -146,6 +148,7 @@ def createChartObjects(scores):
 
   return enough_entries, visual_object 
 
+# returns a dict of scores suitable for use by createChartifiedObject 
 def createPulseifiedObject(scores):
 
   pulseified_object = dict()
@@ -170,6 +173,7 @@ def createPulseifiedObject(scores):
 
   return pulseified_object
       
+# returns a single breakout guage JSON object
 def createChartifiedObject(obj):
 
   gauge_object, cols_one, cols_two = dict(), dict(), dict() 
@@ -189,12 +193,14 @@ def createChartifiedObject(obj):
 
   return gauge_object
 
+# procedure called by pulsehandler views to create a summary JSON object
 def createSummaryObject(scores):
 
   pulseified_object = createPulseifiedObject(scores)
   summary_gauge_object = createChartifiedObject(pulseified_object)
   return summary_gauge_object
 
+# returns a list of breakout guage JSON objects
 def createProjectBreakoutObject(obj):
 
   breakout_gauges = list()
@@ -211,6 +217,7 @@ def createProjectBreakoutObject(obj):
     columns.append(cols_two)
     gauge_object['cols'] = columns
 
+    rows.append( {'c':[{'v': 'Pulse'}, {'v': findAverage(obj[key][0], obj[key][5])}]} )
     rows.append( {'c':[{'v': 'Pride'}, {'v': findAverage(obj[key][1], obj[key][5])}]} )
     rows.append( {'c':[{'v': 'Communication'}, {'v': findAverage(obj[key][2], obj[key][5])}]} )
     rows.append( {'c':[{'v': 'Expectations'}, {'v': findAverage(obj[key][3], obj[key][5])}]} )
@@ -224,6 +231,7 @@ def createProjectBreakoutObject(obj):
 
   return breakout_gauges 
 
+# procedure called by pulsehandler views to create a breakout JSON object and respondents dict
 def createBreakoutObject(scores):
 
   pulseified_object = createPulseifiedObject(scores)

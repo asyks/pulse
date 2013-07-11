@@ -1,10 +1,16 @@
 
-## standard python library imports
+##
+# This module contains utility procedures used by various views.
+# Procedures cover: access checking, date formatting, data validation,
+# cookie checking,  and password hashing
+##
+
+# standard python library imports
 import hashlib, hmac, string, random, re, logging
-## pulse class/object imports
+# pulse class/object imports
 from datetime import datetime
 
-## admin and table access checking stuff
+# admin and table access checking stuff
 def check_access_level(user, special_users):
   special, admin, table = False, False, False
   for u in special_users:
@@ -19,7 +25,7 @@ def check_access_level(user, special_users):
       break
   return special, admin, table
 
-## date format and string substitution procedures
+# date format and string substitution procedures
 def format_datetime(date_time):
   time_format = '%x' 
   return date_time.strftime(time_format)
@@ -27,7 +33,7 @@ def format_datetime(date_time):
 def make_last_edit_str(time):
   return 'This page was last edited on: %s' % time
  
-## datastore entry validation stuff
+# datastore entry validation stuff
 PROJECT_RE = re.compile(r'([0-9a-zA-Z_-]+)/?')
 def validate_all_projects(projects):
   for project in projects:
@@ -62,7 +68,7 @@ def score_validate(scores):
       return False
   return True 
 
-## sign-up form validation stuff
+# sign-up form validation stuff
 USER_RE = re.compile("^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile("^.{3,20}$")
 EMAIL_RE = re.compile("^[\S]+@[\S]+\.[\S]+$")
@@ -85,7 +91,7 @@ def email_validate(e):
   if e and EMAIL_RE.match(e):
     return True
 
-## cookie setting stuff
+# cookie setting stuff
 secret = 'you will never guess me'
 def make_secure_val(val):
   return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
@@ -95,7 +101,7 @@ def check_secure_val(secure_val):
   if secure_val == make_secure_val(val):
     return val 
 
-## password hashing stuff
+# password hashing stuff
 def make_salt():
   return ''.join(random.choice(string.letters) for x in range(5))
 

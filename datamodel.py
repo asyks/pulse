@@ -1,16 +1,24 @@
+##
+# models classes for Team Pulse
+# each model represents a different relation in the key value datastore
+# author: aaron sykes (aaron@aaronsykes.com)
+##
 
-## standard python library imports
+# standard python library imports
 from datetime import datetime
-from utility import *
+import logging, calendar
 from google.appengine.ext import db
 
-import logging
-import calendar
+# import functions from the Team Pulse utility module
+from utility import *
 
 def scores_key(group='default'):
   return db.Key.from_path('Scores', group)
 
-class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores model
+# Model for scores. A score is a single user entry on a single project
+class Scores(db.Model): 
+
+  """The model for Scores objects"""
 
   username = db.StringProperty(required=True)
   project = db.StringProperty(required=True)
@@ -142,7 +150,11 @@ class Scores(db.Model): ## datamodels for Team Pulse - Currently only Scores mod
 def projects_key(group='default'):
   return db.Key.from_path('Projects', group)
 
+# Model for projects
+
 class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
+
+  """The model for Projects objects"""
 
   project = db.StringProperty(required=True)
   date_added = db.DateTimeProperty(auto_now_add=True) 
@@ -179,7 +191,10 @@ class Projects(db.Model): ## datamodel for Team Pulse - Projects Model
 def specialusers_key(group='default'):
   return db.Key.from_path('SpecialUsers', group)
 
+# Model for speical user. A special user is a user who has access to the admin sections of Team Pulse 
 class SpecialUsers(db.Model): ## datamodel for Team Pulse - Projects Model
+
+  """The model for Special Users objects"""
 
   user_name = db.StringProperty(required=True)
   table_access = db.BooleanProperty(required=True)

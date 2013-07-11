@@ -1,17 +1,17 @@
 
-## standard python library imports
-import urllib2
-import json
-import logging
+##
+# Procedures for importing a json object from a Google Spreadhsheet
+# makes use of the Google Docs Atom feed service
+##
+
+# standard python library imports
+import urllib2, json, logging
 from datetime import datetime 
-## pulse class/object imports
+# pulse class/object imports
 from utility import *
 from datamodel import *
 
-## Procedures for importing a json object from a Google Spreadhsheet
-## makes use of the Google Docs Atom feed service
-
-## Returns a json of Google Docs data using the Atom feed service 
+# Returns a json of Google Docs data using the Atom feed service 
 def import_json_object(feed, sskey, worksheet):  
   base_url = 'https://spreadsheets.google.com/feeds/%s/%s/%s/public/basic?alt=json'
   request_url = base_url % (feed, sskey, worksheet)
@@ -20,12 +20,12 @@ def import_json_object(feed, sskey, worksheet):
   json_object = json.loads(page_content)
   return json_object
 
-## Returns a Python datetime object
+# Returns a Python datetime object
 def cnv_json_to_dt(time_string):
   time_stamp = datetime.strptime(time_string,'%m/%d/%Y %H:%M:%S')
   return time_stamp
 
-## Returns a list of Atom field values
+# Returns a list of Atom field values
 def get_vals_from_json(feed, sskey, worksheet): 
   json_object = import_json_object(feed, sskey, worksheet)
   entries = json_object['feed']['entry']
@@ -33,7 +33,7 @@ def get_vals_from_json(feed, sskey, worksheet):
   contents = [ i['content']['$t'] for i in entries ]
   return contents
  
-## Slices a list into segments of length 8 - returns a list of scores
+# Slices a list into segments of length 8 - returns a list of scores
 def get_scores_from_atom(feed, sskey, worksheet):
 
   contents = get_vals_from_json(feed, sskey, worksheet)

@@ -1,22 +1,25 @@
+##
+# main handler module for Team Pulse
+# this module contains the routing table and classes to server all routes
+##
 
-## standard python library imports
+# standard python library imports
 import webapp2, jinja2, os, logging
 from datetime import datetime
-## app engine library imports
-from google.appengine.api import memcache
-from google.appengine.api import users
-## pulse class/object imports
+# app engine library imports
+from google.appengine.api import memcache, users
+# pulse class/object imports
 from utility import *
 from datamodel import *
 from importatom import *
 from visualize import *
 
+# jinja2 template directory configuration
 path = os.path.dirname(__file__)
 templates = os.path.join(path, 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(templates), autoescape=True) 
 
-## Standard RequestHandler class: parent request handlers
-## for all pages not requiring additional levels of access
+# Standard RequestHandler class: parent request handlers for all pages
 class Handler(webapp2.RequestHandler): 
 
   def write(self, *a, **kw):
@@ -49,7 +52,7 @@ class Handler(webapp2.RequestHandler):
     self.response.delete_cookie('user_id')
     self.response.delete_cookie('dev_appserver_login')
 
-  params = {} ## contains key value pairs used by jinja2 templates
+  params = {}  # contains key value pairs passed to self.response.out.write
     
   def initialize(self, *a, **kw):
 
@@ -71,9 +74,8 @@ class Handler(webapp2.RequestHandler):
     else:
       self.format = 'html'
 
-## Admin RequestHandler class: parent request handler
-## for all pages requiring admin levels of access
-## overwrites Standard RequestHandler initialization method
+# Admin RequestHandler class for all pages requiring admin level restricted access
+# This class inherits from Handler and overwrites its parent's initialization method
 class AdminHandler(Handler): 
     
   def initialize(self, *a, **kw):
@@ -105,9 +107,8 @@ class AdminHandler(Handler):
     else:
       self.format = 'html'
 
-## Table RequestHandler class: parent request handler
-## for all pages requiring admin levels of access
-## overwrites Standard RequestHandler initialization method
+# Table RequestHandler class for all pages requiring table level restricted access
+# This class inherits from Handler and overwrites its parent's initialization method
 class TableHandler(Handler):
     
   def initialize(self, *a, **kw):
@@ -189,7 +190,7 @@ class UserCommentTable(AdminHandler):
     project = str(project)
     self.render_page(project)
 
-  def post(self, project): ## method for removing selected score
+  def post(self, project):  # method for removing selected score
     score_key = self.request.get('selected-score')
     Scores.remove_score(score_key)
     project = str(project)
@@ -322,14 +323,14 @@ class AdminImport(AdminHandler):
     '0AoTNJnkeM_tBdGJ6d0NWWXZYbzVIYndZb0RfWHpWbXc'
     worksheet = self.request.get('worksheet') or 'od7'
     scores = get_scores_from_atom(feed, sskey, worksheet) 
-    Scores.put_scores(scores) ## uncomment to enable import
+    #Scores.put_scores(scores)  # uncomment to enable import
     logging.warning('import deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console')
 
 class AdminDrops(AdminHandler):
 
   def post(self):
-    ##Scores.drop_table() ## uncomment to enable table drop 
+    #Scores.drop_table()  # uncomment to enable table drop 
     logging.warning('table drop deactivated: uncomment preceding line to restore')
     self.redirect('/admin/console') 
 
@@ -423,15 +424,16 @@ class AdminUsersModify(AdminHandler):
 
     self.redirect('/admin/users')
 
-class Error(Handler): ## Handler for 404 errors
+# class for catching all unspecified routes (404 errors)
+class Error(Handler):
 
   def get(self):
     self.write("There's been an error... Woops")
 
+# project name regex 
+PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' 
 
-## Routing Table for all pulse requests
-PROJECT_RE = r'([0-9a-zA-Z_-]+)/?' ## project name regex 
-
+# Routing Table for all pulse requests
 app = webapp2.WSGIApplication([(r'/?', Home),
   (r'/logout/?', Logout),
   (r'/visuals/charts/' + PROJECT_RE, Charts),
