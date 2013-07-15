@@ -31,7 +31,7 @@ The most notable features are:
     * summary visualization - displays average aggregate score for all projects with feedback for the most recent period
     * breakout visualization - displays average pride, communication, expectations, and challenge ratings for th most recent period
     * project visualizations - displays summary stats for each active project
-administration interface for managing scores, projects, and users
+ * administration interface for managing scores, projects, and users
  * score record tables with restricted access
 
 Rating Categories
@@ -41,6 +41,7 @@ The 4 rating categories are defined accordingly:
  * Communication - I have received timely and effective communication from my team
  * Passion - I feel our team has been excited about this project
  * Challenge - I have felt challenged while working on this project
+
 Users rate each project their working on based on these criteria each week
 
 Access Levels
@@ -56,7 +57,7 @@ Admin Access (full access)  enables users to additionally view and interact with
  * project add/remove
  * special user management
 
-Restricted Access Site Section UI Structure
+UI Structure
 --------------
 The restricted access site section consists of the following:
  * Manage Projects - An interface for adding or removing projects, restricted to users with admin level access.
@@ -65,6 +66,7 @@ The restricted access site section consists of the following:
  * View Client Data - Tables for viewing responses for a single client, restricted to users with table level access.
  * Survey Comments - Tables for viewing responses with comments for a single client, restricted to users with table level access.
  * User Responses - tables for viewing responses with comments and usernames for a single client, restricted to users with admin level access.
+
 The main (unrestricted) site section consists of the following:
  * Start Survey - An interface for submitting a response about one or more projects.
  * Results Summary - A Visualization with gauges displaying the average pulse of each project for the previous period.
