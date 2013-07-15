@@ -24,6 +24,7 @@ Components:
 
 Features:
 --------------
+The most notable features are:
  * entry form for collecting employee satisfaction info and storing it in the App Engine DataStore
  * data can be imported from google docs into the App Engine datastore
  * visualization pages:
@@ -44,16 +45,16 @@ Users rate each project their working on based on these criteria each week
 
 Access Levels
 --------------
- * Basic Access allows users to:
-    * submit responses
-    * view visualization pages
- * Table Access enables users to additionally view:
-    * record tables without usernames
- * Admin Access (full access)  enables users to additionally view and interact with:
-    * record tables without usernames
-    * record tables with usernames
-    * project add/remove
-    * special user management
+Basic Access allows users to:
+ * submit responses
+ * view visualization pages
+Table Access enables users to additionally view:
+ * record tables without usernames
+Admin Access (full access)  enables users to additionally view and interact with:
+ * record tables without usernames
+ * record tables with usernames
+ * project add/remove
+ * special user management
 
 Restricted Access Site Section UI Structure
 --------------
